@@ -1,0 +1,4022 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>경은's 2026년 하반기 한미그룹 공개채용</title>
+    <meta
+      name="description"
+      content="2026년 하반기 한미그룹 공개채용. 모집기간 2026.9.28(월) ~ 2026.10.18(일) 23:59까지"
+    />
+    <link
+      rel="stylesheet"
+      as="style"
+      crossorigin
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+    />
+    <style>
+      /* ============ Design Tokens ============ */
+      /* CSS 변수구역 */
+      /* :root{변수코드}
+     1. 변수설정방법
+     --변수명: 값;
+     변수명은 케밥케이스로 주로 씀
+     (케밥케이스란? 마이너스 기호로 연결된 변수법)
+     2. 변수호출방법
+     var(변수명)
+     쓰고 싶은 곳에 값으로 변수 사용함
+     */
+      :root {
+        --red: #e60012;
+        --red-light: #ff5d32;
+        --black: #000000;
+        --white: #ffffff;
+        --white-50: rgba(255, 255, 255, 0.5);
+        --white-10: rgba(255, 255, 255, 0.1);
+        --font:
+          "Inter", "Pretendard Variable", Pretendard, "Noto Sans KR",
+          -apple-system, sans-serif;
+        --container: 1920px;
+        --transition: 0.2s ease;
+      }
+
+      /* ============ Reset ============ */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        font-family: var(--font);
+        color: var(--black);
+        background: var(--white);
+        -webkit-font-smoothing: antialiased;
+        word-break: keep-all;
+        overflow-x: hidden;
+      }
+      h1,
+      h2,
+      p,
+      ul {
+        margin: 0;
+        padding: 0;
+      }
+      ul {
+        list-style: none;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      button {
+        font-family: inherit;
+        cursor: pointer;
+        border: 0;
+        background: none;
+        padding: 0;
+      }
+      img {
+        display: block;
+        max-width: 100%;
+        height: auto;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        padding: 0;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      /* ============ Header ============ */
+      .header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 100px;
+        z-index: 10;
+      }
+      .header__inner {
+        max-width: var(--container);
+        height: 100%;
+        margin: 0 auto;
+        padding: 0 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .header__logo {
+        display: block;
+        width: 182px;
+        height: 31px;
+        flex: none;
+      }
+      .header__logo svg {
+        display: block;
+        width: 182px;
+        height: 31px;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        height: 100%;
+      }
+      .nav__list {
+        display: flex;
+        align-items: center;
+        gap: 40px;
+        height: 100%;
+      }
+      .nav__link {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        font-size: 19px;
+        font-weight: 600;
+        line-height: 20px;
+        letter-spacing: -0.4px;
+        color: var(--black);
+        transition: color var(--transition);
+      }
+      .nav__link:hover,
+      .nav__link:focus-visible {
+        color: var(--red);
+      }
+
+      /* ============ Buttons ============ */
+      .btn-apply {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        height: 48px;
+        margin-left: 40px;
+        padding: 0 18px 0 18px;
+        border: 2px solid var(--red);
+        border-radius: 500px;
+        background: var(--red);
+        color: var(--white);
+        font-size: 17.4px;
+        font-weight: 600;
+        line-height: 18px;
+        letter-spacing: -0.36px;
+        white-space: nowrap;
+        transition:
+          background-color var(--transition),
+          color var(--transition),
+          border-color var(--transition);
+      }
+      .btn-apply svg {
+        width: 7px;
+        height: 12px;
+        flex: none;
+      }
+      .btn-apply:hover,
+      .btn-apply:focus-visible {
+        background: var(--white);
+        color: var(--red);
+      }
+
+      /* 모바일 전용 요소 (헤더의 작은 지원하기 버튼 / 햄버거 버튼): 데스크톱·태블릿에서는 숨김 */
+      .btn-apply--mo,
+      .btn-menu {
+        display: none;
+      }
+
+      .btn-cta {
+        position: relative;
+        isolation: isolate;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 303px;
+        max-width: 100%;
+        height: 72px;
+        padding: 0 64px;
+        border: 2px solid transparent;
+        border-radius: 500px;
+        background: linear-gradient(
+          90deg,
+          var(--red) 0%,
+          var(--red-light) 100%
+        );
+        background-clip: padding-box;
+        color: var(--white);
+        font-size: 22.7px;
+        font-weight: 600;
+        line-height: 34px;
+        letter-spacing: -0.48px;
+        white-space: nowrap;
+        transition:
+          color var(--transition),
+          border-color var(--transition);
+      }
+      /* 그라데이션 -> 흰색 반전을 트랜지션하기 위한 오버레이 */
+      .btn-cta::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        border-radius: inherit;
+        background: var(--white);
+        opacity: 0;
+        transition: opacity var(--transition);
+      }
+      .btn-cta:hover,
+      .btn-cta:focus-visible {
+        color: var(--red);
+        border-color: var(--red);
+      }
+      .btn-cta:hover::before,
+      .btn-cta:focus-visible::before {
+        opacity: 1;
+      }
+
+      .btn-scroll {
+        position: absolute;
+        left: 50%;
+        bottom: 64px;
+        transform: translateX(-50%);
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 80px;
+        height: 80px;
+        border-radius: 500px;
+        background: var(--white-10);
+        box-shadow:
+          inset 4px 4px 10px rgba(255, 255, 255, 0.4),
+          inset -4px -4px 10px rgba(0, 0, 0, 0.1);
+        -webkit-backdrop-filter: blur(5px);
+        backdrop-filter: blur(5px);
+        color: var(--white);
+        transition:
+          background-color var(--transition),
+          color var(--transition);
+      }
+      .btn-scroll svg {
+        width: 40px;
+        height: 40px;
+      }
+      .btn-scroll:hover,
+      .btn-scroll:focus-visible {
+        background: var(--white);
+        color: var(--red);
+      }
+
+      /* ============ Main Visual ============ */
+      .mv {
+        position: relative;
+        width: 100%;
+        max-width: 1920px;
+        height: 900px;
+        min-height: 720px;
+        margin: 0 auto;
+        overflow: hidden;
+        background: #ffeee8 url("./images/mv_bg.png") center / cover no-repeat;
+      }
+      .mv__inner {
+        position: relative;
+        max-width: var(--container);
+        height: 100%;
+        margin: 0 auto;
+      }
+
+      /* 텍스트 영역 */
+      .mv__text {
+        position: absolute;
+        left: 100px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 560px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 80px;
+        z-index: 2;
+      }
+      .mv__head {
+        display: flex;
+        flex-direction: column;
+        gap: 31.9px;
+      }
+      .mv__season {
+        font-size: 31px;
+        font-weight: 700;
+        line-height: 45px;
+        letter-spacing: -0.64px;
+      }
+      .mv__title {
+        display: flex;
+        flex-direction: column;
+      }
+      .mv__brand {
+        font-size: 72px;
+        font-weight: 800;
+        line-height: 76px;
+        letter-spacing: -1.76px;
+      }
+      .mv__type {
+        font-size: 45.8px;
+        font-weight: 800;
+        line-height: 72px;
+        letter-spacing: -1.12px;
+      }
+      .mv__period {
+        font-size: 19.2px;
+        font-weight: 500;
+        line-height: 28px;
+        letter-spacing: -0.4px;
+      }
+
+      /* 비주얼 스테이지: 1440x900 기준 좌표를 % 로 환산 */
+      .mv__visual {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 100%;
+        aspect-ratio: 1440 / 900;
+        transform: translateY(-50%);
+        pointer-events: none;
+      }
+      .mv__visual > * {
+        position: absolute;
+        display: block;
+      }
+
+      .mv__ring {
+        aspect-ratio: 1 / 1;
+        border-radius: 500px;
+      }
+      .mv__ring--glow {
+        left: 48.611%;
+        top: 13.111%;
+        width: 46.042%;
+        background: radial-gradient(
+          70.71% 70.71% at 50% 50%,
+          rgba(255, 255, 255, 0.2) 0%,
+          rgba(255, 255, 255, 0) 100%
+        );
+        border: 5px solid var(--white);
+        filter: blur(5px);
+      }
+      .mv__ring--line {
+        left: 52.431%;
+        top: 19.222%;
+        width: 38.403%;
+        border: 1px solid var(--white-50);
+      }
+
+      .mv__img {
+        height: auto;
+      }
+      .mv__micro {
+        left: 53.181%;
+        top: 16.853%;
+        width: 20.106%;
+      }
+      .mv__char1 {
+        left: 56.603%;
+        top: 32.791%;
+        width: 17.6%;
+      }
+      .mv__char2 {
+        left: 72.003%;
+        top: 32.596%;
+        width: 12.589%;
+      }
+      .mv__char3 {
+        left: 51.347%;
+        top: 52.151%;
+        width: 15.033%;
+      }
+      .mv__char4 {
+        left: 76.097%;
+        top: 54.498%;
+        width: 20.289%;
+      }
+
+      /* 별 장식 (mv_star*.png 에셋이 없어 CSS 4각 별로 대체 / 에셋이 있으면 img 로 교체) */
+      .mv__star {
+        aspect-ratio: 1 / 1;
+        clip-path: polygon(
+          50% 0%,
+          61% 39%,
+          100% 50%,
+          61% 61%,
+          50% 100%,
+          39% 61%,
+          0% 50%,
+          39% 39%
+        );
+      }
+      .mv__star--1 {
+        left: 63.997%;
+        top: 26.338%;
+        width: 1.222%;
+        background: #8fe3f0;
+      }
+      .mv__star--2 {
+        left: 51.408%;
+        top: 52.151%;
+        width: 1.589%;
+        background: #a66cff;
+      }
+      .mv__star--3 {
+        left: 91.314%;
+        top: 52.738%;
+        width: 1.467%;
+        background: #ffd54a;
+      }
+      .mv__star--3b {
+        left: 92.536%;
+        top: 48.044%;
+        width: 2.383%;
+        background: #ffd54a;
+      }
+      .mv__star--4 {
+        left: 80.619%;
+        top: 27.707%;
+        width: 1.65%;
+        background: var(--red-light);
+      }
+
+      /* ============ Responsive ============ */
+      @media (max-width: 1280px) {
+        .nav__list {
+          gap: 24px;
+        }
+        .btn-apply {
+          margin-left: 24px;
+        }
+        .mv__text {
+          left: 60px;
+        }
+        .mv__brand {
+          font-size: 60px;
+          line-height: 66px;
+        }
+      }
+      /* 태블릿 (1024px 이하): 헤더는 한 줄 유지(축소), 텍스트 위 / 비주얼 아래 단일 컬럼 */
+      @media (max-width: 1024px) {
+        :root {
+          --gutter: clamp(20px, 3.86vw, 40px);
+        }
+
+        .header {
+          height: 82px;
+        }
+        .header__inner {
+          padding: 0 var(--gutter);
+        }
+        .header__logo {
+          width: clamp(100px, 14.9vw, 140px);
+          height: auto;
+          aspect-ratio: 182 / 31;
+        }
+        .header__logo svg {
+          width: 100%;
+          height: 100%;
+        }
+        .nav__list {
+          gap: clamp(14px, 3vw, 26px);
+        }
+        .nav__link {
+          font-size: clamp(12px, 1.67vw, 15px);
+          letter-spacing: -0.3px;
+        }
+        .btn-apply {
+          height: clamp(32px, 4.2vw, 38px);
+          margin-left: clamp(14px, 3vw, 26px);
+          padding: 0 14px;
+          gap: 8px;
+          font-size: clamp(12px, 1.52vw, 14px);
+          line-height: 16px;
+          letter-spacing: -0.3px;
+        }
+        .btn-apply svg {
+          width: 5px;
+          height: 9px;
+        }
+
+        .mv {
+          height: auto;
+          min-height: 0;
+          padding: 82px 0 40px;
+        }
+        .mv__inner {
+          height: auto;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .mv__text {
+          position: relative;
+          left: auto;
+          top: auto;
+          transform: none;
+          order: 1;
+          width: 100%;
+          padding: 0 var(--gutter);
+          gap: clamp(28px, 4.2vw, 48px);
+        }
+        .mv__head {
+          gap: clamp(12px, 1.75vw, 18px);
+        }
+        .mv__season {
+          font-size: clamp(20px, 2.67vw, 26px);
+          line-height: 1.45;
+          letter-spacing: -0.5px;
+        }
+        .mv__brand {
+          font-size: clamp(44px, 5.54vw, 60px);
+          line-height: 1.055;
+          letter-spacing: -1.2px;
+        }
+        .mv__type {
+          font-size: clamp(28px, 3.32vw, 36px);
+          line-height: 1.55;
+          letter-spacing: -0.8px;
+        }
+        .mv__period {
+          font-size: clamp(14px, 1.87vw, 17px);
+          line-height: 1.3;
+          letter-spacing: -0.3px;
+        }
+        .btn-cta {
+          width: clamp(210px, 29.6vw, 280px);
+          height: clamp(50px, 6.2vw, 62px);
+          padding: 0 24px;
+          font-size: clamp(15px, 1.94vw, 20px);
+          line-height: 24px;
+          letter-spacing: -0.4px;
+        }
+
+        /* 비주얼 스테이지: 캐릭터 무리가 화면 중앙에 오도록 폭/좌측 오프셋을 vw 로 보간 (855px 시안 ~ 390px 시안) */
+        .mv__visual {
+          position: relative;
+          top: auto;
+          left: calc(28.9vw - 424px);
+          order: 2;
+          flex: none;
+          width: calc(28.6vw + 575px);
+          margin-top: calc(-16.5px - 3.01vw);
+          transform: none;
+        }
+
+        .btn-scroll {
+          bottom: 24px;
+          width: 60px;
+          height: 60px;
+        }
+        .btn-scroll svg {
+          width: 30px;
+          height: 30px;
+        }
+      }
+
+      /* 태블릿 중 가장 좁은 구간(391~600px): 한 줄에 메뉴가 다 들어가지 않으므로 헤더를 2줄(로고 / 메뉴+지원하기)로 배치 */
+      @media (min-width: 391px) and (max-width: 600px) {
+        .header {
+          height: auto;
+        }
+        .header__inner {
+          height: auto;
+          flex-wrap: wrap;
+          align-content: flex-start;
+          padding-top: 16px;
+          row-gap: 8px;
+        }
+        .nav {
+          width: 100%;
+          height: 44px;
+          justify-content: space-between;
+        }
+        .nav__list {
+          gap: clamp(10px, 2.5vw, 20px);
+        }
+        .nav__link {
+          font-size: clamp(11.5px, 2.3vw, 14px);
+        }
+        .btn-apply {
+          margin-left: 0;
+          padding: 0 12px;
+        }
+        .mv {
+          padding-top: 104px;
+        }
+      }
+
+      /* 모바일 (390px 이하): 헤더 = 로고 + 작은 지원하기 + 햄버거 / 전체 메뉴 = 오른쪽에서 슬라이드되는 패널 */
+      @media (max-width: 390px) {
+        html.is-menu-open,
+        html.is-menu-open body {
+          overflow: hidden;
+        }
+
+        /* 헤더 */
+        .header {
+          height: 70px;
+        }
+        .header.is-menu-open {
+          position: fixed;
+        }
+        .header__inner {
+          padding: 0 20px;
+        }
+        .header__logo {
+          position: relative;
+          z-index: 2;
+          width: 118px;
+        }
+
+        .btn-apply--mo {
+          position: relative;
+          z-index: 2;
+          display: inline-flex;
+          height: 28px;
+          margin-left: auto;
+          padding: 0 12px;
+          border-width: 1px;
+          font-size: 11px;
+          line-height: 14px;
+          letter-spacing: -0.2px;
+          transition:
+            background-color var(--transition),
+            color var(--transition),
+            border-color var(--transition),
+            opacity var(--transition),
+            visibility var(--transition);
+        }
+        .header.is-menu-open .btn-apply--mo {
+          opacity: 0;
+          visibility: hidden;
+          pointer-events: none;
+        }
+
+        .btn-menu {
+          position: relative;
+          z-index: 2;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex: none;
+          width: 44px;
+          height: 44px;
+          margin: 0 -9px 0 -2px;
+          color: var(--black);
+        }
+        .btn-menu:focus-visible {
+          outline: 2px solid var(--red);
+          outline-offset: -4px;
+          border-radius: 8px;
+        }
+        .btn-menu svg {
+          width: 20px;
+          height: 18px;
+        }
+        .btn-menu__close {
+          display: none;
+        }
+        .btn-menu[aria-expanded="true"] .btn-menu__bars {
+          display: none;
+        }
+        .btn-menu[aria-expanded="true"] .btn-menu__close {
+          display: block;
+        }
+
+        /* 전체 메뉴 패널: 기존 .nav 를 그대로 재사용 */
+        .nav {
+          position: fixed;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          z-index: 1;
+          width: 100%;
+          height: auto;
+          flex-direction: column;
+          align-items: stretch;
+          justify-content: flex-start;
+          padding: 112px 24px 0;
+          background: var(--white);
+          overflow-y: auto;
+          overscroll-behavior: contain;
+          transform: translateX(100%);
+          visibility: hidden;
+          transition:
+            transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1),
+            visibility 0s linear 0.35s;
+        }
+        .header.is-menu-open .nav {
+          transform: none;
+          visibility: visible;
+          transition:
+            transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1),
+            visibility 0s;
+        }
+        .nav__list {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 0;
+          height: auto;
+        }
+        .nav__link {
+          height: 64px;
+          font-size: 20px;
+          line-height: 28px;
+          letter-spacing: -0.4px;
+          border-bottom: 1px solid #ececec;
+        }
+        .nav .btn-apply {
+          width: 100%;
+          height: 53px;
+          margin: 44px 0 0;
+          gap: 8px;
+          font-size: 18px;
+          line-height: 24px;
+          letter-spacing: -0.4px;
+        }
+        .nav .btn-apply svg {
+          width: 7px;
+          height: 12px;
+        }
+        .nav::after {
+          content: "";
+          position: absolute;
+          right: 18px;
+          bottom: 38px;
+          width: 150px;
+          aspect-ratio: 305 / 311;
+          background: url("./images/mo_menu_char.png") center / contain
+            no-repeat;
+          pointer-events: none;
+        }
+        @media (max-height: 620px) {
+          .nav::after {
+            right: 12px;
+            bottom: 20px;
+            width: 104px;
+          }
+        }
+        @media (max-height: 500px) {
+          .nav::after {
+            display: none;
+          }
+        }
+
+        /* 메인 비주얼 */
+        .mv {
+          padding: 103px 0 9px;
+        }
+        .mv__text {
+          padding: 0 20px;
+          gap: 55px;
+        }
+        .mv__head {
+          gap: 17px;
+        }
+        .mv__season {
+          font-size: 20px;
+          line-height: 28px;
+          letter-spacing: -0.4px;
+        }
+        .mv__brand {
+          font-size: 56px;
+          line-height: 58px;
+          letter-spacing: -1.4px;
+        }
+        .mv__type {
+          font-size: 35px;
+          line-height: 58px;
+          letter-spacing: -0.86px;
+        }
+        .mv__period {
+          font-size: clamp(10.5px, 3.15vw, 12.3px);
+          line-height: 18px;
+          letter-spacing: -0.26px;
+        }
+        .btn-cta {
+          width: 200px;
+          height: 50px;
+          padding: 0 32px;
+          font-size: 15px;
+          line-height: 24px;
+          letter-spacing: -0.33px;
+        }
+
+        .mv__visual {
+          left: -80%;
+          width: 176%;
+          margin-top: calc(8px - 18.53vw);
+        }
+
+        .btn-scroll {
+          bottom: 20px;
+          width: 40px;
+          height: 40px;
+        }
+        .btn-scroll svg {
+          width: 20px;
+          height: 20px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        * {
+          transition: none !important;
+        }
+      }
+      /* ============ Section 2: 새로운 미래 (mirae) ============ */
+      .mirae {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        background: linear-gradient(180deg, var(--white) 0%, #ffeee8 100%);
+      }
+
+      /* 스테이지: 캡처 비율을 유지하며 폭에 맞춰 같이 축소/확대 */
+      .mirae__stage {
+        /* 데스크톱 기준값 (1155 x 770 시안) */
+        --ratio: 1155 / 770;
+        --title-t: 26%;
+
+        --cloud1-l: 3.5%;
+        --cloud1-t: 18.7%;
+        --cloud1-w: 29%;
+        --cloud2-l: 71.9%;
+        --cloud2-t: 63.4%;
+        --cloud2-w: 13%;
+        --cloud3-l: 0%;
+        --cloud3-t: 53.2%;
+        --cloud3-w: 14.5%;
+        --cloud4-l: 75.7%;
+        --cloud4-t: 27.3%;
+        --cloud4-w: 24.3%;
+        --star1-l: 56.6%;
+        --star1-t: 37.7%;
+        --star1-w: 2.4%;
+        --star2-l: 37.8%;
+        --star2-t: 71.3%;
+        --star2-w: 3%;
+        --walking-l: 0%;
+        --walking-t: 17.4%;
+        --walking-w: 100%;
+
+        position: relative;
+        max-width: var(--container);
+        margin: 0 auto;
+        aspect-ratio: var(--ratio);
+        container-type: inline-size;
+      }
+
+      .mirae__title {
+        position: absolute;
+        top: var(--title-t);
+        left: 0;
+        right: 0;
+        z-index: 4;
+        transform: translateY(-50%);
+        text-align: center;
+        font-size: 4.5cqw;
+        font-weight: 800;
+        line-height: 1.3;
+        letter-spacing: -0.04em;
+        white-space: nowrap;
+        color: var(--black);
+      }
+      .mirae__point {
+        color: var(--red);
+      }
+
+      .mirae__deco {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      .mirae__img {
+        position: absolute;
+        display: block;
+        height: auto;
+        object-fit: contain;
+        pointer-events: none;
+        user-select: none;
+      }
+
+      .mirae__img--cloudl {
+        left: var(--cloud1-l);
+        top: var(--cloud1-t);
+        width: var(--cloud1-w);
+        z-index: 1;
+      }
+      .mirae__img--cloud2 {
+        left: var(--cloud2-l);
+        top: var(--cloud2-t);
+        width: var(--cloud2-w);
+        z-index: 1;
+      }
+      .mirae__img--cloud3 {
+        left: var(--cloud3-l);
+        top: var(--cloud3-t);
+        width: var(--cloud3-w);
+        z-index: 1;
+      }
+      .mirae__img--cloud4 {
+        left: var(--cloud4-l);
+        top: var(--cloud4-t);
+        width: var(--cloud4-w);
+        z-index: 1;
+      }
+      .mirae__img--star1 {
+        left: var(--star1-l);
+        top: var(--star1-t);
+        width: var(--star1-w);
+        z-index: 3;
+      }
+      .mirae__img--star2 {
+        left: var(--star2-l);
+        top: var(--star2-t);
+        width: var(--star2-w);
+        z-index: 3;
+      }
+
+      .mirae__figure {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        margin: 0;
+        pointer-events: none;
+      }
+      .mirae__img--walking {
+        left: var(--walking-l);
+        top: var(--walking-t);
+        width: var(--walking-w);
+      }
+
+      /* 태블릿 (785 x 537 시안) */
+      @media (max-width: 1024px) {
+        .mirae__stage {
+          --ratio: 785 / 537;
+          --title-t: 24.2%;
+
+          --cloud1-l: 14.6%;
+          --cloud1-t: 39%;
+          --cloud1-w: 22.3%;
+          --cloud2-l: 66.2%;
+          --cloud2-t: 73.2%;
+          --cloud2-w: 9.6%;
+          --cloud3-l: 0%;
+          --cloud3-t: 65.6%;
+          --cloud3-w: 10.8%;
+          --cloud4-l: 82.2%;
+          --cloud4-t: 46.9%;
+          --cloud4-w: 17.8%;
+          --star1-l: 54.9%;
+          --star1-t: 54.4%;
+          --star1-w: 1.8%;
+          --star2-l: 40.8%;
+          --star2-t: 78.8%;
+          --star2-w: 2.2%;
+          --walking-l: 9%;
+          --walking-t: 37.6%;
+          --walking-w: 82%;
+        }
+        .mirae__title {
+          font-size: 3.7cqw;
+        }
+      }
+
+      /* 모바일 (314 x 340 시안) */
+      @media (max-width: 390px) {
+        .mirae__stage {
+          --ratio: 314 / 340;
+          --title-t: 19.1%;
+
+          --cloud1-l: 8%;
+          --cloud1-t: 27%;
+          --cloud1-w: 33.4%;
+          --cloud2-l: 77.4%;
+          --cloud2-t: 64%;
+          --cloud2-w: 19%;
+          --cloud3-l: 0%;
+          --cloud3-t: 52.4%;
+          --cloud3-w: 23.9%;
+          --cloud4-l: 63.7%;
+          --cloud4-t: 30.9%;
+          --cloud4-w: 36.3%;
+          --star1-l: 57.6%;
+          --star1-t: 55.6%;
+          --star1-w: 3.2%;
+          --star2-l: 36.9%;
+          --star2-t: 77%;
+          --star2-w: 3.8%;
+          --walking-l: 10%;
+          --walking-t: 49%;
+          --walking-w: 80%;
+        }
+        .mirae__title {
+          font-size: 6.8cqw;
+        }
+      }
+
+      /* ============ Section 3: 한미의 도전 (history) ============ */
+      /* 시안 3종(모바일 389px / 태블릿 768px / 데스크톱 1440px) 반응형 미디어쿼리 완전 정비:
+         - 데코레이션 이미지(.history__deco): 모바일 및 태블릿에서는 display: none !important 처리하여 텍스트 가림 및 겹침 원천 차단.
+         - 모바일(~768px): 단일 열 세로 플로우(flex column), 모바일 389px 시안과 1:1 일치.
+         - 태블릿(769px~1024px): 단일 열 세로 플로우, 태블릿 768px 시안과 1:1 일치 (홀수 우측 48%, 짝수 좌측 55%).
+         - 데스크톱(1025px~): 중앙 타임라인 오렌지 바 노출, 좌우 2열 교차 그리드, 데코레이션 오브제 8종 노출. */
+
+      .history {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        background: var(--white);
+      }
+      .history__inner {
+        --fold-h: 750px;
+        position: relative;
+        isolation: isolate;
+        max-width: var(--container);
+        margin: 0 auto;
+      }
+      /* ol, ul 여백 초기화: 이전 코드의 padding: 0 50px로 인한 콘텐츠 찌그러짐 원천 제거 */
+      .history ol,
+      .history ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .history h2,
+      .history h3,
+      .history p,
+      .history figure {
+        margin: 0;
+      }
+      .history img {
+        display: block;
+        max-width: 100%;
+        height: auto;
+      }
+
+      /* 장식용 오브제 이미지: 기본적으로 숨김 (데스크톱에서만 노출).
+         .history img 선택자의 Specificity(0,1,1)를 이기도록 img.history__deco 로 지정하여 모바일/태블릿 노출을 완전 차단! */
+      .history img.history__deco,
+      .history__deco {
+        display: none !important;
+        position: absolute;
+        z-index: -1;
+        height: auto;
+        pointer-events: none;
+        user-select: none;
+      }
+
+      /* 타임라인 중앙 세로선: 기본적으로 숨김 (데스크톱에서만 노출) */
+      .history__timeline::before {
+        display: none;
+      }
+
+      /* ---- 펼치기/접기 컨테이너 ---- */
+      .history__fold {
+        position: relative;
+        overflow: hidden;
+        max-height: var(--fold-h);
+        transition: max-height 0.8s ease;
+      }
+      .history__fold::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 5;
+        height: clamp(160px, 14%, 360px);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0) 0%,
+          var(--white) 100%
+        );
+        pointer-events: none;
+        transition: opacity 0.4s ease;
+      }
+      .history__fold.is-expanded {
+        max-height: 8000px;
+      }
+      .history__fold.is-expanded::after {
+        opacity: 0;
+      }
+
+      /* 펼치기/접기 토글 버튼 */
+      .history__toggle {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        margin: 32px auto 56px;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.4;
+        letter-spacing: -0.3px;
+        color: var(--black);
+        transition: color var(--transition);
+      }
+      .history__toggle svg {
+        width: 20px;
+        height: 20px;
+        transform: rotate(180deg);
+        transition: transform 0.3s ease;
+      }
+      .history__toggle[aria-expanded="true"] svg {
+        transform: none;
+      }
+      .history__toggle:hover,
+      .history__toggle:focus-visible {
+        color: var(--red);
+      }
+      .history__toggle:focus-visible {
+        outline: 2px solid var(--red);
+        outline-offset: 2px;
+        border-radius: 8px;
+      }
+
+      /* ================================================================
+         [1. 모바일 미디어쿼리] ~768px 구간 (389px 시안 기준 실측 1:1 완벽 반영)
+         - 데코레이션 이미지 완전 숨김으로 텍스트 가림 및 겹침 원천 차단
+         - 단일 열(flex-direction: column)로 배치하여 텍스트와 이미지 절대 겹침 불가
+         - 홀수: 우측 정렬, 연도 우측 끝
+         - 짝수: 좌측 정렬, 연도 좌측 끝
+         - 이미지: 각 블록 하단 중앙 정렬 (폭 약 92%, max-width 348px)
+         ================================================================ */
+      @media (max-width: 768px) {
+        .history__inner {
+          --fold-h: 750px;
+          padding: 0 16px;
+        }
+
+        .history__head {
+          padding-top: 48px;
+          text-align: center;
+        }
+        .history__title {
+          font-size: 20px;
+          font-weight: 800;
+          line-height: 1.35;
+          letter-spacing: -0.04em;
+        }
+        .history__title span {
+          display: block;
+        }
+        .history__count {
+          display: flex;
+          justify-content: center;
+          align-items: baseline;
+          margin-top: 8px;
+          color: var(--red-light);
+          font-size: 110px;
+          font-weight: 800;
+          line-height: 1;
+          letter-spacing: -0.06em;
+        }
+        .history__count-suffix {
+          margin-left: 0.04em;
+          font-size: 0.42em;
+          letter-spacing: -0.02em;
+        }
+
+        .history__timeline {
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          gap: 64px;
+          padding: 36px 0 0;
+        }
+
+        .era {
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+        }
+
+        .era__period {
+          margin-bottom: 12px;
+          color: var(--red-light);
+          font-size: 24px;
+          font-weight: 800;
+          line-height: 1.2;
+          letter-spacing: -0.03em;
+        }
+        .era__lead {
+          margin-bottom: 16px;
+          font-size: 16px;
+          font-weight: 700;
+          line-height: 1.4;
+          letter-spacing: -0.04em;
+          color: var(--black);
+        }
+        .era__list {
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+          width: 100%;
+        }
+        .era__item {
+          display: flex;
+          align-items: flex-start;
+          gap: 12px;
+        }
+        .era__year {
+          flex: none;
+          min-width: 3.2em;
+          font-size: 16px;
+          font-weight: 700;
+          line-height: 1.4;
+          letter-spacing: -0.02em;
+          font-variant-numeric: tabular-nums;
+        }
+        .era__text {
+          min-width: 0;
+          font-size: 13.5px;
+          font-weight: 500;
+          line-height: 1.5;
+          letter-spacing: -0.03em;
+          word-break: keep-all;
+        }
+        .era__text p + p {
+          margin-top: 4px;
+        }
+
+        .era__dots {
+          width: 5px;
+          height: 5px;
+          margin-top: 18px;
+          margin-bottom: 16px;
+          border-radius: 50%;
+          background: var(--red-light);
+          box-shadow:
+            0 9px 0 -0.4px rgba(255, 93, 50, 0.45),
+            0 17px 0 -0.8px rgba(255, 93, 50, 0.2);
+        }
+
+        /* 모바일 이미지: 각 블록 하단 중앙 정렬 */
+        .era__figure {
+          width: 92%;
+          max-width: 348px;
+          margin: 16px auto 0;
+          align-self: center !important;
+          text-align: center;
+        }
+        .era__figure img {
+          width: 100%;
+          height: auto;
+          margin: 0 auto;
+          display: block;
+          object-fit: contain;
+        }
+        .era--2 .era__figure img {
+          border-radius: 16px;
+          overflow: hidden;
+        }
+
+        /* 홀수 블록 (Era 1, 3, 5): 우측 정렬 */
+        .era--odd {
+          text-align: right;
+        }
+        .era--odd .era__period {
+          text-align: right;
+        }
+        .era--odd .era__lead {
+          text-align: right;
+        }
+        .era--odd .era__item {
+          flex-direction: row-reverse;
+          justify-content: flex-start;
+        }
+        .era--odd .era__year {
+          text-align: right;
+        }
+        .era--odd .era__text {
+          text-align: right;
+        }
+        .era--odd .era__dots {
+          align-self: flex-end;
+          margin-right: 6px;
+        }
+
+        /* 짝수 블록 (Era 2, 4): 좌측 정렬 */
+        .era--even {
+          text-align: left;
+        }
+        .era--even .era__period {
+          text-align: left;
+        }
+        .era--even .era__item {
+          flex-direction: row;
+          justify-content: flex-start;
+        }
+        .era--even .era__year {
+          text-align: left;
+        }
+        .era--even .era__text {
+          text-align: left;
+        }
+        .era--even .era__dots {
+          align-self: flex-start;
+          margin-left: 6px;
+        }
+
+        /* 하단 100th 및 마무리 */
+        .history__end {
+          position: relative;
+          padding-top: 48px;
+          text-align: center;
+        }
+        .history__count--end {
+          font-size: 110px;
+          transform: none;
+        }
+        .history__closing {
+          margin-top: 24px;
+          padding-bottom: 24px;
+        }
+        .history__closing-sub {
+          font-size: 13.5px;
+          font-weight: 500;
+          line-height: 1.6;
+          letter-spacing: -0.04em;
+          color: #444;
+        }
+        .history__closing-sub .s {
+          display: block;
+        }
+        .history__closing-lead {
+          margin-top: 18px;
+          font-size: 18px;
+          font-weight: 700;
+          line-height: 1.45;
+          letter-spacing: -0.04em;
+        }
+        .history__closing-lead .s {
+          display: block;
+        }
+        .history__closing-lead .c {
+          display: block;
+        }
+      }
+
+      /* ================================================================
+         [2. 태블릿 미디어쿼리] 769px~1024px 구간 (768px 시안 기준 실측)
+         - 데코레이션 이미지 완전 숨김
+         - 1열 세로 배치 유지, 여백 및 폰트 확장
+         - 홀수: 우측(48%), 짝수: 좌측(55%) 정렬
+         ================================================================ */
+      @media (min-width: 769px) and (max-width: 1024px) {
+        .history__inner {
+          --fold-h: 800px;
+          padding: 0 32px;
+        }
+
+        .history__head {
+          padding-top: 56px;
+          text-align: center;
+        }
+        .history__title {
+          font-size: 26px;
+          font-weight: 800;
+          line-height: 1.35;
+        }
+        .history__title span {
+          display: block;
+        }
+        .history__count {
+          display: flex;
+          justify-content: center;
+          align-items: baseline;
+          margin-top: 12px;
+          font-size: 130px;
+          font-weight: 800;
+          line-height: 1;
+          color: var(--red-light);
+        }
+        .history__count-suffix {
+          margin-left: 0.04em;
+          font-size: 0.42em;
+        }
+
+        .history__timeline {
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          gap: 84px;
+          padding: 44px 0 0;
+        }
+
+        .era {
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+        }
+
+        .era__period {
+          margin-bottom: 14px;
+          font-size: 26px;
+          font-weight: 800;
+          line-height: 1.2;
+          color: var(--red-light);
+        }
+        .era__lead {
+          margin-bottom: 18px;
+          font-size: 18px;
+          font-weight: 700;
+          line-height: 1.4;
+        }
+        .era__list {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+          width: 100%;
+        }
+        .era__item {
+          display: flex;
+          align-items: flex-start;
+          gap: 16px;
+        }
+        .era__year {
+          flex: none;
+          min-width: 3.2em;
+          font-size: 18px;
+          font-weight: 700;
+          line-height: 1.4;
+          font-variant-numeric: tabular-nums;
+        }
+        .era__text {
+          font-size: 15px;
+          font-weight: 500;
+          line-height: 1.5;
+        }
+        .era__text p + p {
+          margin-top: 4px;
+        }
+
+        .era__dots {
+          width: 6px;
+          height: 6px;
+          margin: 22px 0 18px;
+          border-radius: 50%;
+          background: var(--red-light);
+          box-shadow:
+            0 11px 0 -0.5px rgba(255, 93, 50, 0.45),
+            0 21px 0 -1px rgba(255, 93, 50, 0.2);
+        }
+
+        /* 태블릿 시안: 홀수는 우측(48%), 짝수는 좌측(55%) 정렬 */
+        .era--odd {
+          text-align: right;
+        }
+        .era--odd .era__period {
+          text-align: right;
+        }
+        .era--odd .era__lead {
+          text-align: right;
+        }
+        .era--odd .era__item {
+          flex-direction: row-reverse;
+          justify-content: flex-start;
+        }
+        .era--odd .era__year {
+          text-align: right;
+        }
+        .era--odd .era__text {
+          text-align: right;
+        }
+        .era--odd .era__dots {
+          align-self: flex-end;
+          margin-right: 8px;
+        }
+        .era--odd .era__figure {
+          align-self: flex-end;
+          width: 48%;
+          max-width: 400px;
+          margin-top: 18px;
+        }
+
+        .era--even {
+          text-align: left;
+        }
+        .era--even .era__period {
+          text-align: left;
+        }
+        .era--even .era__item {
+          flex-direction: row;
+          justify-content: flex-start;
+        }
+        .era--even .era__year {
+          text-align: left;
+        }
+        .era--even .era__text {
+          text-align: left;
+        }
+        .era--even .era__dots {
+          align-self: flex-start;
+          margin-left: 8px;
+        }
+        .era--even .era__figure {
+          align-self: flex-start;
+          width: 55%;
+          max-width: 480px;
+          margin-top: 18px;
+        }
+        .era--2 .era__figure img {
+          border-radius: 18px;
+          overflow: hidden;
+        }
+
+        .history__end {
+          position: relative;
+          padding-top: 56px;
+          text-align: center;
+        }
+        .history__count--end {
+          font-size: 130px;
+          transform: none;
+        }
+        .history__closing {
+          margin-top: 28px;
+          padding-bottom: 28px;
+        }
+        .history__closing-sub {
+          font-size: 15px;
+          line-height: 1.6;
+        }
+        .history__closing-sub .s {
+          display: block;
+        }
+        .history__closing-lead {
+          margin-top: 20px;
+          font-size: 22px;
+          line-height: 1.45;
+        }
+        .history__closing-lead .s {
+          display: block;
+        }
+        .history__closing-lead .c {
+          display: block;
+        }
+      }
+
+      /* ================================================================
+         [3. 데스크톱 미디어쿼리] 1025px 이상 (1440px 시안 기준 실측)
+         - 중앙 오렌지 바(before) 및 2열 교차 그리드 배치
+         - 장식용 오브제 8종(별, 비커, 파란 고리, 현미경, 회색 고리, 분자, 캐릭터, 구름) 노출
+         ================================================================ */
+      @media (min-width: 1025px) {
+        .history__inner {
+          --fold-h: 95cqw;
+          padding: 0;
+          container-type: inline-size;
+        }
+
+        /* 데스크톱에서만 장식 오브제 이미지 노출 */
+        .history img.history__deco,
+        .history__deco {
+          display: block !important;
+        }
+
+        .history__head {
+          padding-top: 10.8cqw;
+          text-align: center;
+        }
+        .history__title {
+          font-size: 3.4cqw;
+          font-weight: 800;
+          line-height: 1.35;
+        }
+        .history__title span {
+          display: block;
+        }
+        .history__count {
+          display: flex;
+          justify-content: center;
+          align-items: baseline;
+          margin-top: 2cqw;
+          font-size: 18cqw;
+          font-weight: 800;
+          line-height: 1;
+          color: var(--red-light);
+        }
+        .history__count-suffix {
+          margin-left: 0.04em;
+          font-size: 0.42em;
+        }
+        .history__deco--star {
+          left: 78.6cqw;
+          top: 19.7cqw;
+          width: 11.5cqw;
+        }
+
+        .history__timeline {
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          gap: 14cqw;
+          padding: 6cqw 7.5cqw 0;
+        }
+        /* 데스크톱 타임라인 중앙 세로선: 53th 아래에서 시작해 100th 까지 이어짐 */
+        .history__timeline::before {
+          content: "";
+          display: block;
+          position: absolute;
+          left: 50%;
+          top: -5cqw;
+          bottom: -20cqw;
+          z-index: -1;
+          width: 1.75cqw;
+          transform: translateX(-50%);
+          background: var(--red-light);
+        }
+
+        /* 2열 그리드 레이아웃 */
+        .era {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          column-gap: 12.5cqw;
+          width: 100%;
+        }
+        .era--odd {
+          text-align: right;
+          grid-template-areas:
+            "lead period"
+            "list figure"
+            "dots figure";
+        }
+        .era--even {
+          text-align: left;
+          grid-template-areas:
+            "period list"
+            "figure list"
+            "figure dots";
+        }
+
+        /* 데스크톱 각 시대별 이미지 폭 */
+        .era--1 .era__figure {
+          width: 29cqw;
+        }
+        .era--2 .era__figure {
+          width: 29cqw;
+        }
+        .era--3 .era__figure {
+          width: 34cqw;
+        }
+        .era--4 .era__figure {
+          width: 32.4cqw;
+        }
+        .era--5 .era__figure {
+          width: 26cqw;
+        }
+
+        .era__period {
+          grid-area: period;
+          align-self: center;
+          margin-bottom: 0;
+          font-size: 2.8cqw;
+          font-weight: 800;
+          line-height: 1.2;
+          letter-spacing: -0.03em;
+          color: var(--red-light);
+        }
+        .era__lead {
+          grid-area: lead;
+          align-self: center;
+          margin-bottom: 0;
+          font-size: 1.95cqw;
+          font-weight: 700;
+          line-height: 1.35;
+          letter-spacing: -0.04em;
+        }
+        .era__list {
+          grid-area: list;
+          display: flex;
+          flex-direction: column;
+          gap: 2.8cqw;
+        }
+        .era__item {
+          display: flex;
+          align-items: flex-start;
+          gap: 2.1cqw;
+        }
+        .era__year {
+          flex: none;
+          min-width: 2.6em;
+          font-size: 1.7cqw;
+          font-weight: 700;
+          line-height: 1.3;
+          letter-spacing: -0.02em;
+          font-variant-numeric: tabular-nums;
+        }
+        .era__text {
+          min-width: 0;
+          font-size: 1.18cqw;
+          font-weight: 500;
+          line-height: 1.5;
+          letter-spacing: -0.03em;
+        }
+        .era__text p + p {
+          margin-top: 0.4cqw;
+        }
+
+        .era__dots {
+          grid-area: dots;
+          width: 0.65cqw;
+          height: 0.65cqw;
+          margin-top: 3.4cqw;
+          margin-bottom: 2.4cqw;
+          border-radius: 50%;
+          background: var(--red-light);
+          box-shadow:
+            0 1.15cqw 0 -0.05cqw rgba(255, 93, 50, 0.45),
+            0 2.2cqw 0 -0.15cqw rgba(255, 93, 50, 0.2);
+        }
+
+        .era__figure {
+          grid-area: figure;
+          max-width: none;
+          margin: 0.7cqw 0 0;
+        }
+        .era__figure img {
+          width: 100%;
+          height: auto;
+          object-fit: contain;
+        }
+        .era--2 .era__figure img {
+          border-radius: 1.4cqw;
+        }
+
+        /* 홀수 블록 상세 위치 */
+        .era--odd .era__period {
+          justify-self: start;
+          text-align: left;
+        }
+        .era--odd .era__lead {
+          text-align: right;
+        }
+        .era--odd .era__list {
+          margin-top: 1.4cqw;
+        }
+        .era--odd .era__item {
+          flex-direction: row-reverse;
+        }
+        .era--odd .era__year {
+          text-align: right;
+        }
+        .era--odd .era__text {
+          text-align: right;
+        }
+        .era--odd .era__dots {
+          justify-self: end;
+          margin-right: 1.55cqw;
+        }
+        .era--odd .era__figure {
+          justify-self: start;
+          align-self: auto;
+        }
+
+        /* 짝수 블록 상세 위치 */
+        .era--even .era__period {
+          justify-self: end;
+          text-align: right;
+        }
+        .era--even .era__list {
+          margin-top: 0.8cqw;
+        }
+        .era--even .era__item {
+          flex-direction: row;
+        }
+        .era--even .era__year {
+          text-align: left;
+        }
+        .era--even .era__text {
+          text-align: left;
+        }
+        .era--even .era__dots {
+          justify-self: start;
+          margin-left: 1.55cqw;
+        }
+        .era--even .era__figure {
+          justify-self: end;
+          align-self: auto;
+          margin-top: 0.8cqw;
+        }
+
+        /* 데스크톱 전용 블록별 장식 오브제 위치 */
+        .history__deco--beaker {
+          left: 0;
+          bottom: -0.5cqw;
+          width: 11.5cqw;
+        }
+        .history__deco--ring-blue {
+          right: -7.5cqw;
+          top: 3cqw;
+          width: 13cqw;
+        }
+        .history__deco--microscope {
+          right: -2.5cqw;
+          top: 17cqw;
+          width: 10.2cqw;
+        }
+        .history__deco--ring-gray {
+          left: -7.5cqw;
+          top: 31cqw;
+          width: 12cqw;
+        }
+        .history__deco--molecule {
+          right: -7.5cqw;
+          top: 19.7cqw;
+          width: 12.7cqw;
+        }
+
+        /* 데스크톱 100th & 마무리 */
+        .history__end {
+          position: relative;
+          padding-top: 14cqw;
+          text-align: center;
+        }
+        .history__count--end {
+          transform: translateX(8cqw);
+        }
+        .history__deco--char {
+          left: 7cqw;
+          top: 2cqw;
+          z-index: 0;
+          width: 12.5cqw;
+        }
+        .history__deco--cloud {
+          left: 0;
+          top: 15.5cqw;
+          width: 14.5cqw;
+        }
+        .history__closing {
+          margin-top: 6cqw;
+          padding-bottom: 6cqw;
+        }
+        .history__closing-sub {
+          font-size: 1.3cqw;
+        }
+        .history__closing-sub .s {
+          display: inline;
+        }
+        .history__closing-lead {
+          margin-top: 1.4cqw;
+          font-size: 2.4cqw;
+        }
+        .history__closing-lead .c {
+          display: inline;
+        }
+        .history__toggle {
+          margin: 3cqw auto 8cqw;
+          padding: 8px 16px;
+          font-size: 16px;
+        }
+        .history__toggle svg {
+          width: 24px;
+          height: 24px;
+        }
+      }
+
+
+      /* ============ Section 4: 현직자 이야기 (jobs) / Section 5: 성장 뉴스 (innovation) ============ */
+      /* 4번째 섹션(.jobs)과 5번째 섹션(.innovation)의 공통 레이아웃 및 리셋 규칙:
+         두 섹션 모두 내부 요소는 cont__* 공통 클래스를 유지하므로, 섹션 단위 공통 규칙은 .jobs 와 .innovation 을 함께 지정.
+         기본(=태블릿 391~1024px, 462px 시안)을 먼저 쓰고, 데스크톱(1025px~, 531px 시안)과 모바일(~390px, 221px 시안)에서 덮어씀.
+         모든 치수는 .cont__inner(컨테이너)의 폭 기준 cqw 로 지정해 폭에 비례해 축소/확대됨.
+         ※ 컨테이너 요소 자신의 padding 에는 cqw 를 쓸 수 없어, 자식 .cont__body 에 여백을 둠. */
+      .jobs,
+      .innovation {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        background: linear-gradient(180deg, #fff8f5 0%, #ffeee8 100%);
+      }
+      .cont__inner {
+        position: relative;
+        max-width: 1440px;
+        margin: 0 auto;
+        container-type: inline-size;
+      }
+      .cont__body {
+        position: relative;
+        padding-bottom: 13cqw;
+      }
+      .jobs h2,
+      .jobs p,
+      .jobs figure,
+      .jobs ul,
+      .innovation h2,
+      .innovation p,
+      .innovation figure,
+      .innovation ul {
+        margin: 0;
+        padding: 0;
+      }
+      .jobs ul,
+      .innovation ul {
+        list-style: none;
+      }
+      .jobs img,
+      .innovation img {
+        display: block;
+        max-width: 100%;
+        height: auto;
+      }
+
+      /* ---- 배경 번짐(글로우) ---- */
+      /* 기존 글로우: 5번째 섹션(성장 뉴스) 우측 상단 */
+      .cont__glow {
+        position: absolute;
+        z-index: 0;
+        left: 82cqw;
+        top: 0;
+        width: 36cqw;
+        aspect-ratio: 1 / 1;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 150, 110, 0.35) 0%,
+          rgba(255, 150, 110, 0) 70%
+        );
+        pointer-events: none;
+      }
+      /* 추가 글로우: .cont__glow 스타일을 그대로 쓰고 좌측 하단 배치 + 크기/투명도만 덮어씀
+         (클래스 2개 결합으로 우선순위를 높여 반응형 미디어쿼리의 .cont__glow 위치값에 덮이지 않게 함) */
+      .cont__glow.cont__glow--bl {
+        top: auto;
+        bottom: 0;
+        left: 0;
+        width: 20vw;
+        opacity: 0.2;
+      }
+
+      /* ---- 공통 타이틀 / 리드 ---- */
+      .cont__title {
+        font-size: 3.9cqw;
+        font-weight: 800;
+        line-height: 1.35;
+        letter-spacing: -0.04em;
+      }
+      .cont__lead {
+        margin-top: 1.6cqw;
+        font-size: 1.7cqw;
+        font-weight: 500;
+        line-height: 1.5;
+        letter-spacing: -0.03em;
+        color: #333;
+      }
+
+      /* ---- 인트로(현직자) ---- */
+      .cont__intro {
+        position: relative;
+        z-index: 1;
+        padding: 14cqw 4cqw 0;
+        text-align: center;
+      }
+      .cont__headline {
+        position: relative;
+        display: inline-block;
+      }
+      .cont__badge {
+        position: absolute;
+        left: -7cqw;
+        top: -3cqw;
+        width: 6.5cqw;
+        transform: rotate(-10deg);
+      }
+      .cont__char {
+        position: absolute;
+        top: 6cqw;
+        right: 3.7cqw;
+        width: 14cqw;
+      }
+
+      /* ---- 현직자 카드 ---- */
+      .cont__cards {
+        position: relative;
+        z-index: 1;
+        padding: 3.9cqw 3.9cqw 0;
+      }
+      .cont__list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 4.3cqw;
+      }
+      .cont__item {
+        display: flex;
+      }
+      .cont__card {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 2.6cqw;
+        border-radius: 2.6cqw;
+        background: #fef7f5c9;
+        backdrop-filter: blur(4px);
+        box-shadow: 0 0.8cqw 3cqw rgba(255, 120, 80, 0.12);
+        transition: transform var(--transition);
+        z-index: 2;
+      }
+      .cont__card:hover,
+      .cont__card:focus-visible {
+        transform: translateY(-0.8cqw);
+      }
+      .cont__photo {
+        aspect-ratio: 176 / 119;
+        border-radius: 1.6cqw;
+        overflow: hidden;
+      }
+      .cont__photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .cont__desc {
+        margin-top: 2.4cqw;
+        font-size: 1.6cqw;
+        font-weight: 700;
+        line-height: 1.55;
+        letter-spacing: -0.03em;
+      }
+      .cont__meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1cqw;
+        margin-top: auto;
+        padding-top: 2.4cqw;
+      }
+      .cont__who {
+        display: flex;
+        align-items: center;
+        min-width: 0;
+        font-size: 1.45cqw;
+        font-weight: 500;
+        letter-spacing: -0.03em;
+        color: #555;
+      }
+      .cont__who span + span {
+        margin-left: 1.2cqw;
+        padding-left: 1.2cqw;
+        border-left: 1px solid #c9c9c9;
+      }
+      .cont__arrow {
+        display: flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        width: 3.4cqw;
+        aspect-ratio: 1 / 1;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          var(--red) 0%,
+          var(--red-light) 100%
+        );
+        color: var(--white);
+      }
+      .cont__arrow svg {
+        width: 55%;
+        height: 55%;
+      }
+      .cont__bottle {
+        position: absolute;
+        z-index: 1;
+        left: 3cqw;
+        bottom: -14cqw;
+        width: 17cqw;
+        pointer-events: none;
+      }
+
+      /* ---- CTA 버튼 ---- */
+      .cont__cta-wrap {
+        position: relative;
+        z-index: 1;
+        padding-top: 3.9cqw;
+        text-align: center;
+      }
+      .cont__cta {
+        position: relative;
+        isolation: isolate;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 29cqw;
+        height: 6cqw;
+        border: 2px solid transparent;
+        border-radius: 500px;
+        background: linear-gradient(
+          90deg,
+          var(--red) 0%,
+          var(--red-light) 100%
+        );
+        background-clip: padding-box;
+        color: var(--white);
+        font-size: 1.8cqw;
+        font-weight: 600;
+        letter-spacing: -0.03em;
+        white-space: nowrap;
+        transition:
+          color var(--transition),
+          border-color var(--transition);
+      }
+      .cont__cta::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        border-radius: inherit;
+        background: var(--white);
+        opacity: 0;
+        transition: opacity var(--transition);
+      }
+      .cont__cta:hover,
+      .cont__cta:focus-visible {
+        color: var(--red);
+        border-color: var(--red);
+      }
+      .cont__cta:hover::before,
+      .cont__cta:focus-visible::before {
+        opacity: 1;
+      }
+
+      /* ---- 성장 뉴스 (5번째 섹션 .innovation) ---- */
+      /* 5번째 섹션 배경: 시안 실측 단색(#fdf6f2) + 글로우 2개(우상단/좌하단). 4번째 섹션(.jobs)은 기존 그라데이션 유지 */
+      .innovation {
+        background: #fdf6f2;
+      }
+      /* 모바일 전용 줄바꿈 제어용 클래스 */
+      .mo-only {
+        display: none;
+      }
+      /* [태블릿 기본: 391px~1024px 구간 / 462px 시안 기준]
+         섹션 분리로 성장 뉴스가 섹션 맨 위에 오므로, 상단 여백을 시안의 제목 시작 위치에 맞춤 */
+      .cont__growth {
+        position: relative;
+        z-index: 1;
+        margin-top: 9.6cqw;
+        padding: 0 4cqw;
+        text-align: center;
+      }
+      .cont__growth .cont__title {
+        font-size: 4.3cqw;
+        line-height: 1.35;
+      }
+      .cont__growth .cont__lead {
+        margin-top: 1.6cqw;
+        font-size: 1.8cqw;
+      }
+      /* 뉴스 박스: 섹션 배경과 거의 같은 살구빛 면(#fdf5f2) 위에
+         우하단 외곽 그림자 / 좌상단 내부 음영 / 우하단 내부 하이라이트를 겹쳐 살짝 떠 있는 판 형태로 표현 (시안 픽셀 실측) */
+      .cont__news {
+        position: relative;
+        z-index: 1;
+        margin: 7.5cqw 3.9cqw 0;
+        padding: 5.2cqw 6cqw 5.4cqw;
+        border-radius: 1.6cqw;
+        background: #fdf5f2;
+        box-shadow:
+          0.4cqw 0.4cqw 0.6cqw rgba(200, 140, 115, 0.22),
+          inset 0.4cqw 0.4cqw 0.6cqw rgba(230, 150, 120, 0.08),
+          inset -0.3cqw -0.3cqw 0.5cqw rgba(255, 255, 255, 0.6);
+      }
+      /* 원자 오브제(inno_mol.png): 뉴스 박스 우측 상단에 걸쳐 배치, 화학식보다 앞 레이어 */
+      .cont__dna2 {
+        position: absolute;
+        z-index: 1;
+        top: -6.3cqw;
+        right: 5cqw;
+        width: 12.1cqw;
+        pointer-events: none;
+      }
+      /* 화학식(inno_formula.png): .cont__dna2 와 겹치도록 배치, z-index 를 낮춰 원자 뒤쪽 레이어에 깔림 */
+      .cont__formula {
+        position: absolute;
+        z-index: 0;
+        top: -3.8cqw;
+        right: -1.1cqw;
+        width: 24.3cqw;
+        pointer-events: none;
+      }
+      .cont__bubbles {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 3.5cqw;
+      }
+      .cont__bubble {
+        display: flex;
+      }
+      .cont__bubble a {
+        position: relative;
+        display: block;
+        max-width: 65cqw;
+        padding: 1.8cqw 2.4cqw;
+        font-size: 1.75cqw;
+        font-weight: 500;
+        line-height: 1.5;
+        letter-spacing: -0.03em;
+        white-space: nowrap;
+        transition: transform var(--transition);
+        /* 말풍선 꼬리 크기 (태블릿 기준) */
+        --tail-w: 0.9cqw;
+        --tail-h: 1.1cqw;
+      }
+      /* 말풍선 꼬리: 가상 요소 + SVG 마스크로 사각 박스 아래 모서리에서 오목한 곡선을 그리며 뾰족하게 빠지는 형태 구현 */
+      .cont__bubble a::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        width: var(--tail-w);
+        height: var(--tail-h);
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
+        pointer-events: none;
+      }
+      .cont__bubble a:hover,
+      .cont__bubble a:focus-visible {
+        transform: translateY(-0.4cqw);
+      }
+      /* 주황 말풍선: 좌측 하단 모서리를 각지게 하고 왼쪽으로 꼬리 */
+      .cont__bubble--point a {
+        border-radius: 1cqw 1cqw 1cqw 0;
+        background: var(--red-light);
+        color: var(--white);
+      }
+      .cont__bubble--point a::before {
+        left: calc(1px - var(--tail-w));
+        background: var(--red-light);
+        -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 12' preserveAspectRatio='none'%3E%3Cpath d='M10 0C10 7 7 10.5 0 12H10Z'/%3E%3C/svg%3E");
+        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 12' preserveAspectRatio='none'%3E%3Cpath d='M10 0C10 7 7 10.5 0 12H10Z'/%3E%3C/svg%3E");
+      }
+      /* 흰 말풍선: 오른쪽 정렬 유지 */
+      .cont__bubble--white {
+        justify-content: flex-end;
+      }
+      /* 흰 말풍선: 우측 하단 모서리를 각지게 하고 오른쪽으로 꼬리.
+         그림자는 꼬리까지 함께 드리우도록 box-shadow 대신 drop-shadow 사용 */
+      .cont__bubble--white a {
+        border-radius: 1cqw 1cqw 0 1cqw;
+        background: var(--white);
+        color: var(--red-light);
+        filter: drop-shadow(0 0.4cqw 1cqw rgba(255, 93, 50, 0.16));
+      }
+      .cont__bubble--white a::before {
+        right: calc(1px - var(--tail-w));
+        background: var(--white);
+        -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 12' preserveAspectRatio='none'%3E%3Cpath d='M0 0C0 7 3 10.5 10 12H0Z'/%3E%3C/svg%3E");
+        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 12' preserveAspectRatio='none'%3E%3Cpath d='M0 0C0 7 3 10.5 10 12H0Z'/%3E%3C/svg%3E");
+      }
+      .cont__notice {
+        position: relative;
+        z-index: 1;
+        margin-top: 2.6cqw;
+        text-align: right;
+        font-size: 1.5cqw;
+        font-weight: 500;
+        letter-spacing: -0.03em;
+        color: #777;
+      }
+      .cont__notice::before {
+        content: "";
+        display: inline-block;
+        width: 0.7cqw;
+        height: 0.7cqw;
+        margin-right: 0.8cqw;
+        vertical-align: middle;
+        border-radius: 50%;
+        background: var(--red-light);
+      }
+      /* 분자 오브제(inno_dna2.png): 섹션 좌측 하단, 뉴스 박스 바로 아래 */
+      .cont__molecule {
+        position: absolute;
+        z-index: 2;
+        left: 4.1cqw;
+        bottom: -0.6cqw;
+        width: 12.1cqw;
+        pointer-events: none;
+      }
+
+      /* ---- 데스크톱 (1025px 이상, 531px 시안 기준 실측) ---- */
+      @media (min-width: 1025px) {
+        /* 데스크톱 Section 4: jobs / Section 5: innovation 개별 및 공통 섹션 스타일 */
+        .jobs,
+        .innovation {
+          position: relative;
+        }
+        .innovation {
+          background: #fdf6f2;
+        }
+
+        .cont__glow {
+          left: 82cqw;
+          top: -11cqw;
+          width: 26cqw;
+        }
+        .cont__lead {
+          margin-top: 1.4cqw;
+          font-size: 1.5cqw;
+        }
+        .cont__badge {
+          left: -6cqw;
+          top: -3cqw;
+          width: 6.6cqw;
+        }
+        .cont__char {
+          top: 9.8cqw;
+          right: 5.8cqw;
+          width: 15cqw;
+        }
+
+        .cont__cards {
+          padding: 5.8cqw 4cqw 0;
+        }
+        .cont__list {
+          gap: 4cqw;
+        }
+        .cont__card {
+          padding: 2.8cqw;
+          border-radius: 2.2cqw;
+          background: #fef7f5c9;
+          z-index: 2;
+          backdrop-filter: blur(4px);
+        }
+        .cont__photo {
+          aspect-ratio: 203 / 130;
+          border-radius: 1.5cqw;
+        }
+        .cont__desc {
+          margin-top: 2.8cqw;
+          font-size: 1.5cqw;
+        }
+        .cont__meta {
+          padding-top: 2.6cqw;
+        }
+        .cont__who {
+          font-size: 1.3cqw;
+        }
+        .cont__arrow {
+          width: 3.3cqw;
+        }
+        .cont__bottle {
+          left: -3cqw;
+          bottom: -7cqw;
+          width: 18cqw;
+        }
+
+        .cont__cta-wrap {
+          padding-top: 5.8cqw;
+        }
+        .cont__cta {
+          width: 22.8cqw;
+          height: 5.3cqw;
+          font-size: 1.4cqw;
+        }
+
+        /* 데스크톱 성장 뉴스 스타일 */
+        .cont__growth {
+          margin-top: 6.9cqw;
+        }
+        .cont__growth .cont__title {
+          font-size: 3.9cqw;
+        }
+        .cont__growth .cont__lead {
+          margin-top: 1.4cqw;
+          font-size: 1.5cqw;
+        }
+        .cont__news {
+          margin: 6cqw 4cqw 0;
+          padding: 3.8cqw 9.4cqw 4.3cqw 4.5cqw;
+          border-radius: 1.4cqw;
+        }
+        .cont__dna2 {
+          top: -5.8cqw;
+          right: 5.3cqw;
+          width: 11.8cqw;
+        }
+        .cont__formula {
+          top: -3.4cqw;
+          right: -0.9cqw;
+          width: 23.9cqw;
+        }
+        .cont__bubbles {
+          gap: 3cqw;
+        }
+        .cont__bubble a {
+          max-width: 58cqw;
+          padding: 1.4cqw 2cqw;
+          font-size: 1.42cqw;
+          line-height: 1.5;
+          white-space: nowrap;
+          border-radius: 0.95cqw 0.95cqw 0.95cqw 0;
+          --tail-w: 0.6cqw;
+          --tail-h: 0.75cqw;
+        }
+        .cont__bubble--white a {
+          border-radius: 0.95cqw 0.95cqw 0 0.95cqw;
+        }
+        .cont__notice {
+          margin-top: 2.8cqw;
+          margin-right: -4.8cqw;
+          font-size: 1.2cqw;
+          color: #b3b3b3;
+        }
+        .cont__notice::before {
+          display: none;
+        }
+        .cont__molecule {
+          left: 4.4cqw;
+          bottom: -0.5cqw;
+          width: 12cqw;
+        }
+      }
+
+      /* ---- 모바일 (390px 이하, 221px 시안 기준 실측) ---- */
+      @media (max-width: 390px) {
+        /* 모바일 Section 4: jobs / Section 5: innovation 개별 및 공통 섹션 스타일 */
+        .jobs,
+        .innovation {
+          position: relative;
+        }
+        .innovation {
+          background: #fdf6f2;
+        }
+
+        .mo-only {
+          display: inline;
+        }
+        .cont__body {
+          padding-bottom: 16cqw;
+        }
+        .cont__glow {
+          left: 65cqw;
+          top: -15cqw;
+          width: 45cqw;
+        }
+        .cont__glow.cont__glow--bl {
+          width: 35vw;
+          opacity: 0.2;
+        }
+        .cont__title {
+          font-size: 5.1cqw;
+        }
+        .cont__lead {
+          margin-top: 3cqw;
+          font-size: 3cqw;
+        }
+
+        .cont__intro {
+          padding: 25cqw 5.4cqw 0;
+          text-align: left;
+        }
+        .cont__headline {
+          display: flex;
+          align-items: center;
+        }
+        .cont__badge {
+          position: static;
+          flex: none;
+          width: 14.5cqw;
+          margin-right: -2cqw;
+          transform: rotate(-10deg);
+        }
+        .cont__char {
+          top: 2cqw;
+          right: 3cqw;
+          width: 27cqw;
+        }
+
+        .cont__cards {
+          padding: 8cqw 7cqw 0;
+        }
+        .cont__list {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 6cqw;
+        }
+        .cont__card {
+          padding: 3.6cqw;
+          border-radius: 4cqw;
+        }
+        .cont__photo {
+          aspect-ratio: 174 / 92;
+          border-radius: 2.4cqw;
+        }
+        .cont__desc {
+          margin-top: 3.6cqw;
+          font-size: 2.9cqw;
+        }
+        .cont__meta {
+          padding-top: 3.6cqw;
+        }
+        .cont__who {
+          font-size: 2.6cqw;
+        }
+        .cont__who span + span {
+          margin-left: 2cqw;
+          padding-left: 2cqw;
+        }
+        .cont__arrow {
+          width: 6cqw;
+        }
+        .cont__bottle {
+          display: none;
+        }
+
+        .cont__cta-wrap {
+          padding-top: 6cqw;
+        }
+        .cont__cta {
+          width: 50cqw;
+          height: 11.5cqw;
+          font-size: 3.4cqw;
+        }
+
+        /* 모바일 성장 뉴스 스타일 */
+        .cont__growth {
+          margin-top: 12cqw;
+          padding: 0 4cqw;
+        }
+        .cont__growth .cont__title {
+          font-size: 6.3cqw;
+          line-height: 1.35;
+        }
+        .cont__growth .cont__lead {
+          margin-top: 2.8cqw;
+          font-size: 3.1cqw;
+          line-height: 1.45;
+        }
+        .cont__news {
+          margin: 7.5cqw 4cqw 0;
+          padding: 4.5cqw 4.2cqw 4.5cqw;
+          border-radius: 2.4cqw;
+          box-shadow:
+            0.9cqw 0.9cqw 1.3cqw rgba(200, 140, 115, 0.22),
+            inset 0.9cqw 0.9cqw 1.3cqw rgba(230, 150, 120, 0.08),
+            inset -0.7cqw -0.7cqw 1.1cqw rgba(255, 255, 255, 0.6);
+        }
+        .cont__dna2 {
+          top: -7.5cqw;
+          right: 4.8cqw;
+          width: 12.5cqw;
+        }
+        .cont__formula {
+          top: -4.8cqw;
+          right: -1cqw;
+          width: 25cqw;
+        }
+        .cont__bubbles {
+          gap: 2.7cqw;
+        }
+        /* 모바일에서도 흰색 말풍선은 반드시 우측 정렬 유지 */
+        .cont__bubble--white {
+          justify-content: flex-end;
+        }
+        .cont__bubble a {
+          max-width: 86cqw;
+          padding: 2.1cqw 2.8cqw;
+          font-size: 2.85cqw;
+          line-height: 1.45;
+          white-space: normal;
+          word-break: keep-all;
+          border-radius: 2.2cqw 2.2cqw 2.2cqw 0;
+          --tail-w: 1.8cqw;
+          --tail-h: 2.1cqw;
+        }
+        .cont__bubble--white a {
+          border-radius: 2.2cqw 2.2cqw 0 2.2cqw;
+        }
+        .cont__notice {
+          margin-top: 3.5cqw;
+          font-size: 2.4cqw;
+          color: #777;
+          text-align: right;
+        }
+        .cont__notice::before {
+          display: inline-block;
+          width: 1.1cqw;
+          height: 1.1cqw;
+          margin-right: 1.1cqw;
+        }
+        .cont__molecule {
+          left: 4.5cqw;
+          bottom: -0.5cqw;
+          width: 12.5cqw;
+        }
+      }
+      /* 회사 복지: 시안의 고정형 카드와 세로 스크롤을 뷰포트별로 조정 */
+      .welfare {
+        position: relative;
+        overflow: hidden;
+        padding: 72px 28px 132px;
+        background: var(--white);
+      }
+      .welfare__inner {
+        position: relative;
+        z-index: 1;
+        width: min(100%, 1440px);
+        margin: 0 auto;
+      }
+      .welfare__hero {
+        position: relative;
+        min-height: 176px;
+        padding: 34px 180px 0;
+        text-align: center;
+      }
+      .welfare__title {
+        font-size: 34px;
+        font-weight: 700;
+        line-height: 1.35;
+      }
+      .welfare__lead {
+        margin-top: 12px;
+        font-size: 16px;
+        line-height: 1.6;
+      }
+      .welfare__hero-char {
+        position: absolute;
+        top: 0;
+        right: 12px;
+        width: 150px;
+      }
+      .welfare__intro,
+      .welfare__group-head {
+        display: flex;
+        align-items: baseline;
+        gap: 14px;
+      }
+      .welfare__intro {
+        margin-bottom: 18px;
+      }
+      .welfare__group-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: none;
+        color: var(--red-light);
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 1.4;
+      }
+      .welfare__group-title img {
+        width: 24px;
+        height: 24px;
+        object-fit: contain;
+      }
+      .welfare__group-copy {
+        font-size: 14px;
+        line-height: 1.5;
+        color: #555;
+      }
+      .welfare__scroll {
+        max-height: 510px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding: 0 10px 12px 0;
+        scrollbar-width: thin;
+        scrollbar-color: #ff7556 #f0f0f0;
+      }
+      .welfare__scroll::-webkit-scrollbar {
+        width: 5px;
+      }
+      .welfare__scroll::-webkit-scrollbar-track {
+        border-radius: 999px;
+        background: #f0f0f0;
+      }
+      .welfare__scroll::-webkit-scrollbar-thumb {
+        border-radius: 999px;
+        background: #ff7556;
+      }
+      .welfare__list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .welfare__card {
+        display: flex;
+        min-width: 0;
+        min-height: 90px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 16px 20px;
+        border: 1px solid #ffddd3;
+        border-radius: 15px;
+        background: linear-gradient(110deg, #fffaf8 0%, #fff 100%);
+        box-shadow: 0 4px 9px rgba(117, 40, 4, 0.1);
+      }
+      .welfare__card-copy {
+        min-width: 0;
+      }
+      .welfare__card-title {
+        font-size: 17px;
+        font-weight: 700;
+        line-height: 1.4;
+      }
+      .welfare__card-description {
+        margin-top: 5px;
+        color: #666;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      .welfare__card-icon {
+        flex: none;
+        width: 52px;
+        height: 52px;
+        object-fit: contain;
+      }
+      .welfare__family {
+        margin-top: 24px;
+      }
+      .welfare__group-head {
+        margin-bottom: 14px;
+      }
+      .welfare__cloud-char {
+        position: absolute;
+        bottom: 0;
+        left: max(0px, calc((100% - 1440px) / 2));
+        width: 150px;
+        pointer-events: none;
+      }
+
+      @media (min-width: 769px) and (max-width: 1024px) {
+        .welfare {
+          padding: 56px 28px 110px;
+        }
+        .welfare__hero {
+          min-height: 164px;
+          padding: 34px 120px 0;
+        }
+        .welfare__title {
+          font-size: 30px;
+        }
+        .welfare__hero-char {
+          right: 0;
+          width: 118px;
+        }
+        .welfare__scroll {
+          max-height: 430px;
+        }
+        .welfare__list {
+          grid-template-columns: minmax(0, 1fr);
+        }
+        .welfare__card {
+          min-height: 88px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .welfare {
+          padding: 28px 14px 96px;
+        }
+        .welfare__hero {
+          min-height: 150px;
+          padding: 28px 52px 0;
+        }
+        .welfare__title {
+          font-size: 24px;
+          line-height: 1.4;
+        }
+        .welfare__lead {
+          margin-top: 10px;
+          font-size: 14px;
+          line-height: 1.5;
+        }
+        .welfare__hero-char {
+          top: 0;
+          right: -6px;
+          width: 72px;
+        }
+        .welfare__intro,
+        .welfare__group-head {
+          display: block;
+        }
+        .welfare__intro {
+          margin-bottom: 14px;
+        }
+        .welfare__group-title {
+          gap: 6px;
+          font-size: 17px;
+        }
+        .welfare__group-title img {
+          width: 20px;
+          height: 20px;
+        }
+        .welfare__group-copy {
+          margin-top: 6px;
+          font-size: 12px;
+        }
+        .welfare__scroll {
+          max-height: 448px;
+          padding-right: 8px;
+        }
+        .welfare__list {
+          grid-template-columns: minmax(0, 1fr);
+          gap: 10px;
+        }
+        .welfare__card {
+          min-height: 94px;
+          gap: 12px;
+          padding: 14px 15px;
+          border-radius: 13px;
+        }
+        .welfare__card-title {
+          font-size: 15px;
+        }
+        .welfare__card-description {
+          margin-top: 5px;
+          font-size: 12px;
+        }
+        .welfare__card-icon {
+          width: 46px;
+          height: 46px;
+        }
+        .welfare__family {
+          margin-top: 18px;
+        }
+        .welfare__group-head {
+          margin-bottom: 12px;
+        }
+        .welfare__cloud-char {
+          left: -12px;
+          width: 104px;
+        }
+      }
+
+      @media (max-width: 390px) {
+        .welfare {
+          padding-right: 12px;
+          padding-left: 12px;
+        }
+        .welfare__hero {
+          min-height: 142px;
+          padding-right: 38px;
+          padding-left: 38px;
+        }
+        .welfare__title {
+          font-size: 22px;
+        }
+        .welfare__hero-char {
+          width: 62px;
+        }
+        .welfare__scroll {
+          max-height: 430px;
+        }
+        .welfare__card {
+          min-height: 96px;
+          padding-right: 12px;
+          padding-left: 13px;
+        }
+        .welfare__card-icon {
+          width: 42px;
+          height: 42px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 1. 상단 메뉴 영역 -->
+    <header class="header">
+      <div class="header__inner">
+        <a class="header__logo" href="#" aria-label="한미그룹 홈">
+          <svg
+            width="182"
+            height="31"
+            viewBox="0 0 182 31"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            role="img"
+            aria-label="Hanmi 한미그룹"
+          >
+            <g clip-path="url(#hanmiClip)">
+              <mask
+                id="hanmiMask"
+                style="mask-type: luminance"
+                maskUnits="userSpaceOnUse"
+                x="0"
+                y="0"
+                width="182"
+                height="31"
+              >
+                <path d="M182 0H0V31H182V0Z" fill="white" />
+              </mask>
+              <g mask="url(#hanmiMask)">
+                <path
+                  d="M35.9672 0.443359C16.1174 0.443359 0 7.27985 0 15.7255C0 24.1496 16.1174 31.001 35.9672 31.001C55.8388 31.001 71.9397 24.1499 71.9397 15.7255C71.9397 7.27985 55.8388 0.443359 35.9672 0.443359Z"
+                  fill="#E60012"
+                />
+                <path
+                  d="M63.5058 8.09635C64.4762 8.16284 65.1778 8.88898 65.019 9.68948C64.861 10.49 63.8924 11.1044 62.922 11.0385C61.9524 10.9729 61.2988 10.2296 61.4533 9.44802C61.6086 8.66589 62.5362 8.03161 63.5058 8.09635Z"
+                  fill="white"
+                />
+                <path
+                  d="M64.0822 12.0312H61.4441C61.3769 12.0312 61.3097 12.0867 61.2975 12.1549L59.2607 21.7458C59.2459 21.8134 59.2895 21.8685 59.3558 21.8685H61.9957C62.0629 21.8685 62.1283 21.8134 62.1432 21.7458L64.1791 12.1549C64.1931 12.0867 64.1486 12.0312 64.0822 12.0312Z"
+                  fill="white"
+                />
+                <path
+                  d="M55.9404 11.7715C54.545 11.7715 53.3337 12.4113 52.6321 13.3124C52.3459 12.3334 51.4994 11.7715 50.2672 11.7715C48.9582 11.7715 47.8638 12.2439 47.0706 13.1345C47.1142 12.9351 47.2844 12.1538 47.2844 12.1538C47.2992 12.0864 47.2556 12.0313 47.1884 12.0313H44.6803C44.6122 12.0313 44.5468 12.0864 44.532 12.1538L42.5344 21.745C42.5187 21.8132 42.5632 21.8683 42.6295 21.8683H45.2476C45.3147 21.8683 45.3819 21.8132 45.395 21.745L46.4658 16.6305C46.7267 15.4538 47.4999 14.0803 48.822 14.0803C49.412 14.0803 49.8561 14.4713 49.8561 14.9892C49.8561 15.131 49.8343 15.3033 49.8055 15.5037L49.7846 15.662L48.5218 21.745C48.5079 21.8132 48.5506 21.8683 48.6187 21.8683H51.2585C51.3257 21.8683 51.3903 21.8132 51.4051 21.745L52.4724 16.6305C52.7325 15.4538 53.5074 14.0803 54.8278 14.0803C55.4186 14.0803 55.8645 14.4713 55.8645 14.9892C55.8645 15.131 55.8401 15.3033 55.8139 15.5037L55.7912 15.662L54.5293 21.745C54.5145 21.8132 54.5572 21.8683 54.6253 21.8683H57.2451C57.3131 21.8683 57.3786 21.8132 57.3917 21.745L58.6614 15.7303C58.7609 15.2692 58.8525 14.8239 58.8525 14.4381C58.8525 12.7128 57.7704 11.7715 55.9404 11.7715Z"
+                  fill="white"
+                />
+                <path
+                  d="M38.9896 11.7715C37.7059 11.7715 36.6325 12.2343 35.7886 13.1401C35.8322 12.9464 36.0076 12.1538 36.0076 12.1538C36.0216 12.0864 35.978 12.0313 35.9116 12.0313H33.4018C33.3346 12.0313 33.2674 12.0864 33.2544 12.1538L31.2568 21.745C31.242 21.8132 31.2856 21.8683 31.3519 21.8683H33.9726C34.0398 21.8683 34.1061 21.8132 34.12 21.745L35.1891 16.6672C35.3505 15.8883 35.9247 14.0803 37.7661 14.0803C38.308 14.0803 38.9128 14.4381 38.9128 14.9516C38.9128 15.194 38.8255 15.8134 38.7513 16.0933C38.7504 16.0959 38.4581 17.5062 38.1649 18.9148C37.8734 20.3233 37.5784 21.745 37.5784 21.745C37.5645 21.8132 37.6072 21.8683 37.6744 21.8683H40.2933C40.3614 21.8683 40.4277 21.8132 40.4408 21.745L41.6233 16.1458C41.8109 15.2954 41.9034 14.746 41.9034 14.4699C41.9034 12.7295 40.8676 11.7715 38.9896 11.7715Z"
+                  fill="white"
+                />
+                <path
+                  d="M30.2427 12.7137C29.8378 12.1949 28.8935 11.7715 26.9693 11.7715C25.2309 11.7715 23.161 12.425 22.6234 12.6052C22.5492 12.6286 22.4794 12.7029 22.4654 12.7697L22.0518 14.7615C22.0396 14.8283 22.0867 14.8603 22.1609 14.8358C22.6644 14.655 24.5049 14.0278 26.0905 13.919C26.6438 13.8805 28.1972 14.0108 28.1081 14.9513C28.0959 15.0712 28.0985 15.1009 28.0872 15.1456C28.0837 15.1563 28.061 15.2666 28.0279 15.4281C26.5722 15.3643 25.5224 15.4844 24.3522 15.7466C21.831 16.3117 20.5988 17.6328 20.4993 19.4866C20.4295 20.7788 21.4968 22.127 23.7265 22.127C24.984 22.127 26.1752 21.6038 26.8724 21.0106L26.7145 21.7447C26.6996 21.812 26.7433 21.868 26.8105 21.868H29.2243C29.2906 21.868 29.3569 21.812 29.3709 21.7447L30.5726 16.0537C30.7262 15.3196 30.8283 14.7694 30.8318 14.4124C30.839 13.6559 30.6563 13.2424 30.2427 12.7137ZM27.4789 17.8807C27.1753 18.8404 25.6551 19.8937 24.6 19.9742C23.8591 20.0302 23.2055 19.7689 23.2055 19.1478C23.2055 18.3723 24.1863 17.8215 25.402 17.5441C26.2843 17.3438 26.937 17.2712 27.6491 17.2563C27.6439 17.2808 27.6404 17.3001 27.6404 17.3001L27.4789 17.8807Z"
+                  fill="white"
+                />
+                <path
+                  d="M20.6762 8.99805H17.8618C17.7955 8.99805 17.7291 9.05229 17.7152 9.11965L16.695 13.955H11.6204L12.6415 9.11965C12.6554 9.05229 12.6127 8.99805 12.5446 8.99805H9.73197C9.6639 8.99805 9.59932 9.05229 9.58362 9.11965L6.91934 21.7457C6.90625 21.8134 6.94902 21.8691 7.01708 21.8691H9.82884C9.8969 21.8691 9.96323 21.8131 9.97719 21.7457L11.0532 16.6348H16.1278L15.0518 21.7457C15.0369 21.8134 15.0806 21.8691 15.1469 21.8691H17.9604C18.0276 21.8691 18.0939 21.8131 18.1079 21.7457L20.7713 9.11965C20.7861 9.05229 20.7434 8.99805 20.6762 8.99805Z"
+                  fill="white"
+                />
+                <path
+                  d="M100.193 2.62021H103.948V7.45035H106.614V10.8527H103.948V19.3914H100.193V2.62021Z"
+                  fill="black"
+                />
+                <path
+                  d="M86.0186 20.6932H89.771V25.8981H103.948V29.2223H86.0186V20.6932Z"
+                  fill="black"
+                />
+                <path
+                  d="M98.7504 2.60273H91.8973V0H88.287V2.60273H81.5762V5.94559H83.908C82.8389 7.29872 82.1521 9.05311 82.1521 10.9253C82.1521 15.3568 85.7423 18.9575 90.1633 18.9575C94.5842 18.9575 98.1709 15.3565 98.1709 10.9253C98.1709 8.97729 97.5723 7.327 96.4273 5.94209L98.7504 5.93538V2.60273ZM90.1633 15.6295C87.574 15.6295 85.4727 13.5237 85.4727 10.9253C85.4727 8.3261 87.574 6.2203 90.1633 6.2203C92.7577 6.2203 94.8574 8.3261 94.8574 10.9253C94.8574 13.5237 92.7577 15.6295 90.1633 15.6295Z"
+                  fill="black"
+                />
+                <path
+                  d="M130.454 2.60681H126.834V29.2229H130.454V2.60681Z"
+                  fill="black"
+                />
+                <path
+                  d="M109.16 17.9385H124.597V2.60361H109.16V17.9385ZM112.481 14.6103L112.488 5.93539H121.134V14.6103H112.481Z"
+                  fill="black"
+                />
+                <path
+                  d="M175.803 21.4602H164.737V19.2424H160.976V29.2246H179.564V19.2424H175.803V21.4602ZM175.803 26.1197H164.738V24.5659H175.803V26.1197ZM180.229 11.0335H164.077V9.70286H180.229V2.60507H160.315V5.48863H176.466V6.81843H160.315V13.9171H180.229V11.0335ZM158.543 15.0264V18.1322H168.391V20.5748H172.154V18.1322H182V15.0264H158.543Z"
+                  fill="black"
+                />
+                <path
+                  d="M150.962 21.0455H154.724V2.41171H134.811V5.51749H150.962V21.0455ZM133.481 29.0313H156.052V25.9255H133.481V29.0313Z"
+                  fill="black"
+                />
+              </g>
+            </g>
+            <defs>
+              <clipPath id="hanmiClip">
+                <rect width="182" height="31" fill="white" />
+              </clipPath>
+            </defs>
+          </svg>
+        </a>
+
+        <nav class="nav" id="site-nav" aria-label="주요 메뉴">
+          <ul class="nav__list">
+            <li><a class="nav__link" href="#jobs">직무소개</a></li>
+            <li>
+              <a class="nav__link" href="#qualification"
+                >지원자격 및 접수방법</a
+              >
+            </li>
+            <li><a class="nav__link" href="#schedule">채용설명회 일정</a></li>
+          </ul>
+          <a class="btn-apply" href="#apply">
+            <span>지원하기</span>
+            <svg viewBox="0 0 7 12" fill="none" aria-hidden="true">
+              <path
+                d="M1 1l5 5-5 5"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </a>
+        </nav>
+
+        <!-- 모바일(390px 이하) 전용: 헤더의 작은 지원하기 버튼 + 햄버거 버튼 -->
+        <a class="btn-apply btn-apply--mo" href="#apply">지원하기</a>
+        <button
+          class="btn-menu"
+          type="button"
+          aria-label="전체 메뉴 열기"
+          aria-expanded="false"
+          aria-controls="site-nav"
+          data-menu-toggle
+        >
+          <svg viewBox="0 0 20 18" fill="none" aria-hidden="true">
+            <g
+              class="btn-menu__bars"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+            >
+              <path d="M1 2h18M1 9h18M1 16h18" />
+            </g>
+            <g
+              class="btn-menu__close"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+            >
+              <path d="M3 2l14 14M17 2L3 16" />
+            </g>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- 2. 메인 컨텐츠 영역 -->
+    <main>
+      <!-- 메인 하위 컨텐츠 영역: 메인 비주얼 -->
+      <section class="mv" id="main_visual" aria-labelledby="mv-title">
+        <div class="mv__inner">
+          <!-- 장식 / 캐릭터 -->
+          <div class="mv__visual" aria-hidden="true">
+            <span class="mv__ring mv__ring--glow"></span>
+            <span class="mv__ring mv__ring--line"></span>
+
+            <img class="mv__img mv__micro" src="./images/mv_micro.png" alt="" />
+            <img class="mv__img mv__char1" src="./images/mv_char1.png" alt="" />
+            <img class="mv__img mv__char2" src="./images/mv_char2.png" alt="" />
+            <img class="mv__img mv__char3" src="./images/mv_char3.png" alt="" />
+            <img class="mv__img mv__char4" src="./images/mv_char4.png" alt="" />
+
+            <span class="mv__star mv__star--1"></span>
+            <span class="mv__star mv__star--2"></span>
+            <span class="mv__star mv__star--3"></span>
+            <span class="mv__star mv__star--3b"></span>
+            <span class="mv__star mv__star--4"></span>
+          </div>
+
+          <!-- 텍스트 -->
+          <div class="mv__text">
+            <div class="mv__head">
+              <p class="mv__season">2026년 하반기</p>
+              <h1 class="mv__title" id="mv-title">
+                <span class="mv__brand">한미그룹</span>
+                <span class="mv__type">공개채용</span>
+              </h1>
+              <p class="mv__period">
+                모집기간 : 2026.9.28(월) ~ 2026.10.18(일) 23:59까지
+              </p>
+            </div>
+            <a class="btn-cta" href="#jobs">모집직무 바로가기!</a>
+          </div>
+        </div>
+
+        <button
+          class="btn-scroll"
+          type="button"
+          aria-label="아래로 스크롤"
+          data-scroll-next
+        >
+          <svg viewBox="0 0 40 40" fill="none" aria-hidden="true">
+            <path
+              d="M10 16l10 10 10-10"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+      </section>
+
+      <!-- 이후 섹션은 아래에 <section> 단위로 추가 (직무소개 #jobs / 지원자격 및 접수방법 #qualification / 채용설명회 일정 #schedule) -->
+      <!-- 메인 하위 컨텐츠 영역: 새로운 미래 메시지 -->
+      <section class="mirae" id="mirae" aria-labelledby="mirae-title">
+        <div class="mirae__stage">
+          <h2 class="mirae__title" id="mirae-title">
+            <span class="mirae__point">새로운 미래</span>를 향해 나아갑니다
+          </h2>
+
+          <!-- 배경 구름 -->
+          <div class="mirae__deco">
+            <img
+              class="mirae__img mirae__img--cloudl"
+              src="./images/mirae_cloud1.png"
+              alt="왼쪽 위에 흐릿하게 번진 큰 구름"
+            />
+            <img
+              class="mirae__img mirae__img--cloud2"
+              src="./images/mirae_cloud2.png"
+              alt="오른쪽 아래에 흐릿하게 번진 작은 구름"
+            />
+            <img
+              class="mirae__img mirae__img--cloud3"
+              src="./images/mirae_cloud3.png"
+              alt="화면 왼쪽 가장자리에 걸친 하얀 입체 구름"
+            />
+            <img
+              class="mirae__img mirae__img--cloud4"
+              src="./images/mirae_cloud4.png"
+              alt="화면 오른쪽 가장자리에 걸친 하얀 입체 구름"
+            />
+            <img
+              class="mirae__img mirae__img--star1"
+              src="./images/mirae_star1.png"
+              alt="캐릭터 오른쪽 위에서 반짝이는 노란 별"
+            />
+            <img
+              class="mirae__img mirae__img--star2"
+              src="./images/mirae_star2.png"
+              alt="캐릭터 왼쪽 아래에서 반짝이는 노란 별"
+            />
+          </div>
+
+          <!-- 메인 캐릭터 -->
+          <figure class="mirae__figure">
+            <img
+              class="mirae__img mirae__img--walking"
+              src="./images/mirae_walking.png"
+              alt="사원증을 목에 건 한미 캐릭터가 초록 언덕 위를 힘차게 걸어가는 모습"
+            />
+          </figure>
+        </div>
+      </section>
+
+      <!-- 메인 하위 컨텐츠 영역: 한미의 도전 (연혁) -->
+      <section class="history" id="history" aria-labelledby="history-title">
+        <div class="history__inner">
+          <!-- 펼치기/접기 대상 컨테이너 -->
+          <div class="history__fold" id="history-fold">
+            <header class="history__head">
+              <h2 class="history__title" id="history-title">
+                <span>한미의 도전은 작은 가능성에서</span>
+                <span>시작되었습니다.</span>
+              </h2>
+              <p class="history__count">
+                <span class="sr-only">53주년</span>
+                <span aria-hidden="true">53</span>
+                <span class="history__count-suffix" aria-hidden="true">th</span>
+              </p>
+              <img
+                class="history__deco history__deco--star"
+                src="./images/obj_star_big.png"
+                alt=""
+                aria-hidden="true"
+              />
+            </header>
+
+            <ol class="history__timeline">
+              <!-- 1973~2001 -->
+              <li class="era era--odd era--1">
+                <h3 class="era__period">1973~2001</h3>
+                <p class="era__lead">한계를 하나씩 넘을 때마다,</p>
+                <ul class="era__list">
+                  <li class="era__item">
+                    <time class="era__year" datetime="1973">1973</time>
+                    <p class="era__text">한미약품공업주식회사 설립</p>
+                  </li>
+                  <li class="era__item">
+                    <time class="era__year" datetime="1984">1984</time>
+                    <p class="era__text">팔탄 GMP 공장 신축</p>
+                  </li>
+                  <li class="era__item">
+                    <time class="era__year" datetime="1989">1989</time>
+                    <p class="era__text">
+                      세프트리악손 제조방법 Roche사 기술 수출
+                    </p>
+                  </li>
+                  <li class="era__item">
+                    <time class="era__year" datetime="1997">1997</time>
+                    <p class="era__text">
+                      마이크로에멀젼 제제기술 Novartis사 기술 수출
+                    </p>
+                  </li>
+                </ul>
+                <span class="era__dots" aria-hidden="true"></span>
+                <figure class="era__figure">
+                  <img
+                    src="./images/his1.png"
+                    alt="한미약품의 초기 대표 제품인 텐텐과 쎄쎄 제품 이미지"
+                  />
+                </figure>
+                <img
+                  class="history__deco history__deco--beaker"
+                  src="./images/obj_beaker.png"
+                  alt=""
+                  aria-hidden="true"
+                />
+              </li>
+
+              <!-- 2002~2010 -->
+              <li class="era era--even era--2">
+                <h3 class="era__period">2002~2010</h3>
+                <ul class="era__list">
+                  <li class="era__item">
+                    <time class="era__year" datetime="2004">2004</time>
+                    <p class="era__text">
+                      국내 최초 고혈압치료제 ‘아모디핀’ 미국특허 획득
+                    </p>
+                  </li>
+                  <li class="era__item">
+                    <time class="era__year" datetime="2006">2006</time>
+                    <p class="era__text">
+                      세계 최초 유소아 해열 시럽제 개량신약 ‘맥시부펜’ 개발 성공
+                    </p>
+                  </li>
+                  <li class="era__item">
+                    <time class="era__year" datetime="2008">2008</time>
+                    <p class="era__text">
+                      국내 최초 주사용항생제 세프트리악손 美 FDA 승인
+                    </p>
+                  </li>
+                  <li class="era__item">
+                    <time class="era__year" datetime="2009">2009</time>
+                    <p class="era__text">
+                      세계최초 암로디핀+로살탄 복합제 ‘아모잘탄’ 발매
+                    </p>
+                  </li>
+                </ul>
+                <span class="era__dots" aria-hidden="true"></span>
+                <figure class="era__figure">
+                  <img
+                    src="./images/his2.png"
+                    alt="노을 지는 해변에서 손을 잡고 함께 점프하는 사람들의 실루엣"
+                  />
+                </figure>
+                <img
+                  class="history__deco history__deco--ring-blue"
+                  src="./images/obj_mol_blur1.png"
+                  alt=""
+                  aria-hidden="true"
+                />
+                <img
+                  class="history__deco history__deco--microscope"
+                  src="./images/obj_microscope.png"
+                  alt=""
+                  aria-hidden="true"
+                />
+              </li>
+
+              <!-- 2011~2015 -->
+              <li class="era era--odd era--3">
+                <h3 class="era__period">2011~2015</h3>
+                <p class="era__lead">새로운 가능성이 현실이 되었어요.</p>
+                <ul class="era__list">
+                  <li class="era__item">
+                    <time class="era__year" datetime="2011">2011</time>
+                    <p class="era__text">
+                      MSD와 ‘아모잘탄’ 50여개국 수출 계약 체결
+                    </p>
+                  </li>
+                  <li class="era__item">
+                    <time class="era__year" datetime="2012">2012</time>
+                    <p class="era__text">
+                      ‘LAPS-GCSF’ 美 스펙트럼사와 공동개발 및 상업화 계약
+                    </p>
+                  </li>
+                  <li class="era__item">
+                    <time class="era__year" datetime="2013">2013</time>
+                    <p class="era__text">
+                      국내 개량신약 최초 미국 FDA 승인 및 미국 출시 ‘에소메졸’
+                    </p>
+                  </li>
+                  <li class="era__item">
+                    <time class="era__year" datetime="2014">2014</time>
+                    <p class="era__text">
+                      ‘트리약손’ 국내 최초 유럽 4개국 시판 허가
+                    </p>
+                  </li>
+                  <li class="era__item">
+                    <time class="era__year" datetime="2015">2015</time>
+                    <p class="era__text">한국 사상 최대규모 릴레이 기술수출</p>
+                  </li>
+                </ul>
+                <span class="era__dots" aria-hidden="true"></span>
+                <figure class="era__figure">
+                  <img
+                    src="./images/his3.png"
+                    alt="스펙트럼 파마슈티컬스 로고와 에소메졸 제품 이미지"
+                  />
+                </figure>
+                <img
+                  class="history__deco history__deco--ring-gray"
+                  src="./images/obj_mol_blur2.png"
+                  alt=""
+                  aria-hidden="true"
+                />
+              </li>
+
+              <!-- 2016~2020 -->
+              <li class="era era--even era--4">
+                <h3 class="era__period">2016~2020</h3>
+                <ul class="era__list">
+                  <li class="era__item">
+                    <time class="era__year" datetime="2016">2016</time>
+                    <p class="era__text">
+                      차세대 RAF 저해제, Roche 제넨텍 기술수출
+                    </p>
+                  </li>
+                  <li class="era__item">
+                    <time class="era__year" datetime="2017">2017</time>
+                    <p class="era__text">
+                      ‘에소메졸’ 국내 제약회사 최초 미국약전(USP) 등재
+                    </p>
+                  </li>
+                  <li class="era__item">
+                    <time class="era__year" datetime="2018">2018</time>
+                    <p class="era__text">
+                      ‘Glucagon Analog’, ‘오락솔’ 차세대 AML 치료제 美
+                      희귀의약품 지정
+                    </p>
+                  </li>
+                  <li class="era__item">
+                    <time class="era__year" datetime="2019">2019</time>
+                    <p class="era__text">
+                      최근 10년간 처방실적 최다 4조 4,176억원
+                    </p>
+                  </li>
+                </ul>
+                <span class="era__dots" aria-hidden="true"></span>
+                <figure class="era__figure">
+                  <img
+                    src="./images/his4.png"
+                    alt="ASCO 로고, 로수젯 제품 이미지, USP 로고"
+                  />
+                </figure>
+              </li>
+
+              <!-- 2021~2026 -->
+              <li class="era era--odd era--5">
+                <h3 class="era__period">2021~2026</h3>
+                <p class="era__lead">
+                  하지만 아직, 가야 할 길이 더 남아 있습니다.
+                </p>
+                <ul class="era__list">
+                  <li class="era__item">
+                    <time class="era__year" datetime="2021">2021</time>
+                    <p class="era__text">
+                      ‘로수젯’, 국내사 개발 처방의약품 매출 1위 달성
+                    </p>
+                  </li>
+                  <li class="era__item">
+                    <time class="era__year" datetime="2022">2022</time>
+                    <div class="era__text">
+                      <p>‘롤론티스’ 한국 최초 FDA 허가 받은 바이오신약 등재</p>
+                      <p>
+                        ‘로수젯 RACING 연구’ 세계 최고 권위 의학저널 ‘LANCET’
+                        등재
+                      </p>
+                    </div>
+                  </li>
+                  <li class="era__item">
+                    <time class="era__year" datetime="2023">2023</time>
+                    <p class="era__text">비만 프로젝트 ‘H.O.P’ 프로젝트 가동</p>
+                  </li>
+                  <li class="era__item">
+                    <time class="era__year" datetime="2024">2024</time>
+                    <p class="era__text">
+                      근손실 한계 뛰어넘은 신개념 비만 신약 ‘HM17321’ 발표
+                    </p>
+                  </li>
+                  <li class="era__item">
+                    <time class="era__year" datetime="2025">2025</time>
+                    <div class="era__text">
+                      <p>‘로수젯’ 한국 전문의약품 시장 1위 품목 등록</p>
+                      <p>한미약품 8년 연속 원외처방 1위</p>
+                      <p>
+                        미국암연구학회(AACR)서 국내 최다 11개 연구 성과 발표
+                      </p>
+                      <p>한미사이언스 약국화장품 ‘EGF크림’ 27만개 완판</p>
+                    </div>
+                  </li>
+                  <li class="era__item">
+                    <time class="era__year" datetime="2026">2026</time>
+                    <div class="era__text">
+                      <p>희귀질환치료제 ‘LAPS-GLP2’ 릴리 기술수출</p>
+                      <p>한미 ‘완전두유·케어미’ 국제 우수 미각상 수상</p>
+                    </div>
+                  </li>
+                </ul>
+                <span class="era__dots" aria-hidden="true"></span>
+                <figure class="era__figure">
+                  <img
+                    src="./images/his5.png"
+                    alt="랜싯 200주년 표지, 롤론티스 작용 원리 도식, 롤론티스 제품 이미지"
+                  />
+                </figure>
+                <img
+                  class="history__deco history__deco--molecule"
+                  src="./images/obj_mol_big.png"
+                  alt=""
+                  aria-hidden="true"
+                />
+              </li>
+            </ol>
+
+            <div class="history__end">
+              <p class="history__count history__count--end">
+                <span class="sr-only">100주년</span>
+                <span aria-hidden="true">100</span>
+                <span class="history__count-suffix" aria-hidden="true">th</span>
+              </p>
+              <div class="history__closing">
+                <p class="history__closing-sub">
+                  <span class="s"
+                    >한계를 넘을 때마다, 건강한 미래는 가까워졌습니다.</span
+                  >
+                  <span class="s"
+                    >한계를 넘는 일, 우리에게는 꽤 익숙하니까.</span
+                  >
+                </p>
+                <p class="history__closing-lead">
+                  <span class="s">
+                    <span class="c">수많은 도전이</span>
+                    <span class="c">오늘의 한미를 만들었습니다.</span>
+                  </span>
+                  <span class="s">
+                    <span class="c">이제 또 다른 가능성을 향해</span>
+                    <span class="c">당신과 함께 나아갑니다.</span>
+                  </span>
+                </p>
+              </div>
+              <img
+                class="history__deco history__deco--cloud"
+                src="./images/cloud_blur_medium.png"
+                alt=""
+                aria-hidden="true"
+              />
+              <img
+                class="history__deco history__deco--char"
+                src="./images/con2_char.png"
+                alt=""
+                aria-hidden="true"
+              />
+            </div>
+          </div>
+
+          <!-- 펼치기/접기 버튼 -->
+          <button
+            class="history__toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="history-fold"
+            data-history-toggle
+          >
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M6 13l6-6 6 6"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M6 19l6-6 6 6"
+                stroke="currentColor"
+                stroke-opacity="0.4"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <span class="history__toggle-text">펼치기</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- 4. 직무 소개 및 현직자 이야기: jobs 섹션 (클래스명과 아이디명을 jobs로 일치) -->
+      <section class="jobs" id="jobs" aria-labelledby="jobs-title">
+        <div class="cont__inner">
+          <div class="cont__body">
+            <!-- 현직자 인터뷰 -->
+            <header class="cont__intro">
+              <div class="cont__headline">
+                <img
+                  class="cont__badge"
+                  src="./images/con3_logo.png"
+                  alt="붉은 타원형 Hanmi 로고"
+                />
+                <h2 class="cont__title" id="jobs-title">
+                  한미에서는 어떤 일을 할까요?
+                </h2>
+              </div>
+              <p class="cont__lead">
+                일의 보람부터 성장의 순간까지, 먼저 경험한 현직자들이 솔직하게
+                들려드립니다.
+              </p>
+              <img
+                class="cont__char"
+                src="./images/con3_char.png"
+                alt="사원증을 목에 걸고 서류가방을 든 보라색 한미 캐릭터"
+              />
+            </header>
+
+            <div class="cont__cards">
+              <ul class="cont__list">
+                <li class="cont__item">
+                  <a class="cont__card" href="#interview-1">
+                    <figure class="cont__photo">
+                      <img
+                        src="./images/con3_int1.jpg"
+                        alt="실험 장비가 놓인 연구실에서 주먹을 쥐어 보이며 웃고 있는 한미약품 품질관리 이건호 사원"
+                      />
+                    </figure>
+                    <p class="cont__desc">
+                      정밀한 시험과 분석으로 의약품의 품질을 확인해 안전하고
+                      신뢰할 수 있는 의약품을 만들어갑니다.
+                    </p>
+                    <div class="cont__meta">
+                      <p class="cont__who">
+                        <span>한미약품 품질관리</span>
+                        <span>이건호 사원</span>
+                      </p>
+                      <span class="cont__arrow" aria-hidden="true">
+                        <svg viewBox="0 0 12 12" fill="none">
+                          <path
+                            d="M2 6h8M6.5 2.5L10 6l-3.5 3.5"
+                            stroke="currentColor"
+                            stroke-width="1.4"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                      </span>
+                    </div>
+                  </a>
+                </li>
+                <li class="cont__item">
+                  <a class="cont__card" href="#interview-2">
+                    <figure class="cont__photo">
+                      <img
+                        src="./images/con3_int2.jpg"
+                        alt="가죽 소파에 앉아 미소 짓고 있는 한미약품 전임상연구 박진아 연구원"
+                      />
+                    </figure>
+                    <p class="cont__desc">
+                      신약 후보물질의 가능성을 과학적으로 검증해 새로운 치료제가
+                      환자에게 향하는 첫걸음을 만듭니다.
+                    </p>
+                    <div class="cont__meta">
+                      <p class="cont__who">
+                        <span>한미약품 전임상연구</span>
+                        <span>박진아 연구원</span>
+                      </p>
+                      <span class="cont__arrow" aria-hidden="true">
+                        <svg viewBox="0 0 12 12" fill="none">
+                          <path
+                            d="M2 6h8M6.5 2.5L10 6l-3.5 3.5"
+                            stroke="currentColor"
+                            stroke-width="1.4"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          />
+                        </svg>
+                      </span>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+              <img
+                class="cont__bottle"
+                src="./images/con3_bottle.png"
+                alt=""
+                aria-hidden="true"
+              />
+            </div>
+
+            <div class="cont__cta-wrap">
+              <a class="cont__cta" href="#interview-all"
+                >모든 현직자 알아가기!</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. 혁신 및 성장 뉴스: innovation 섹션 (클래스명과 아이디명을 innovation으로 일치) -->
+      <section class="innovation" id="innovation" aria-labelledby="innovation-title">
+        <div class="cont__inner">
+          <div class="cont__body">
+            <!-- 배경 번짐(글로우): 기존 = 우측 상단 -->
+            <div class="cont__glow" aria-hidden="true"></div>
+            <!-- 배경 번짐(글로우): 추가 = 좌측 하단 (width 20vw / opacity 0.2) -->
+            <div class="cont__glow cont__glow--bl" aria-hidden="true"></div>
+
+            <!-- 성장 뉴스 -->
+            <header class="cont__growth">
+              <h2 class="cont__title" id="innovation-title">
+                당신의 가능성,<br />한미그룹에서 더 크게 성장합니다
+              </h2>
+              <p class="cont__lead">
+                연구와 혁신으로 성장하며 글로벌 제약/바이오 기업을 향해<br
+                  class="mo-only"
+                />
+                나아갑니다.
+              </p>
+            </header>
+
+            <div class="cont__news" role="group" aria-labelledby="innovation-title">
+              <!-- 화학식 장식: 원자 오브제(.cont__dna2)와 겹치며 뒤쪽 레이어 -->
+              <img
+                class="cont__formula"
+                src="./images/inno_formula.png"
+                alt=""
+                aria-hidden="true"
+              />
+              <!-- 원자 오브제: 뉴스 박스 우측 상단 (시안 기준 inno_mol.png) -->
+              <img
+                class="cont__dna2"
+                src="./images/inno_mol.png"
+                alt=""
+                aria-hidden="true"
+              />
+              <ul class="cont__bubbles">
+                <li class="cont__bubble cont__bubble--point">
+                  <a href="#news-1"
+                    >한미약품, 상반기 누적 매출 8,602억원…2분기 영업이익 117%
+                    증가</a
+                  >
+                </li>
+                <li class="cont__bubble cont__bubble--white">
+                  <a href="#news-2"
+                    >“사업형 지주사 경쟁력 입증”…한미사이언스, 2분기 영업이익
+                    71%↑<br />2분기 매출 3,679억원…상반기 누적 매출 7,216억원
+                    돌파</a
+                  >
+                </li>
+                <li class="cont__bubble cont__bubble--point">
+                  <a href="#news-3"
+                    >한미약품, 로슈 제넨텍에 비만신약 기술수출…최대 3조 2,000억
+                    규모</a
+                  >
+                </li>
+                <li class="cont__bubble cont__bubble--white">
+                  <a href="#news-4"
+                    >“UCN2 이어 또…” 한미약품, 두 번째 근육 증가 비만신약
+                    공개</a
+                  >
+                </li>
+                <li class="cont__bubble cont__bubble--point">
+                  <a href="#news-5"
+                    >명품 반열 오른 한미 ‘로수젯’…압도적 데이터 경쟁력으로 시장
+                    석권<br />2년 연속 국내사 개발 전문의약품 시장 ‘1위’…올해
+                    상반기 누적 처방액도 선두</a
+                  >
+                </li>
+                <li class="cont__bubble cont__bubble--white">
+                  <a href="#news-6"
+                    >“비만 넘어 항암으로 혁신 확장”…한미, AACR서 차세대 신약
+                    대거 공개</a
+                  >
+                </li>
+                <li class="cont__bubble cont__bubble--point">
+                  <a href="#news-7"
+                    >한미 완전두유·케어미, 영양에 ‘맛’까지 인정…국제 우수 미각상
+                    수상</a
+                  >
+                </li>
+              </ul>
+              <p class="cont__notice">
+                말풍선을 클릭해서 기사를 확인해 보세요.
+              </p>
+            </div>
+
+            <!-- 분자 오브제: 섹션 좌측 하단 (시안 기준 inno_dna2.png) -->
+            <img
+              class="cont__molecule"
+              src="./images/inno_dna2.png"
+              alt=""
+              aria-hidden="true"
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- 회사 복지 영역: 데스크톱 2열, 태블릿·모바일 1열의 스크롤형 복지 카드 -->
+      <section class="welfare" id="welfare" aria-labelledby="welfare-title">
+        <div class="welfare__inner">
+          <header class="welfare__hero">
+            <h2 class="welfare__title" id="welfare-title">
+              한미 생활을 더 즐겁게 만드는 방법
+            </h2>
+            <p class="welfare__lead">
+              건강부터 성장, 휴식까지 알차게 준비한 복지를 소개할게요.
+            </p>
+            <img
+              class="welfare__hero-char"
+              src="./images/con5_char.png"
+              alt="돋보기를 든 주황색 한미 캐릭터"
+            />
+          </header>
+
+          <div class="welfare__scroll" tabindex="0" aria-label="한미그룹 복지 카드 목록">
+            <!-- 스크롤 영역의 첫 번째 그룹 소개 -->
+            <div class="welfare__intro">
+              <h3 class="welfare__group-title">
+                <img src="./images/wf_tit1.png" alt="하트" />
+                오늘의 나도, 내일의 나도 든든하게!
+              </h3>
+              <p class="welfare__group-copy">
+                건강, 성장, 문화생활까지 알차게 챙겨드려요.
+              </p>
+            </div>
+
+            <ul class="welfare__list" aria-label="임직원 복지">
+              <li class="welfare__card">
+                <div class="welfare__card-copy">
+                  <h4 class="welfare__card-title">건강 검진</h4>
+                  <p class="welfare__card-description">건강한 하루가 오래 이어지도록, 정기적인 건강관리를 지원해요.</p>
+                </div>
+                <img class="welfare__card-icon" src="./images/wf_ico1.png" alt="건강 검진 달력 아이콘" />
+              </li>
+              <li class="welfare__card">
+                <div class="welfare__card-copy">
+                  <h4 class="welfare__card-title">기념일 축하 지원</h4>
+                  <p class="welfare__card-description">소중한 기념일이 더 특별해지도록 한미가 함께 축하해요.</p>
+                </div>
+                <img class="welfare__card-icon" src="./images/wf_ico2.png" alt="기념일 축하 케이크 아이콘" />
+              </li>
+              <li class="welfare__card">
+                <div class="welfare__card-copy">
+                  <h4 class="welfare__card-title">본인주도 선택복지</h4>
+                  <p class="welfare__card-description">나에게 필요한 복지를 내 취향과 생활에 맞게 선택할 수 있어요.</p>
+                </div>
+                <img class="welfare__card-icon" src="./images/wf_ico3.png" alt="선택복지 카드 아이콘" />
+              </li>
+              <li class="welfare__card">
+                <div class="welfare__card-copy">
+                  <h4 class="welfare__card-title">장기 근속 포상</h4>
+                  <p class="welfare__card-description">한미와 함께 걸어온 소중한 시간에 감사의 마음을 전해요.</p>
+                </div>
+                <img class="welfare__card-icon" src="./images/wf_ico4.png" alt="장기 근속 과녁 아이콘" />
+              </li>
+              <li class="welfare__card">
+                <div class="welfare__card-copy">
+                  <h4 class="welfare__card-title">유연근무제</h4>
+                  <p class="welfare__card-description">업무와 일상의 균형을 찾을 수 있도록 유연한 근무를 지원해요.</p>
+                </div>
+                <img class="welfare__card-icon" src="./images/wf_ico5.png" alt="유연근무 모래시계 아이콘" />
+              </li>
+              <li class="welfare__card">
+                <div class="welfare__card-copy">
+                  <h4 class="welfare__card-title">단체 상해 보험</h4>
+                  <p class="welfare__card-description">예상하지 못한 순간에도 든든할 수 있도록 임직원을 보호해요.</p>
+                </div>
+                <img class="welfare__card-icon" src="./images/wf_ico6.png" alt="상해 보험 보호 배지 아이콘" />
+              </li>
+              <li class="welfare__card">
+                <div class="welfare__card-copy">
+                  <h4 class="welfare__card-title">직무 교육 지원</h4>
+                  <p class="welfare__card-description">배우고 성장하는 즐거움이 계속되도록 역량 개발을 지원해요.</p>
+                </div>
+                <img class="welfare__card-icon" src="./images/wf_ico7.png" alt="직무 교육 영상 아이콘" />
+              </li>
+              <li class="welfare__card">
+                <div class="welfare__card-copy">
+                  <h4 class="welfare__card-title">임직원 제휴 할인</h4>
+                  <p class="welfare__card-description">다양한 제휴 혜택으로 일상 속 즐거움과 실속을 더해드려요.</p>
+                </div>
+                <img class="welfare__card-icon" src="./images/wf_ico8.png" alt="제휴 할인 쇼핑백 아이콘" />
+              </li>
+              <li class="welfare__card">
+                <div class="welfare__card-copy">
+                  <h4 class="welfare__card-title">문화 생활 지원</h4>
+                  <p class="welfare__card-description">바쁜 일상에 기분 좋은 쉼표를 더할 수 있도록 문화생활을 응원해요.</p>
+                </div>
+                <img class="welfare__card-icon" src="./images/wf_ico9.png" alt="문화 생활 곰 인형 아이콘" />
+              </li>
+              <li class="welfare__card">
+                <div class="welfare__card-copy">
+                  <h4 class="welfare__card-title">구내식당</h4>
+                  <p class="welfare__card-description">든든하고 맛있는 한 끼로 활기찬 하루를 채워드려요.</p>
+                </div>
+                <img class="welfare__card-icon" src="./images/wf_ico10.png" alt="구내식당 식기 아이콘" />
+              </li>
+              <li class="welfare__card">
+                <div class="welfare__card-copy">
+                  <h4 class="welfare__card-title">임직원 스트레스 관리</h4>
+                  <p class="welfare__card-description">몸과 마음이 지치지 않도록 건강한 마음 관리를 함께해요.</p>
+                </div>
+                <img class="welfare__card-icon" src="./images/wf_ico11.png" alt="스트레스 관리 초콜릿 아이콘" />
+              </li>
+              <li class="welfare__card">
+                <div class="welfare__card-copy">
+                  <h4 class="welfare__card-title">제휴 약국</h4>
+                  <p class="welfare__card-description">필요한 건강관리를 더욱 편리하게 이용할 수 있도록 지원해요.</p>
+                </div>
+                <img class="welfare__card-icon" src="./images/wf_ico12.png" alt="제휴 약국 캡슐 아이콘" />
+              </li>
+            </ul>
+
+            <section class="welfare__family" aria-labelledby="welfare-family-title">
+              <header class="welfare__group-head">
+                <h3 class="welfare__group-title" id="welfare-family-title">
+                  <img src="./images/wf_tit2.png" alt="가족" />
+                  가족의 행복도 빼놓을 수 없죠!
+                </h3>
+                <p class="welfare__group-copy">
+                  축하할 때도, 도움이 필요할 때도 한미가 함께해요.
+                </p>
+              </header>
+              <ul class="welfare__list" aria-label="가족 복지">
+                <li class="welfare__card">
+                  <div class="welfare__card-copy">
+                    <h4 class="welfare__card-title">경조사 지원</h4>
+                    <p class="welfare__card-description">가족의 기쁜 순간과 힘든 순간에 한미가 함께 마음을 나눠요.</p>
+                  </div>
+                  <img class="welfare__card-icon" src="./images/wf_ico13.png" alt="경조사 지원 선물 아이콘" />
+                </li>
+                <li class="welfare__card">
+                  <div class="welfare__card-copy">
+                    <h4 class="welfare__card-title">출산 축하 지원</h4>
+                    <p class="welfare__card-description">소중한 새 가족의 탄생을 진심으로 축하하고 응원해요.</p>
+                  </div>
+                  <img class="welfare__card-icon" src="./images/wf_ico14.png" alt="출산 축하 선물 아이콘" />
+                </li>
+                <li class="welfare__card">
+                  <div class="welfare__card-copy">
+                    <h4 class="welfare__card-title">다자녀 지원</h4>
+                    <p class="welfare__card-description">아이들과 함께하는 행복한 일상이 더욱 든든하도록 지원해요.</p>
+                  </div>
+                  <img class="welfare__card-icon" src="./images/wf_ico15.png" alt="다자녀 가족 아이콘" />
+                </li>
+                <li class="welfare__card">
+                  <div class="welfare__card-copy">
+                    <h4 class="welfare__card-title">사내 대출</h4>
+                    <p class="welfare__card-description">생활에 필요한 자금 부담을 덜 수 있도록 든든한 금융 지원을 제공해요.</p>
+                  </div>
+                  <img class="welfare__card-icon" src="./images/wf_ico16.png" alt="사내 대출 계산기 아이콘" />
+                </li>
+                <li class="welfare__card">
+                  <div class="welfare__card-copy">
+                    <h4 class="welfare__card-title">호텔/콘도 할인</h4>
+                    <p class="welfare__card-description">가족과 편안한 휴식을 즐길 수 있도록 여가 혜택을 지원해요.</p>
+                  </div>
+                  <img class="welfare__card-icon" src="./images/wf_ico17.png" alt="호텔과 콘도 건물 아이콘" />
+                </li>
+                <li class="welfare__card">
+                  <div class="welfare__card-copy">
+                    <h4 class="welfare__card-title">고급 중식당 할인</h4>
+                    <p class="welfare__card-description">가족과의 특별한 식사 시간이 더욱 즐거워지도록 할인 혜택을 드려요.</p>
+                  </div>
+                  <img class="welfare__card-icon" src="./images/wf_ico18.png" alt="중식당 할인 음식 아이콘" />
+                </li>
+                <li class="welfare__card">
+                  <div class="welfare__card-copy">
+                    <h4 class="welfare__card-title">초등학생 입학 선물</h4>
+                    <p class="welfare__card-description">설레는 첫 학교생활을 한미가 특별한 선물과 함께 응원해요.</p>
+                  </div>
+                  <img class="welfare__card-icon" src="./images/wf_ico19.png" alt="초등학생 입학 가방 아이콘" />
+                </li>
+                <li class="welfare__card">
+                  <div class="welfare__card-copy">
+                    <h4 class="welfare__card-title">학자금 지원</h4>
+                    <p class="welfare__card-description">자녀의 배움과 성장을 든든하게 이어갈 수 있도록 함께해요.</p>
+                  </div>
+                  <img class="welfare__card-icon" src="./images/wf_ico20.png" alt="학자금 지원 메달 아이콘" />
+                </li>
+              </ul>
+            </section>
+          </div>
+        </div>
+        <img
+          class="welfare__cloud-char"
+          src="./images/con5_cloud.png"
+          alt="팔을 든 보라색 한미 캐릭터"
+        />
+      </section>
+    </main>
+
+    <!-- 3. 하단 푸터 영역 (현재 내용 없음 - 디자인 영향 없음) -->
+    <footer class="footer">
+      <section>
+        <div>
+          <p style="font-size: 2rem">
+            <strong>하단 푸터 영역</strong>
+          </p>
+          <p style="font-style: italic">현재 내용 없음</p>
+        </div>
+      </section>
+    </footer>
+
+    <script>
+      (function () {
+        // 아래로 스크롤 버튼: 다음 섹션이 있으면 해당 위치로, 없으면 메인 비주얼 높이만큼 이동
+        var btn = document.querySelector("[data-scroll-next]");
+        var mv = document.getElementById("main_visual");
+        if (btn && mv) {
+          btn.addEventListener("click", function () {
+            var next = mv.nextElementSibling;
+            var top = next
+              ? next.getBoundingClientRect().top + window.scrollY
+              : mv.offsetHeight;
+            window.scrollTo({ top: top, behavior: "smooth" });
+          });
+        }
+
+        // 모바일 햄버거 메뉴: 열기/닫기, 바깥 영역 클릭, Escape, 링크 클릭 시 닫기, 배경 스크롤 방지(CSS .is-menu-open)
+        var header = document.querySelector(".header");
+        var toggle = document.querySelector("[data-menu-toggle]");
+        var nav = document.getElementById("site-nav");
+        var root = document.documentElement;
+        var mobileMq = window.matchMedia("(max-width: 390px)");
+
+        function isMenuOpen() {
+          return header.classList.contains("is-menu-open");
+        }
+        function setMenu(open) {
+          header.classList.toggle("is-menu-open", open);
+          root.classList.toggle("is-menu-open", open);
+          toggle.setAttribute("aria-expanded", String(open));
+          toggle.setAttribute(
+            "aria-label",
+            open ? "전체 메뉴 닫기" : "전체 메뉴 열기",
+          );
+        }
+
+        if (header && toggle && nav) {
+          toggle.addEventListener("click", function () {
+            setMenu(!isMenuOpen());
+          });
+
+          nav.addEventListener("click", function (e) {
+            if (e.target.closest("a")) setMenu(false);
+          });
+
+          document.addEventListener("click", function (e) {
+            if (
+              isMenuOpen() &&
+              !nav.contains(e.target) &&
+              !toggle.contains(e.target)
+            )
+              setMenu(false);
+          });
+
+          document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape" && isMenuOpen()) {
+              setMenu(false);
+              toggle.focus();
+            }
+          });
+
+          // 화면이 모바일 범위를 벗어나면(회전/리사이즈) 메뉴 상태와 스크롤 잠금 해제
+          var onMqChange = function () {
+            if (!mobileMq.matches && isMenuOpen()) setMenu(false);
+          };
+          if (mobileMq.addEventListener)
+            mobileMq.addEventListener("change", onMqChange);
+          else if (mobileMq.addListener) mobileMq.addListener(onMqChange);
+        }
+
+        // 대상 요소가 없는 앵커는 기본 동작(최상단 점프) 방지
+        document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+          a.addEventListener("click", function (e) {
+            var id = a.getAttribute("href");
+            if (id.length > 1 && !document.querySelector(id))
+              e.preventDefault();
+          });
+        });
+      })();
+
+      // 연혁 섹션 펼치기/접기: .is-expanded 토글 + 버튼 텍스트('펼치기' ↔ '접기') 변경
+      (function () {
+        var section = document.getElementById("history");
+        var fold = document.getElementById("history-fold");
+        var btn = document.querySelector("[data-history-toggle]");
+        if (!section || !fold || !btn) return;
+        var label = btn.querySelector(".history__toggle-text");
+
+        btn.addEventListener("click", function () {
+          var expanded = fold.classList.toggle("is-expanded");
+          btn.setAttribute("aria-expanded", String(expanded));
+          label.textContent = expanded ? "접기" : "펼치기";
+
+          // 접을 때는 섹션 상단으로 되돌려 화면 위치를 잃지 않게 함
+          if (!expanded) {
+            window.scrollTo({
+              top: section.getBoundingClientRect().top + window.scrollY,
+              behavior: "smooth",
+            });
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,2332 @@
+$(document).ready(function () {
+	gsap.registerPlugin(ScrollTrigger);
+	const mm = gsap.matchMedia();
+
+	function setVHUnit() {
+		let vh = window.innerHeight * 0.01;
+		document.documentElement.style.setProperty('--vh', `${vh}px`);
+	}
+
+	window.addEventListener('resize', setVHUnit);
+	setVHUnit();
+
+	// 커서
+	const body = $('body');
+	const $cursor = $('.cursor-scroll');
+	const arrowEl = document.querySelector('.cursor-arrow'); // 히어로 밖 가짜 화살표 커서
+	const SCOPE = '#mVisual, .section1'; // 가짜 커서 허용 구역
+	const canHover = window.matchMedia('(hover: hover)').matches;
+
+	// 1) 페이지 로드 시 기본으로 '가짜 커서' 켜두기
+	if (window.matchMedia('(hover: hover)').matches) {
+		body.addClass('use-hero-cursor');
+	}
+
+	// 2) 마우스가 어디 위에 있는지에 따라 즉시 전환
+	//    - 허용 구역 안이면 use-hero-cursor 유지
+	//    - 밖이면 제거 → 작은 이미지 커서로 전환
+	let targetX = 0, targetY = 0, nowX = 0, nowY = 0; // 가짜 커서 위치
+	let mouseX = -1, mouseY = -1;                     // 마지막 마우스 위치 (스크롤 시 재판정용, -1 = 아직 모름)
+	const ease = 0.18;
+
+	function updateHeroCursor(el) {
+		if (!canHover) return;
+		const inside = !!el && $(el).closest(SCOPE).length > 0;
+		body.toggleClass('use-hero-cursor', inside);
+		// 히어로 밖 + 좌표를 아는 상태에서만 화살표 커서 (좌표 모르면 cursor:url 폴백 유지)
+		body.toggleClass('use-arrow-cursor', !!arrowEl && !inside && mouseX >= 0);
+	}
+
+	// 마우스가 창 밖으로 나가면 화살표 숨김, 들어오면 다시 판정
+	document.addEventListener('mouseleave', function () {
+		body.removeClass('use-arrow-cursor');
+	});
+	document.addEventListener('mouseenter', function (e) {
+		mouseX = e.clientX;
+		mouseY = e.clientY;
+		updateHeroCursor(document.elementFromPoint(mouseX, mouseY));
+	});
+
+	$(document).on('mouseover', function (e) {
+		updateHeroCursor(e.target);
+	});
+
+	// 마우스를 움직이지 않고 스크롤만 해도 구역 경계를 지나면 바뀌도록,
+	// 스크롤 중에는 마지막 마우스 위치 아래의 요소를 다시 판정합니다.
+	// (휠 이벤트도 좌표를 갖고 있어 마우스를 한 번도 안 움직인 경우까지 커버)
+	window.addEventListener('wheel', function (e) {
+		mouseX = e.clientX;
+		mouseY = e.clientY;
+	}, {passive: true});
+
+	let cursorScrollRaf = 0;
+	window.addEventListener('scroll', function () {
+		if (mouseX < 0 || cursorScrollRaf) return;
+		cursorScrollRaf = requestAnimationFrame(function () {
+			cursorScrollRaf = 0;
+			updateHeroCursor(document.elementFromPoint(mouseX, mouseY));
+			targetX = mouseX;
+			targetY = mouseY;
+		});
+	}, {passive: true});
+
+	// 3) 가짜 커서 따라오기 (Scroll 원형은 부드럽게, 화살표는 즉시)
+	$(document).on('mousemove', function (e) {
+		mouseX = e.clientX;
+		mouseY = e.clientY;
+		if (arrowEl) {
+			arrowEl.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`; // 핫스팟 = 이미지 좌상단(화살표 끝)
+			if (canHover && !body.hasClass('use-hero-cursor')) body.addClass('use-arrow-cursor');
+		}
+		if (!body.hasClass('use-hero-cursor')) return;
+		targetX = e.clientX;
+		targetY = e.clientY;
+	});
+
+	(function raf_cursor() {
+		nowX += (targetX - nowX) * ease;
+		nowY += (targetY - nowY) * ease;
+		if (body.hasClass('use-hero-cursor')) {
+			// 80은 가짜 커서 지름
+			$cursor.css('transform', `translate(${nowX - 40}px, ${nowY - 40}px)`);
+		}
+		requestAnimationFrame(raf_cursor);
+	})();
+
+	// 헤더 이벤트
+	let lastScrollTop = 0;
+	const $header = $('#header .header-body');
+	const isMobile = $(window).width() <= 860;
+
+	$(window).scroll(function () {
+		const currentScrollTop = $(this).scrollTop();
+		const scrollingDown = currentScrollTop > lastScrollTop;
+
+		// 헤더 처리
+		if (!$('.mo-toggle').hasClass('active')) {
+			// $header.css('transform', `translateY(${scrollingDown ? 'calc(-100% - 30px)' : '0'})`);
+			$header.css('transform', `translateY(${scrollingDown && currentScrollTop > 0 ? 'calc(-100% - 30px)' : '0'})`)
+		}
+
+		lastScrollTop = currentScrollTop;
+
+		setTimeout(() => {
+			if (isMobile && currentScrollTop == 0) {
+				$('#header .header-body').css('transform', 'translateY(0)');
+			}
+		}, 500);
+	});
+	// 헤더 이벤트 끝
+
+	// 헤더 메뉴 클릭 이벤트 - 네비게이션 점프 (Lenis 즉시 정지 + 즉시 이동)
+	const SECTIONS = ['.section7', '.section8', '.section9'];
+
+	// Lenis 인스턴스 안전하게 얻기
+	function getLenis() {
+		try {
+			if (window.lenis) return window.lenis;
+			// 전역 변수로 선언된 경우 대비
+			if (typeof lenis !== 'undefined') return lenis;
+		} catch (e) {
+		}
+		return null;
+	}
+
+	// 진행 중인 관성(모멘텀) 즉시 끊기
+	function stopMomentum() {
+		// 혹시 남아있을 jQuery 애니메이션 중단
+		$('html, body').stop(true, true);
+
+		const L = getLenis();
+		if (L && typeof L.scrollTo === 'function') {
+			try {
+				// 현재 위치로 즉시 스냅 → 관성 종료
+				L.scrollTo(window.scrollY, {immediate: true});
+				return;
+			} catch (e) {
+			}
+		}
+		// 폴백: 네이티브로 현재 위치 고정
+		window.scrollTo({top: window.scrollY, left: 0, behavior: 'auto'});
+	}
+
+	function getHeaderH() {
+		const $fixed = $('.header.is-fixed, .header.fixed, .gnb, .site-header').first();
+		return $fixed.length ? $fixed.outerHeight() : 0;
+	}
+
+	// 앞 섹션 마지막 항목의 1px border 가 화면 맨 위에 걸리지 않도록 살짝 더 내려 줍니다.
+	const NAV_TOP_NUDGE = 2;
+
+	/* 섹션마다 제목 위 여백(.tit-box 의 padding-top)이 다릅니다.
+	   section8 / section9 는 이 여백이 0 이라 섹션 맨 위로 이동하면 제목이 화면 위로 잘립니다.
+	   여백이 살아 있는 section7 을 기준으로 삼아, 모자란 만큼 더 위에서 멈추게 합니다.
+	   (반응형에서 .tit-box 여백이 200/140/80px 로 줄어드는 것도 그대로 따라갑니다) */
+	function getTitBoxPad($el) {
+		const $tit = $el.find('.tit-box').first();
+		return $tit.length ? (parseFloat($tit.css('padding-top')) || 0) : 0;
+	}
+
+	function getTargetTopByIndex(i) {
+		const clamped = Math.max(0, Math.min(SECTIONS.length - 1, i));
+		const sel = SECTIONS[clamped];
+		const $el = $(sel);
+		if (!$el.length) return 0;
+
+		let top = $el.offset().top;
+
+		// 제목이 항상 같은 위치에 오도록 여백 차이만큼 보정
+		top -= Math.max(0, getTitBoxPad($('.section7')) - getTitBoxPad($el));
+
+		/* 앞 섹션 .cont-wrap 의 padding-bottom 이 200px 라, 위 보정과 딱 맞아떨어지면서
+		   마지막 항목의 1px border 가 화면 맨 위에 걸쳐 보입니다. 살짝 더 내려서 가립니다. */
+		top += NAV_TOP_NUDGE;
+
+		top -= getHeaderH();
+		return Math.max(0, Math.round(top));
+	}
+
+	// data 캐시를 피하기 위해 attr로 먼저 시도, 실패하면 li 인덱스로 폴백
+	function resolveIdx($a) {
+		const raw = $a.attr('data-idx'); // attr 사용
+		let idx = parseInt(raw, 10);
+		if (Number.isNaN(idx)) {
+			idx = $a.closest('li').index(); // 폴백
+		}
+		return idx;
+	}
+
+	// Lenis 관성 끊고 Lenis로 스크롤(폴백: jQuery animate)
+	function goTo($a) {
+		// 모바일 메뉴 닫힘으로 레이아웃 변할 수 있으니 먼저 닫음
+		if (typeof mobile !== 'undefined' && typeof mobile.rightClose === 'function') {
+			mobile.rightClose();
+		}
+		$('.mo-toggle').removeClass('active');
+
+		// ★ 클릭 즉시 관성 끊기
+		stopMomentum();
+
+		// 레이아웃 안정화 후 타깃 계산
+		requestAnimationFrame(() => {
+			requestAnimationFrame(() => {
+				const idx = resolveIdx($a);
+				const top = getTargetTopByIndex(idx);
+
+				const L = getLenis();
+				if (L && typeof L.scrollTo === 'function') {
+					L.scrollTo(top, {
+						duration: 0.6, // 필요시 조절
+						easing  : (t) => 1 - Math.pow(1 - t, 3)
+					});
+				} else {
+					$('html, body').stop(true, true).animate({scrollTop: top}, 500);
+				}
+			});
+		});
+	}
+
+	// iOS 클릭 지연 회피용 - pointerdown 우선 처리
+	let NAV_LOCK = false;
+
+	function handleNav(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		if (NAV_LOCK) return;
+		NAV_LOCK = true;
+
+		goTo($(e.currentTarget));
+
+		// 연타 방지(필요 시 시간 조절)
+		setTimeout(() => {
+			NAV_LOCK = false;
+		}, 400);
+	}
+
+	// 바인딩을 pointerdown 우선, click은 백업
+	$(document)
+	.off('.navjump')
+	.on('pointerdown.navjump', '.header-nav .depth1 > li > a', handleNav)
+	.on('click.navjump', '.header-nav .depth1 > li > a', function (e) {
+		if (!NAV_LOCK) handleNav(e);
+	});
+
+	// 리사이즈 시엔 캐시 안 둠. 클릭 순간에 항상 fresh 계산.
+	$(window).on('resize orientationchange', function () {
+		// nothing; 클릭 시 매번 재계산
+	});
+	// ------------헤더 메뉴 클릭 이벤트 끝
+
+	// 복제된 롤링 카드도 해당 직무 탭을 연 뒤 헤더 직무소개 메뉴와 같은 위치로 이동합니다.
+	$(document).on('click', '.mv-job-box', function (e) {
+		e.preventDefault();
+		const $card = $(this);
+		const jobKey = $card.attr('data-job-tab');
+		$('.section7 .tab-box a').filter(function () {
+			return $(this).attr('data-job-tab') === jobKey;
+		}).first().trigger('click');
+		goTo($card);
+	});
+
+	// 탭박스 클릭 이벤트(공통)
+	const tabBox = $('.tab-box');
+	const tabItem = tabBox.find('a');
+	tabItem.on('click', function () {
+		$(this).closest('.tab-box').find('a').removeClass('on');
+		$(this).addClass('on');
+	});
+
+	// section7 모집직무 리스트 클릭 이벤트
+	const $list = $('.job-info-list');
+	const $items = $list.children('li');
+
+	$items.on('click', function (e) {
+		const $li = $(this);
+		const $panel = $li.children('.job-grid');
+		const isOpen = $li.hasClass('on');
+
+		// 1) 다른 항목은 모두 닫기
+		$items.removeClass('on')
+		.children('.job-grid')
+		.stop(true, true)
+		.slideUp(300);
+
+		if (!isOpen) {
+			$li.addClass('on');
+			$panel
+			.css('display', 'grid')
+			.hide()
+			.stop(true, true)
+			.slideDown(300, function () {
+				// 애니 끝나고도 grid 유지(브라우저별 안전장치)
+				$(this).css('display', 'grid');
+			});
+		}
+	});
+	// 카드 목록 내부 클릭 시 li 이벤트로 전파 막기
+	$list.find('.job-grid').on('click', function (e) {
+		e.stopPropagation();
+	});
+
+	/* --------------------------------------------------
+		section5 복지 리스트 스크롤바
+		- 시안의 스크롤바는 리스트 상단이 아니라 첫 박스가 시작되는
+		  65px 지점부터 시작하므로 네이티브 스크롤바 대신 직접 그립니다.
+	-------------------------------------------------- */
+	(function () {
+		const $box = $('.benefit-box');
+		if ( !$box.length ) return;
+
+		const $scroll = $box.find('.benefit-scroll');
+		const $bar    = $box.find('.benefit-bar');
+		const $thumb  = $bar.find('.thumb');
+		const el      = $scroll.get(0);
+		if ( !el ) return;
+
+		function sync() {
+			const track = $bar.height();
+			const ratio = el.clientHeight / el.scrollHeight;
+
+			if ( !track || ratio >= 1 ) {
+				$bar.removeClass('is-on');
+				return;
+			}
+			$bar.addClass('is-on');
+
+			const thumbH = Math.max(20, Math.round(track * ratio));
+			const max    = el.scrollHeight - el.clientHeight;
+			const top    = max > 0 ? (track - thumbH) * (el.scrollTop / max) : 0;
+
+			$thumb.css({height: thumbH, transform: 'translateY(' + Math.round(top) + 'px)'});
+		}
+
+		$scroll.on('scroll', sync);
+		$(window).on('resize load', sync);
+		if ( window.ResizeObserver ) {
+			const $inner = $scroll.find('.benefit-inner');
+			if ( $inner.length ) new ResizeObserver(sync).observe($inner.get(0));
+		}
+		sync();
+
+		// 썸 드래그
+		let dragY = null, startTop = 0;
+		$thumb.on('mousedown', function (e) {
+			e.preventDefault();
+			dragY    = e.clientY;
+			startTop = el.scrollTop;
+			$('body').css('user-select', 'none');
+		});
+		$(document).on('mousemove.benefitbar', function (e) {
+			if ( dragY === null ) return;
+			const track  = $bar.height();
+			const thumbH = $thumb.outerHeight();
+			const max    = el.scrollHeight - el.clientHeight;
+			if ( track - thumbH <= 0 ) return;
+			el.scrollTop = startTop + (e.clientY - dragY) * max / (track - thumbH);
+		}).on('mouseup.benefitbar', function () {
+			if ( dragY === null ) return;
+			dragY = null;
+			$('body').css('user-select', '');
+		});
+
+		// 트랙 클릭
+		$bar.on('mousedown', function (e) {
+			if ( e.target !== this ) return;
+			const rect   = this.getBoundingClientRect();
+			const thumbH = $thumb.outerHeight();
+			const max    = el.scrollHeight - el.clientHeight;
+			if ( rect.height - thumbH <= 0 ) return;
+			const pos = (e.clientY - rect.top - thumbH / 2) / (rect.height - thumbH);
+			el.scrollTop = Math.max(0, Math.min(1, pos)) * max;
+		});
+	})();
+
+	/* --------------------------------------------------
+		내부 스크롤 영역 ↔ 화면 스크롤 이어주기
+		- data-lenis-prevent 가 붙어 있으면 Lenis 가 그 영역의 휠/터치를
+		  항상 무시하므로, 안쪽 스크롤이 끝까지 가도 화면이 움직이지 않습니다.
+		- 스크롤 방향과 현재 위치를 보고 위/아래 끝에 닿았을 때만
+		  data-lenis-prevent 를 떼서 화면 스크롤로 넘겨줍니다.
+		- Lenis 는 window 에 버블 단계로 붙으므로, 캡처 단계에서 미리
+		  속성을 정해두면 같은 이벤트에 바로 반영됩니다.
+	-------------------------------------------------- */
+	function bindEdgeScroll(el) {
+		if ( !el || el.dataset.edgeScroll ) return;
+		el.dataset.edgeScroll = '1';
+
+		const EPS = 1;
+
+		// dir > 0 : 아래로 스크롤, dir < 0 : 위로 스크롤
+		function isEdge(dir) {
+			const max = el.scrollHeight - el.clientHeight;
+			if ( max <= EPS ) return true;                    // 안쪽에 스크롤이 없으면 바로 화면 스크롤
+			if ( dir > 0 ) return el.scrollTop >= max - EPS;  // 끝까지 내린 상태
+			if ( dir < 0 ) return el.scrollTop <= EPS;        // 끝까지 올린 상태
+			return false;
+		}
+
+		function update(dir) {
+			if ( isEdge(dir) ) el.removeAttribute('data-lenis-prevent');
+			else el.setAttribute('data-lenis-prevent', '');
+		}
+
+		el.addEventListener('wheel', function (e) {
+			update(e.deltaY);
+		}, {passive: true, capture: true});
+
+		let touchY = 0;
+
+		el.addEventListener('touchstart', function (e) {
+			touchY = e.touches[0].clientY;
+		}, {passive: true, capture: true});
+
+		el.addEventListener('touchmove', function (e) {
+			const y = e.touches[0].clientY;
+			update(touchY - y); // 손가락을 위로 밀면 아래로 스크롤
+			touchY = y;
+		}, {passive: true, capture: true});
+	}
+
+	// section5 복지 리스트
+	$('.benefit-scroll').each(function () {
+		bindEdgeScroll(this);
+	});
+
+	// section7(모집직무) 탭박스 클릭 이벤트
+	const $sec7Tab = $('.section7 .tab-box a');
+	$sec7Tab.on('click', function () {
+		const idx = $(this).data('idx');
+		const $panels = $('.section7 .job-panel');
+
+		$panels.removeClass('on');
+		$panels.filter('[data-idx="' + idx + '"]').addClass('on');
+
+		// 패널 전환 시 아코디언은 모두 접힌 기본 상태로 되돌립니다.
+		const $cur = $panels.filter('[data-idx="' + idx + '"]');
+		$cur.find('.job-info-list > li').removeClass('on').children('.job-grid').stop(true, true).hide();
+
+		if (window.ScrollTrigger) ScrollTrigger.refresh();
+	});
+	// section7 탭박스 클릭 이벤트 끝
+
+	// section8 탭박스 클릭 이벤트
+	// ====== 캐시 ======
+	const $sec8 = $('.section8');
+	const $tabs = $('.section8 .tab-box a');
+	const $area1 = $('.section8 .area1');
+	const $area2 = $('.section8 .area2');
+	const $body = $('.section8 .section-body');
+
+	// ====== 유틸 ======
+	function raf2(fn) {
+		requestAnimationFrame(() => requestAnimationFrame(fn));
+	}
+
+	function waitImages($wrap, done) {
+		const $imgs = $wrap.find('img').filter(function () {
+			return !this.complete || this.naturalWidth === 0;
+		});
+		if (!$imgs.length) return done();
+		let left = $imgs.length;
+		$imgs.on('load error', () => (--left <= 0) && done());
+	}
+
+	function measureBodyHeight() {
+		return Math.max($body[0]?.scrollHeight || 0, $body.outerHeight(true) || 0);
+	}
+
+	// ▶︎ 현재 보이는 컨텐츠 기준 “정확히” 재설정(증가/감소 모두 반영)
+	function setExactMinHeight() {
+		// 1) 초기화
+		$sec8.css({height: '', minHeight: ''});
+
+		// 2) 레이아웃 확정
+		if ($sec8[0]) void $sec8[0].offsetHeight;
+
+		// 3) 정확한 자연 높이
+		const h = measureBodyHeight();
+
+		// 4) 세팅
+		if (h > 0) $sec8.css('min-height', h);
+	}
+
+	// 강제 리프레시(스크롤/핀/사파리 보정)
+	function hardRefresh() {
+		// 1) 잠재적 스크롤 잠금 해제
+		$('html, body').css({overflow: '', height: ''});
+
+		// 2) 레이아웃 확정 → 정확 높이 반영
+		if ($sec8[0]) void $sec8[0].offsetHeight;
+		setExactMinHeight();
+
+		// 3) ScrollTrigger 재계산(2회 보정)
+		if (window.ScrollTrigger) {
+			ScrollTrigger.refresh();
+			setTimeout(() => ScrollTrigger.refresh(), 60);
+			if (window.ScrollSmoother?.get) {
+				try {
+					ScrollSmoother.get().refresh();
+				} catch (e) {
+				}
+			}
+		}
+
+		// 4) 문서 높이 재평가 이벤트 (일부 브라우저)
+		window.dispatchEvent(new Event('resize'));
+	}
+
+	// ====== GSAP 리프레시 직전에 높이 먼저 확정 ======
+	if (window.ScrollTrigger) {
+		ScrollTrigger.addEventListener('refreshInit', setExactMinHeight);
+	}
+
+	// ====== (선택) 트리거 재생성 훅 ======
+	// GSAP 타임라인/트리거 생성 코드를 여기에 둡니다.
+	function initGSAPTriggers() {
+		// 예시:
+		// ScrollTrigger.getAll().forEach(t => t.kill());
+		// gsap.timeline({
+		//   scrollTrigger:{ trigger:'.section8', start:'top 60%', end:'bottom top', scrub:1, invalidateOnRefresh:true }
+		// }).to('.section8 .something', { y:0, opacity:1, duration:1.2 });
+	}
+
+	// ====== 탭 전환 ======
+	$tabs.on('click', function (e) {
+		e.preventDefault();
+		const idx = $(this).data('idx');
+
+		$tabs.removeClass('on');
+		$(this).addClass('on');
+
+		if (idx === 1) {
+			$area1.show();
+			$area2.hide();
+		} else {
+			$area1.hide();
+			$area2.show();
+		}
+
+		const $active = (idx === 1) ? $area1 : $area2;
+
+		// 탭 내 이미지/웹폰트 반영 후 정확히 보정
+		waitImages($active, () => {
+			raf2(() => {
+				setExactMinHeight();
+				// initGSAPTriggers(); // 필요 시 사용
+				hardRefresh();
+			});
+		});
+
+		// 이미지가 없더라도 안전망
+		raf2(hardRefresh);
+	});
+
+	// ====== 초기 진입(폰트/이미지 로딩 후) ======
+	$(window).on('load', () => {
+		setExactMinHeight();
+		// initGSAPTriggers(); // 필요 시 사용
+		hardRefresh();
+	});
+
+	// ====== 동적 컨텐츠 변화 자동 보정 ======
+	if ('ResizeObserver' in window) {
+		const ro = new ResizeObserver(() => raf2(hardRefresh));
+		if ($body[0]) ro.observe($body[0]);
+	}
+	// section8 탭박스 클릭 이벤트 끝
+
+/* ==================================================
+	[2026 상반기 버전] section4 카드 롤링(마퀴) - '한미그룹은 제약산업의 미래입니다' 섹션
+	- 하반기 리뉴얼에서 제외된 애니메이션/스크립트입니다. 요청 시 복구할 수 있도록 남겨둡니다.
+================================================== */
+	// // section4 카드 롤링 이벤트
+	// let sec4Text = $(".section4 .marquee2").html(); // 원본 내용 저장
+	// let sec4DuplicatedText = new Array(5).fill(sec4Text).join(' '); // 5번 복제
+	// $(".section4 .marquee2").html(sec4DuplicatedText); // 내용 삽입
+	//
+	// $(".section4 .marquee2").marquee({
+	// duration        : 30000,
+	// gap             : 0,
+	// delayBeforeStart: 0,
+	// direction       : 'left',
+	// duplicated      : true, // 플러그인에서 자동 복제
+	// startVisible    : true,
+	// pauseOnHover    : true
+	// });
+	/* ================================================== */
+
+	// section2 연혁 접기, 펼치기 이벤트
+	// ====== 캐시 ======
+	const $foldBtn = $('.fold-btn');
+	const $sec2 = $('.section2');
+	const $yearQuickWrap = $('.year-quick-wrap');
+	const $yearQuick = $('.year-quick');
+	const $yearQuickItem = $('.year-quick a');
+
+	// ====== 유틸 ======
+	function raf2(fn) {
+		requestAnimationFrame(() => requestAnimationFrame(fn));
+	}
+
+	function waitImages($wrap, done) {
+		const $imgs = $wrap.find('img').filter(function () {
+			return !this.complete || this.naturalWidth === 0;
+		});
+		if (!$imgs.length) return done();
+		let left = $imgs.length;
+		$imgs.on('load error', () => (--left <= 0) && done());
+	}
+
+	// 레이아웃 안정화 + ScrollTrigger 재계산
+	function hardRefresh() {
+		// 혹시 모를 스크롤 잠금 해제
+		$('html, body').css({overflow: '', height: ''});
+
+		// 레이아웃 강제 확정
+		if ($sec2[0]) void $sec2[0].offsetHeight;
+
+		// ST 두 번 보정 (사파리/핀 대응)
+		if (window.ScrollTrigger) {
+			ScrollTrigger.refresh();
+			setTimeout(() => ScrollTrigger.refresh(), 60);
+		}
+		// 문서 높이 재평가 이벤트 (일부 브라우저 대응)
+		window.dispatchEvent(new Event('resize'));
+	}
+
+	// ====== 펼침/접힘 동작 ======
+	function expandSec6() {
+		const w = window.innerWidth;
+		const fixedTop = w > 768 ? '15%' : '0';
+
+		// 높이 / overflow 는 CSS(.section2, .section2.on)가 관리합니다.
+		// 인라인으로 덮어쓰면 .section2.on 의 overflow:visible 이 무시돼
+		// 100th 뒤 원형 배경이 섹션 경계에서 잘립니다.
+		$sec2.addClass('on').css({
+			'max-height': '',
+			'height'    : ''         // 혹시 height가 지정돼 있다면 제거
+		});
+		$yearQuickWrap.css({
+			'position': 'fixed',
+			'top'     : fixedTop,
+			'opacity' : '1'
+		});
+
+		// 이미지/웹폰트 반영 이후 안정화
+		waitImages($sec2, () => raf2(hardRefresh));
+		// 이미지가 없어도 안전망
+		raf2(hardRefresh);
+	}
+
+	function collapseSec6() {
+		const w = window.innerWidth;
+
+		const absolTop = w > 768 ? '11.5%' : '3.5%';
+
+		// 접힌 높이는 CSS(.section2 의 max-height / 반응형)에서 관리합니다.
+		$sec2.removeClass('on').css({
+			'max-height': '',
+			'height'    : '' // 혹시 height가 남아있다면 제거
+		});
+
+		$yearQuickWrap.css({
+			'position': 'absolute',
+			'top'     : absolTop,
+			'opacity' : '0'
+		});
+
+		raf2(hardRefresh);
+	}
+
+	// ====== 이벤트 바인딩 ======
+	$foldBtn.on('click', function () {
+		const $this = $(this);
+		$this.toggleClass('on');
+
+		if ($this.hasClass('on')) {
+			$this.find('span').text('접기');
+			expandSec6();
+		} else {
+			$this.find('span').text('펼치기');
+			collapseSec6();
+		}
+	});
+
+	// ====== 초기 안정화 ======
+	$(window).on('load', hardRefresh);
+
+	// ====== section2 내부 컨텐츠 변화 자동 감지 (아코디언/비동기 로딩 등) ======
+	if ('ResizeObserver' in window) {
+		const ro = new ResizeObserver(() => raf2(hardRefresh));
+		if ($sec2[0]) ro.observe($sec2[0]);
+	}
+	// section2 연혁 접기, 펼치기 이벤트 끝
+
+/* ==================================================
+	[2026 상반기 버전] 연혁 년도 퀵메뉴 (스크롤 연동 / 클릭 이동)
+	- 하반기 리뉴얼에서 제외된 애니메이션/스크립트입니다. 요청 시 복구할 수 있도록 남겨둡니다.
+================================================== */
+	// // section2 연도 퀵 메뉴 스크롤
+	// let isAutoScrolling = false;
+	// let yearLastScrollTop = $(window).scrollTop();   // 시작값을 현재 스크롤로
+	// let isYearQuickFixed = false;                // ✅ 우리가 fixed로 뒀는지 추적
+	//
+	// $(window).on('scroll', function () {
+	// if (isAutoScrolling) return;
+	//
+	// const scrollTop = $(this).scrollTop();
+	// const w = window.innerWidth;
+	// const isMobile = w <= 768;
+	//
+	// const circleBoxTop = $('.section2 .circle-box').offset().top - 200;
+	// const li1Top = $('.section2 .history-list .li1').offset().top - 200;
+	// const li2Top = $('.section2 .history-list .li2').offset().top - 200;
+	// const li3Top = $('.section2 .history-list .li3').offset().top - 200;
+	// const li4Top = $('.section2 .history-list .li4').offset().top - 200;
+	// const li5Top = $('.section2 .history-list .li5').offset().top - 200;
+	//
+	// const absolTop = w > 768 ? '11.5%' : '3.5%';
+	// const fixedTopPC = '15%';
+	//
+	// // 위치 제어
+	// if ($foldBtn.hasClass('on')) {
+	// if (scrollTop >= circleBoxTop) {
+	// $yearQuickWrap.css({position: 'absolute', top: 'auto', bottom: '10%'}).removeClass('addPadding');
+	// isYearQuickFixed = false;
+	// } else if (scrollTop >= li1Top) {
+	// // li1 ~ circleBox 사이: fixed
+	// if (!isMobile) {
+	// $yearQuickWrap.css({position: 'fixed', top: fixedTopPC, bottom: 'auto'}).addClass('addPadding');
+	// } else {
+	// // 모바일은 top을 여기서 세팅하지 않고 아래 "방향 로직"에서만 세팅
+	// $yearQuickWrap.css({position: 'fixed', bottom: 'auto'}).addClass('addPadding');
+	// }
+	// isYearQuickFixed = true; // ✅ 우리가 fixed로 만들었다!
+	// } else {
+	// $yearQuickWrap.css({position: 'absolute', top: absolTop, bottom: 'auto'}).removeClass('addPadding');
+	// isYearQuickFixed = false;
+	// }
+	// } else {
+	// // foldBtn off: 초기화
+	// $yearQuickWrap.css({position: 'absolute', top: absolTop, bottom: 'auto'}).removeClass('addPadding');
+	// isYearQuickFixed = false;
+	// }
+	//
+	// // ✅ 모바일 + 우리가 fixed로 세팅해둔 상태에서만 동작
+	// if (isMobile && isYearQuickFixed) {
+	// const goingUp = scrollTop < yearLastScrollTop;
+	// const goingDown = scrollTop > yearLastScrollTop;
+	//
+	// if (goingUp) {
+	// $yearQuickWrap.css('top', '70px');   // 위로 올리면 70px
+	// console.log('위로 올림');
+	// } else if (goingDown) {
+	// $yearQuickWrap.css('top', '0');      // 아래로 내리면 0
+	// console.log('아래로 내림');
+	// }
+	// }
+	//
+	// if (scrollTop >= li5Top) {
+	// $('.year-quick a').removeClass('on');
+	// $('.year-quick a[data-idx="5"]').addClass('on');
+	// } else if (scrollTop >= li4Top) {
+	// $('.year-quick a').removeClass('on');
+	// $('.year-quick a[data-idx="4"]').addClass('on');
+	// } else if (scrollTop >= li3Top) {
+	// $('.year-quick a').removeClass('on');
+	// $('.year-quick a[data-idx="3"]').addClass('on');
+	// } else if (scrollTop >= li2Top) {
+	// $('.year-quick a').removeClass('on');
+	// $('.year-quick a[data-idx="2"]').addClass('on');
+	// } else if (scrollTop >= li1Top) {
+	// $('.year-quick a').removeClass('on');
+	// $('.year-quick a[data-idx="1"]').addClass('on');
+	// }
+	//
+	// yearLastScrollTop = Math.max(0, scrollTop);
+	// });
+	// // section2 연도 퀵 메뉴 스크롤 끝
+	//
+	// // section2 연도 퀵 메뉴 클릭
+	// $yearQuickItem.on('click', function () {
+	// $('.year-quick a').removeClass('on');
+	// $(this).addClass('on');
+	//
+	// const idx = $(this).data('idx');
+	//
+	// const li1Top = $('.section2 .history-list .li1').offset().top - 150;
+	// const li2Top = $('.section2 .history-list .li2').offset().top - 150;
+	// const li3Top = $('.section2 .history-list .li3').offset().top - 150;
+	// const li4Top = $('.section2 .history-list .li4').offset().top - 150;
+	// const li5Top = $('.section2 .history-list .li5').offset().top - 150;
+	//
+	// let targetTop = li1Top;
+	// if (idx === 2) targetTop = li2Top;
+	// else if (idx === 3) targetTop = li3Top;
+	// else if (idx === 4) targetTop = li4Top;
+	// else if (idx === 5) targetTop = li5Top;
+	//
+	// // ✅ 방향 판별 (클릭 시점)
+	// const currentTop = $(window).scrollTop();
+	// const goingUp = targetTop < currentTop;   // 위로 올라가는 이동
+	// const goingDown = targetTop > currentTop;   // 아래로 내려가는 이동
+	//
+	// const isMobile = window.innerWidth <= 768;
+	// // 고정(fixed) 구간에 들어갈 예정인지(모바일 기준) - 필요시 조정
+	// const willBeFixed = targetTop >= ($('.section2 .history-list .li1').offset().top - 200) &&
+	// targetTop < ($('.section2 .circle-box').offset().top - 200);
+	//
+	// // ✅ 자동 스크롤 잠금
+	// isAutoScrolling = true;
+	//
+	// // ✅ 모바일에서, 현재가 fixed 이거나 목적지가 fixed 구간이면 top을 먼저 세팅
+	// if (isMobile && (isYearQuickFixed || willBeFixed)) {
+	// $yearQuickWrap.css('top', goingUp ? '70px' : '0'); // 위로=70px, 아래로=0
+	// }
+	//
+	// // 이미 진행 중인 스크롤 애니메이션 정리
+	// $('html, body').stop(true);
+	//
+	// $('html, body').animate({scrollTop: targetTop}, 600, function () {
+	// // ✅ 스크롤 종료 후 기준값 동기화(다음 방향 판정 정확히)
+	// yearLastScrollTop = targetTop;
+	//
+	// // 잠금 해제(살짝 딜레이)
+	// setTimeout(function () {
+	// isAutoScrolling = false;
+	// }, 10);
+	// });
+	// });
+	// // section2 연도 퀵 메뉴 클릭 끝
+	/* ================================================== */
+
+/* ==================================================
+	[2026 상반기 버전] section11 플립카드 카운트다운
+	- 하반기 리뉴얼에서 제외된 애니메이션입니다. 요청 시 복구할 수 있도록 남겨둡니다.
+================================================== */
+	// // section11 카운트다운
+	// // 종료일 (2026년 4월 26일 23:59:59)
+	// const countdown = new Date("2026-04-26T23:59:59");
+	//
+	// // 각 단위별 '두 자리' 카드들 선택 (십/일 자리)
+	// const $days = $(".days-wrap .flip-card");
+	// const $hours = $(".hours-wrap .flip-card");
+	// const $minutes = $(".minutes-wrap .flip-card");
+	// const $seconds = $(".seconds-wrap .flip-card");
+	//
+	// // 남은 시간 계산
+	// function getTimeRemaining(target) {
+	// const now = new Date();
+	// const diff = target - now;
+	// const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+	// const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+	// const minutes = Math.floor((diff / 1000 / 60) % 60);
+	// const seconds = Math.floor((diff / 1000) % 60);
+	// return {diff, days, hours, minutes, seconds};
+	// }
+	//
+	// // 한 장(한 자리) 카드 플립
+	// function flipOne($card, nextDigit) {
+	// const curr = $card.find(".top-half").text().trim();
+	// const next = String(nextDigit);
+	//
+	// if (curr === next) return;
+	//
+	// const $topHalf = $card.find(".top-half");
+	// const $bottomHalf = $card.find(".bottom-half");
+	//
+	// const $topFlip = $("<div>").addClass("top-flip").text(curr);
+	// const $bottomFlip = $("<div>").addClass("bottom-flip");
+	//
+	// $topFlip.on("animationstart", function () {
+	// $topHalf.text(next);
+	// });
+	//
+	// $topFlip.on("animationend", function () {
+	// $topFlip.remove();
+	// $bottomFlip.text(next);
+	// });
+	//
+	// $bottomFlip.on("animationend", function () {
+	// $bottomHalf.text(next);
+	// $bottomFlip.remove();
+	// });
+	//
+	// $card.append($topFlip, $bottomFlip);
+	// }
+	//
+	// // 두 자리(십/일) 동시에 플립
+	// function flipTwo($pair, value) {
+	// // $pair: length 2 (eq(0) = 십의 자리, eq(1) = 일의 자리)
+	// const s = String(value).padStart(2, "0");
+	// flipOne($pair.eq(0), s[0]);
+	// flipOne($pair.eq(1), s[1]);
+	// }
+	//
+	// function initializeClock(target) {
+	//
+	// let timer;
+	// function updateClock() {
+	// const t = getTimeRemaining(target);
+	//
+	// flipTwo($days, t.days);
+	// flipTwo($hours, t.hours);
+	// flipTwo($minutes, t.minutes);
+	// flipTwo($seconds, t.seconds);
+	//
+	// if (t.diff <= 0) clearInterval(timer);
+	// }
+	//
+	// updateClock();
+	// timer = setInterval(updateClock, 1000);
+	// }
+	//
+	// initializeClock(countdown);
+	// // section11 카운트다운 끝
+	/* ================================================== */
+
+	// section11 카운트다운 (숫자 카운트)
+	const $countWrap = $('#countDown');
+	if ($countWrap.length) {
+		const deadline = new Date(($countWrap.data('deadline') || '').replace(/-/g, '/'));
+		const $cd = {
+			day : $countWrap.find('[data-cd="day"]'),
+			hour: $countWrap.find('[data-cd="hour"]'),
+			min : $countWrap.find('[data-cd="min"]'),
+			sec : $countWrap.find('[data-cd="sec"]')
+		};
+
+		function pad2Cd(n) {
+			return String(n).padStart(2, '0');
+		}
+
+		function updateCountDown() {
+			const diff = deadline - new Date();
+
+			if (isNaN(diff) || diff <= 0) {
+				$cd.day.text('00');
+				$cd.hour.text('00');
+				$cd.min.text('00');
+				$cd.sec.text('00');
+				return false;
+			}
+
+			$cd.day.text(Math.floor(diff / 86400000));
+			$cd.hour.text(pad2Cd(Math.floor(diff / 3600000) % 24));
+			$cd.min.text(pad2Cd(Math.floor(diff / 60000) % 60));
+			$cd.sec.text(pad2Cd(Math.floor(diff / 1000) % 60));
+			return true;
+		}
+
+		updateCountDown();
+		const cdTimer = setInterval(function () {
+			if (!updateCountDown()) clearInterval(cdTimer);
+		}, 1000);
+	}
+	// section11 카운트다운 끝
+
+	// section9(채용설명회 일정) 탭 클릭 이벤트
+	$('.section9 > .section-body .tab-box:not(.tab-box-sm) a').on('click', function () {
+		const idx = $(this).data('idx');
+		const $panels = $('.section9 .cal-panel');
+
+		$panels.removeClass('on');
+		$panels.filter('[data-idx="' + idx + '"]').addClass('on');
+
+		if (window.ScrollTrigger) ScrollTrigger.refresh();
+	});
+
+	// 지역 탭 클릭 이벤트 (캠퍼스처럼 지역이 여러 개인 경우)
+	$('.section9 .tab-box-sm a').on('click', function () {
+		const idx    = $(this).data('idx');
+		const $panel = $(this).closest('.cal-panel');
+
+		$panel.find('.cal-area').removeClass('on');
+		$panel.find('.cal-area[data-idx="' + idx + '"]').addClass('on');
+
+		if (window.ScrollTrigger) ScrollTrigger.refresh();
+	});
+	/* 일정 상세 : PC와 모바일 모두 클릭/터치로 .on 을 토글합니다. */
+	$('.section9').on('click', '.cald-cont .box ul li', function (e) {
+		const $li = $(this);
+		if ( !$li.children('.hover-box').length ) return;
+
+		e.stopPropagation();
+		const isOpen = $li.hasClass('on');
+
+		$('.section9 .cald-cont .box ul li').removeClass('on');
+		if ( !isOpen ) $li.addClass('on');
+	});
+
+	// 빈 곳(또는 탭)을 누르면 열려 있던 상세를 닫습니다.
+	$(document).on('click', function () {
+		$('.section9 .cald-cont .box ul li.on').removeClass('on');
+	});
+	// 일정 상세 클릭 이벤트 끝
+
+	// section9 탭 클릭 이벤트 끝
+
+	// Lenis 초기화: 속도/관성 조절 포인트 (스크롤 부드럽게)
+	const isMO = window.matchMedia('(max-width: 768px)').matches;
+
+	const lenis = new Lenis({
+		duration       : isMO ? 8 : 5,   // 관성 길이(↑ 늘릴수록 더 느리고 부드럽게)
+		smoothWheel    : true,        // 휠 스크롤 부드럽게
+		smoothTouch    : true,        // ✅ 터치에도 스무딩 적용
+		syncTouch      : true,          // ✅ 터치 스크롤을 Lenis가 주도
+		wheelMultiplier: 0.6, // 휠 감도(↓ 낮출수록 더 느리게 스크롤됨)
+		touchMultiplier: 0.5     // 터치 스크롤 감도(↓ 낮출수록 더 느리게 스크롤됨)
+	});
+
+	// GSAP과 동기화
+	lenis.on('scroll', ScrollTrigger.update);
+
+	function raf(time) {
+		lenis.raf(time);
+		requestAnimationFrame(raf);
+	}
+
+	requestAnimationFrame(raf);
+	// 스크롤 부드럽게 이벤트 끝
+//----------------------------------------------------------------------------------------------------------
+	/* ==================================================
+		[2026 상반기 버전] 인트로(레드서클) / 날짜 룰렛 애니메이션
+		- 하반기 리뉴얼에서 제외된 애니메이션입니다. 요청 시 복구할 수 있도록 남겨둡니다.
+	================================================== */
+	// // 룰렛 이벤트 시작
+	// const CYCLES_NUM = 3;   // 숫자 세트 반복 횟수
+	// const CYCLES_WEEK = 2;   // 요일 세트 반복 횟수
+	// const DUR_BASE = 1.6; // 기본 시간
+	// const STAGGER = 0.12;
+	// const WEEKS = ['일', '월', '화', '수', '목', '금', '토'];
+	//
+	// function pad2(n) {
+	// return String(n).padStart(2, '0');
+	// }
+	//
+	// function getDateParts(iso) {
+	// const [y, m, d] = iso.split('-');
+	// const date = new Date(`${iso}T00:00:00+09:00`);
+	// return {y4: y, m2: pad2(m), d2: pad2(d), week: WEEKS[date.getDay()]};
+	// }
+	//
+	// // ----- 숫자 슬롯 -----
+	// function makeDigitSlot(targetDigit) {
+	// const $slot = $('<div class="slot num"><div class="track"></div></div>');
+	// const $track = $slot.find('.track');
+	// for (let i = 0; i < CYCLES_NUM; i++) {
+	// for (let n = 0; n < 10; n++) $track.append(`<div class="cell">${n}</div>`);
+	// }
+	// $track.append(`<div class="cell">${targetDigit}</div>`);
+	// // ✅ 실제 셀 개수 - 1 을 targetIndex 로
+	// $slot.data('targetIndex', $track.find('.cell').length - 1);
+	// return $slot;
+	// }
+	//
+	// // ----- 요일 슬롯 -----
+	// function makeWeekSlot(targetWeek) {
+	// const $slot = $('<div class="slot week"><div class="track"></div></div>');
+	// const $track = $slot.find('.track');
+	// for (let i = 0; i < CYCLES_WEEK; i++) {
+	// WEEKS.forEach(w => $track.append(`<div class="cell">${w}</div>`));
+	// }
+	// $track.append(`<div class="cell">${targetWeek}</div>`);
+	// // ✅ 실제 셀 개수 - 1
+	// $slot.data('targetIndex', $track.find('.cell').length - 1);
+	// return $slot;
+	// }
+	//
+	// // ----- 블록(YYYY.MM.DD 요일) -----
+	// function buildBlock($block) {
+	// const {y4, m2, d2, week} = getDateParts($block.data('date'));
+	// $block.empty();
+	//
+	// // YYYY.MM.DD
+	// y4.split('').forEach(d => $block.append(makeDigitSlot(d)));
+	// $block.append(`<div class="slot sep"><div class="cell">.</div></div>`);
+	// m2.split('').forEach(d => $block.append(makeDigitSlot(d)));
+	// $block.append(`<div class="slot sep"><div class="cell">.</div></div>`);
+	// d2.split('').forEach(d => $block.append(makeDigitSlot(d)));
+	//
+	// // 공백
+	// $block.append(`<div class="slot sep empty_sep"><div class="cell" style="width:6px;"></div></div>`);
+	//
+	// // (  [요일슬롯]  )
+	// $block.append(`<div class="slot sep paren"><div class="cell">(</div></div>`);
+	// $block.append(makeWeekSlot(week));
+	// $block.append(`<div class="slot sep paren"><div class="cell">)</div></div>`);
+	//
+	// // 높이 픽스
+	// $block.find('.slot').each(function () {
+	// const $first = $(this).find('.cell').first();
+	// const h = Math.round($first.outerHeight());
+	// $(this).find('.cell').css({height: h, lineHeight: h + 'px'});
+	// $(this).data('cellH', h);
+	// });
+	// }
+	//
+	// // ----- 회전 -----
+	// // 칼럼들이 같은 시각에 시작하지만, 보이는 시작 숫자는 칼럼마다 다르게
+	// function spinBlock($block, startDelay = 0) {
+	// const $slots = $block.find('.slot').not('.sep');
+	//
+	// $slots.each(function () {
+	// const $slot = $(this);
+	// const $track = $slot.find('.track');
+	// const cellH = $slot.data('cellH') || Math.round($slot.find('.cell').first().outerHeight());
+	// const idx = $slot.data('targetIndex');
+	// const targetY = -idx * cellH;
+	//
+	// // 칼럼마다 다른 출발 숫자 (1~9칸 위에서 시작)
+	// const randSteps = 1 + Math.floor(Math.random() * 9); // 1~9
+	// const startY = -randSteps * cellH;
+	//
+	// gsap.fromTo($track,
+	// {y: startY},
+	// {
+	// y       : targetY,
+	// ease    : 'power4.out',
+	// duration: DUR_BASE, // 모두 동일한 지속시간
+	// delay   : startDelay   // 칼럼 스태거 없음 => 동시에 시작
+	// }
+	// );
+	// });
+	// }
+	//
+	// // ----- 실행 -----
+	// function startDateRouletteTL() {
+	// // 빌드 & 표시 (처음에는 숨겨져 있다가 이 시점에 생성/표시)
+	// const $start = $('.date-block.start');
+	// const $end = $('.date-block.end');
+	// buildBlock($start);
+	// buildBlock($end);
+	// const tl = gsap.timeline({
+	// onStart() {
+	// $('.date-roulette').addClass('is-ready'); // ← 재생 순간에만 표시
+	// }
+	// });
+	//
+	// // start + end의 모든 트랙을 하나의 TL에 "같은 시점"으로 추가
+	// const $tracks = $start.find('.slot').not('.sep').find('.track')
+	// .add($end.find('.slot').not('.sep').find('.track'));
+	//
+	// $tracks.each(function () {
+	// const $track = $(this);
+	// const $slot = $track.closest('.slot');
+	// const cellH = $slot.data('cellH') || Math.round($slot.find('.cell').first().outerHeight());
+	// const idx = $slot.data('targetIndex');
+	// const targetY = -idx * cellH;
+	//
+	// // 칼럼마다 다른 시작 숫자에서 출발(동시에 시작)
+	// const randSteps = 1 + Math.floor(Math.random() * 9); // 1~9칸 위
+	// const startY = -randSteps * cellH;
+	//
+	// tl.fromTo($track[0], {y: startY}, {
+	// y       : targetY,
+	// ease    : 'power4.out',
+	// duration: DUR_BASE
+	// }, 0); // 0으로 맞춰 모두 같은 타임스탬프에 시작
+	// });
+	//
+	// return tl; // ✅ TL 반환 → intro가 끝날 때까지 기다림
+	// }
+	//
+	// // 룰렛 이벤트 끝------------------------------------------------------------------
+	//
+	// // 인트로, 메인비주얼
+	// // ----- 키 상수
+	// const INTRO_KEY = 'introPlayed_v1';
+	// const ROULETTE_CACHE_KEY = 'rouletteHTML_v1';
+	//
+	// function applyIntroFinalState() {
+	// // 여기엔 스킵일 때 필요한 최종 set만 남기거나,
+	// // CSS로 모두 처리했으면 비워도 OK
+	// gsap.set('#mVisual .txt-box .data-wrap .blur-border', {opacity: 1});
+	// gsap.set('#mVisual .txt-box em', {opacity: 1});
+	// gsap.set('#mVisual .txt-box p:nth-of-type(1)', {opacity: 1});
+	// gsap.set('#mVisual .txt-box', {zIndex: 995}, "<");
+	// }
+	//
+	// function hydrateRouletteInstant() {
+	// const cached = sessionStorage.getItem(ROULETTE_CACHE_KEY);
+	// if (cached) {
+	// const $wrap = $('.date-roulette');
+	// $wrap.replaceWith(cached);
+	// } else {
+	// const $start = $('.date-block.start');
+	// const $end = $('.date-block.end');
+	// buildBlock($start);
+	// buildBlock($end);
+	// $('.date-roulette').addClass('is-ready');
+	// $('.date-roulette .slot').not('.sep').each(function () {
+	// const $slot = $(this);
+	// const cellH = $slot.data('cellH') || Math.round($slot.find('.cell').first().outerHeight());
+	// const idx = $slot.data('targetIndex');
+	// gsap.set($slot.find('.track'), {y: -idx * cellH});
+	// });
+	// }
+	// }
+	//
+	// function cacheRouletteHTML() {
+	// const el = document.querySelector('.date-roulette');
+	// if (el) sessionStorage.setItem(ROULETTE_CACHE_KEY, el.outerHTML);
+	// }
+	//
+	// // ================== 엔트리 ==================
+	// const isSkip = document.documentElement.classList.contains('intro-skip');
+	//
+	// if (isSkip) {
+	// // ★ 스킵 모드: 인트로 관련 set/애니 절대 실행 금지
+	// // (아래 두 줄만 수행해서 즉시 완성 상태로)
+	// applyIntroFinalState();
+	// hydrateRouletteInstant();
+	// if (window.lenis?.start) lenis.start();
+	// // 혹시 초기 off-screen set이 있었다면 0으로 재설정 (안 해도 되면 제거)
+	// gsap.set(['.red-circle-top', '.red-circle-bot'], {x: 0, y: 0, opacity: 0});
+	// gsap.set(['.intro'], {zIndex: -10});
+	// gsap.set(['#header'], {opacity: 1});
+	//
+	// ScrollTrigger.refresh();
+	//
+	// } else {
+	// // ★ 최초 1회 재생
+	// gsap.set(['.red-circle-top'], {x: 1500, y: -1500, opacity: 1});
+	// gsap.set(['.red-circle-bot'], {x: -1500, y: 1500, opacity: 1});
+	//
+	// const intro = gsap.timeline({
+	// defaults: {ease: 'power3.out'},
+	// onStart() {
+	// if (window.lenis?.stop) lenis.stop();
+	// document.documentElement.classList.add('no-scroll');
+	// },
+	// onComplete() {
+	// document.documentElement.classList.remove('no-scroll');
+	// if (window.lenis?.start) lenis.start();
+	// ScrollTrigger.refresh();
+	// sessionStorage.setItem(INTRO_KEY, '1');
+	// cacheRouletteHTML();
+	// }
+	// });
+	//
+	// intro
+	// .to(".red-circle-bot", {x: 0, y: 0, duration: 0.8}, "+=0.4")
+	// .to(".red-circle-top", {x: 0, y: 0, duration: 0.8}, "-=0.5")
+	// .to('.intro-logo-wrap .intro-logo', {opacity: 1, y: 0, duration: 0.8}, "-=0.2")
+	// .to(".red-circle-bot", {scale: 20, duration: 1}, ">")
+	// .to(".red-circle-top", {scale: 20, duration: 1}, "<")
+	// .add(startDateRouletteTL(), ">-=0.4")
+	// .to('.intro-logo-wrap', {opacity: 0, duration: 0.8}, ">")
+	// .to('.intro', {backgroundColor: 'transparent', zIndex: -10, duration: 0.8}, "<")
+	// .to('.red-circle-top', {opacity: 0, duration: 0.8}, "<")
+	// .to('.red-circle-bot', {opacity: 0, duration: 0.8}, "<")
+	// .to('#mVisual .txt-box .data-wrap .blur-border', {opacity: 1, duration: 0.8}, "<")
+	// .to('#mVisual .txt-box em', {opacity: 1, duration: 0.8}, "<")
+	// .to('#mVisual .txt-box p:nth-of-type(1)', {opacity: 1, duration: 0.8}, "<")
+	// .to('#mVisual .txt-box', {zIndex: 995}, "<")
+	// .to('#header', {opacity: 1}, "<");
+	// }
+	// // 인트로, 메인비주얼 끝
+	/* ================================================== */
+
+	// 메인비주얼 진입 애니메이션
+	gsap.set(['#header'], {opacity: 1});
+	gsap.set(['#mVisual .mv-sub', '#mVisual .mv-tit', '#mVisual .mv-date', '#mVisual .mv-txt .btn'], {opacity: 0, y: 60});
+	gsap.set('#mVisual .mv-object .obj', {opacity: 0, y: 80});
+
+	const mvTl = gsap.timeline({defaults: {ease: 'power3.out'}});
+	mvTl
+	.to('#mVisual .mv-sub', {opacity: 1, y: 0, duration: 0.8})
+	.to('#mVisual .mv-tit', {opacity: 1, y: 0, duration: 0.9}, '>-0.5')
+	.to('#mVisual .mv-date', {opacity: 1, y: 0, duration: 0.8}, '>-0.6')
+	.to('#mVisual .mv-txt .btn', {opacity: 1, y: 0, duration: 0.8}, '>-0.5')
+	.to('#mVisual .mv-object .obj', {opacity: 1, y: 0, duration: 1, stagger: 0.06}, '-=1');
+	// 메인비주얼 진입 애니메이션 끝
+
+	//------------------------------------------------------------------------------------------------------------------------------------
+
+	/* ==================================================
+		[2026 상반기 버전] section1 텍스트 커버 스크롤 애니메이션 (pin 고정 포함)
+		- 하반기 리뉴얼에서 제외된 애니메이션입니다. 요청 시 복구할 수 있도록 남겨둡니다.
+	================================================== */
+	// // section1
+	// gsap.set(['.txt1', '.txt3', '.txt4', '.txt5', '.txt6', '.txt7', '.txt8', '.txt10', '.txt11', '.txt12', '.txt13', '.main-txt1', '.main-txt2', '.sub-txt', '.sub-txt2', '.tab-box', '.job-info-list li', '.cw1', '.cw2', '.section11 b', '.section11 .btn', '.intro-logo'], {
+	// opacity: 0,
+	// y      : 100
+	// });
+	// // gsap.set(['.txt9'], { opacity: 0, y: -100 });
+	//
+	// const tl = gsap.timeline({
+	// scrollTrigger: {
+	// trigger            : '.section1',
+	// start              : 'top top',     // section1이 뷰포트 top에 닿으면 시작
+	// end                : '+=800%',        // 스크롤 구간 길이(필요에 따라 조절)
+	// pin                : true,            // 해당 구간 동안 고정
+	// scrub              : 1.2,           // 스크롤에 따라 부드럽게 재생(정밀 제어용)
+	// invalidateOnRefresh: true, // 리사이즈 시 값 재계산
+	// // markers: true,     // 디버그용
+	// },
+	// defaults     : {ease: 'power3.out'}
+	// });
+	//
+	// tl
+	// .to('.section1 .txt1', {opacity: 1, y: 0, duration: 1.2})
+	// .to('.section1 .txt3', {opacity: 1, y: 0, duration: 1.2}, '>-1')
+	//
+	// .to('.section1 .txt1', {
+	// x       : () => {
+	// if (window.innerWidth <= 1280) {
+	// return 0;
+	// } else if (window.innerWidth <= 1580) {
+	// return -200;
+	// } else {
+	// return -300;
+	// }
+	// },
+	// bottom  : () => {
+	// if (window.innerWidth <= 768) {
+	// return '+=20';         // 768 미만 → -20으로 세팅
+	// } else if (window.innerWidth <= 1280) {
+	// return "+=60";      // 768~1280 → -60에서 0까지 애니메이션
+	// } else {
+	// return null;        // 1280 초과 → bottom 건드리지 않음
+	// }
+	// },
+	// duration: 2.2,
+	// ease    : 'power4.inOut'
+	// }, '+=0.2')
+	//
+	//
+	// tl.to('.section1 .txt2', {opacity: 1, duration: 1.0}, '<')
+	//
+	// .to('.section1 .txt3', {
+	// x       : () => {
+	// if (window.innerWidth <= 1280) {
+	// return 0;
+	// } else if (window.innerWidth <= 1580) {
+	// return 140;
+	// } else {
+	// return 200;
+	// }
+	// },
+	// top     : () => {
+	// if (window.innerWidth <= 768) {
+	// return "+=35";       // 768 미만
+	// } else if (window.innerWidth <= 1280) {
+	// return "+=45";    // 768~1280 구간
+	// } else {
+	// return null;      // 1280 초과
+	// }
+	// },
+	// duration: 2.2,
+	// ease    : 'power4.inOut'
+	// }, '<')
+	//
+	//
+	// .to(['.section1 .txt1', '.txt3'], {backgroundColor: 'transparent', duration: 0}, '>')
+	// .to('.section1 .sec1_bg', {
+	// height  : () => (window.innerWidth > 768 ? '280px' : '113px'),
+	// duration: 2, ease: 'power4.inOut'
+	// }, '>')
+	//
+	// .to('.section1 .sec1_bg', {width: '100%', height: '100%', duration: 5, ease: 'power4.inOut'}, '>')
+	//
+	// .add('allUp', '+=0.2') // 시작 지점 라벨
+	// .to(['.section1 .txt1', '.section1 .txt2', '.section1 .txt3'], {
+	// y       : -200,
+	// opacity : 0,
+	// duration: 1.8,
+	// ease    : 'power4.inOut'
+	// }, 'allUp')
+	//
+	// .add('allUp2', '+=0.2') // 시작 지점 라벨
+	// .to('.section1 .txt4', {opacity: 1, y: 0, duration: 1.2}, '>-0.5')
+	// .to('.section1 .txt5', {opacity: 1, y: 0, duration: 1.2}, '>-0.8')
+	// .to(['.section1 .txt4', '.section1 .txt5'], {
+	// y: -200, opacity: 0, duration: 1.8, ease: 'power4.inOut', overwrite: 'auto'
+	// }, '>')
+	// .to('.section1 .txt6', {opacity: 1, y: 0, duration: 1.2}, '>-0.5')
+	// .to('.section1 .txt7', {opacity: 1, y: 0, duration: 1.2}, '>-0.8')
+	//
+	// .add('allUp3', '+=0.2') // 시작 지점 라벨
+	// .to(['.section1 .txt6', '.section1 .txt7'], {
+	// y       : -200,
+	// opacity : 0,
+	// duration: 1.8,
+	// ease    : 'power4.inOut'
+	// }, 'allUp3')
+	// .to('.section1 .txt8', {opacity: 1, y: 0, duration: 1.2}, '>-0.5')
+	// // .to('.section1 .txt9', { opacity: 1, y: 0, duration: 1.2 }, '>-0.3')
+	// .to('.section1 .txt10', {opacity: 1, y: 0, duration: 1.2}, '>-0.1')
+	//
+	// .add('allUp4', '+=0.2') // 시작 지점 라벨
+	// .to(['.section1 .txt8', '.section1 .txt10'], {
+	// y       : -200,
+	// opacity : 0,
+	// duration: 1.8,
+	// ease    : 'power4.inOut'
+	// }, 'allUp4')
+	// .to('.section1 .txt11', {opacity: 1, y: 0, duration: 1.2}, '>-0.5')
+	// .to('.section1 .txt12', {opacity: 1, y: 0, duration: 1.2}, '>-0.8')
+	//
+	// .add('allUp5', '+=0.2') // 시작 지점 라벨
+	// .to(['.section1 .txt11', '.section1 .txt12'], {
+	// y       : -200,
+	// opacity : 0,
+	// duration: 1.8,
+	// ease    : 'power4.inOut'
+	// }, 'allUp5')
+	// .to('.section1 .txt13', {opacity: 1, y: 0, duration: 1.2}, '>-0.5')
+	// .to('.section1 .bg1', {bottom: 0, duration: 1.2}, '>')
+	// .to('.section1 .bg2', {bottom: 0, duration: 1.2}, '<+=0.1')
+	// .to('.section1 .bg3', {bottom: 0, duration: 1.2}, '<+=0.2')
+	// .to('.section1 .bg4', {bottom: 0, duration: 1.2}, '<+=0.3');
+	/* ================================================== */
+
+	// 공통 등장 초기값
+	gsap.set(['.main-txt1', '.main-txt2', '.sub-txt', '.sub-txt2', '.tab-box', '.job-info-list > li', '.cw1'], {
+		opacity: 0,
+		y      : 100
+	});
+
+	/* --------------------------------------------------
+		여러 줄 텍스트 : <br> 기준으로 줄을 분리해 한 줄씩 등장
+		- txtLines() 가 등장 대상(줄)을 돌려주고 초기값까지 맞춰줍니다.
+		- <br> 이 없는 텍스트는 기존과 동일하게 통째로 등장합니다.
+	-------------------------------------------------- */
+	function splitTextLines(el) {
+		if (el.dataset.lineSplit === '1' || !el.querySelector('br')) {
+			return;
+		}
+		el.innerHTML = el.innerHTML
+		.split(/<br\s*\/?>/i)
+		.map(function (line) {
+			return '<span class="tl-line"><span class="tl-line-in">' + line.trim() + '</span></span>';
+		})
+		.join('');
+		el.dataset.lineSplit = '1';
+	}
+
+	function txtLines(selector) {
+		const targets = [];
+
+		gsap.utils.toArray(selector).forEach(function (el) {
+			splitTextLines(el);
+
+			const lines = el.querySelectorAll('.tl-line-in');
+			if ( lines.length ) {
+				// 줄을 나눈 경우 : 부모는 그대로 두고 줄 단위로 등장시킵니다.
+				gsap.set(el, {opacity: 1, y: 0});
+				gsap.set(lines, {opacity: 0, y: 100});
+				targets.push.apply(targets, lines);
+			}
+			else {
+				targets.push(el);
+			}
+		});
+
+		return targets;
+	}
+
+	// section1 새로운 미래를 향해 나아갑니다
+	// 구름은 등장 모션 없이 항상 보이도록 초기값에서 제외합니다.
+	gsap.set('.section1 .con1-object .obj:not(.obj-cloud)', {opacity: 0});
+	gsap.set('.section1 .obj-run', {y: 80});
+
+	const tl1 = gsap.timeline({
+		scrollTrigger: {
+			trigger            : '.section1',
+			start              : 'top 70%',
+			end                : 'top 10%',
+			scrub              : 3,
+			invalidateOnRefresh: true,
+			// markers: true,
+		},
+		defaults     : {ease: 'power3.out'}
+	});
+
+	tl1
+	.to(txtLines('.section1 .main-txt1'), {opacity: 1, y: 0, duration: 1.6, stagger: 0.35})
+	.to('.section1 .obj-run', {opacity: 1, y: 0, duration: 1.8}, '>-1.2')
+	.to('.section1 .obj-star', {opacity: 1, duration: 1.2, stagger: 0.2}, '>-1');
+
+	// section7 모집직무
+	const tl7 = gsap.timeline({
+		scrollTrigger: {
+			trigger: '.section7',
+			start  : 'top 60%',
+			end    : 'top top',
+			scrub  : 5,
+			// markers: true,
+		},
+		defaults     : {ease: 'power3.out'}
+	});
+
+	tl7
+	.to(txtLines('.section7 .main-txt1'), {opacity: 1, y: 0, duration: 1.8, stagger: 0.35})
+	.to(txtLines('.section7 .main-txt2'), {opacity: 1, y: 0, duration: 1.8, stagger: 0.35}, '>-0.5')
+	.to(txtLines('.section7 .sub-txt'), {opacity: 1, y: 0, duration: 1.8, stagger: 0.35}, '>-0.5')
+	.to('.section7 .tab-box', {opacity: 1, y: 0, duration: 1.8})
+	.to('.section7 .job-info-list li', {opacity: 1, y: 0, duration: 1.8, stagger: 0.3}, '>-0.5')
+
+	/* ==================================================
+		[2026 상반기 버전] section3 배너(Global No.1 한미그룹의 모집 분야) 스크롤 애니메이션
+		- 하반기 리뉴얼에서 제외된 애니메이션입니다. 요청 시 복구할 수 있도록 남겨둡니다.
+	================================================== */
+	// // section3
+	// const tl3 = gsap.timeline({
+	// scrollTrigger: {
+	// trigger            : '.section3',
+	// start              : 'top 55%',
+	// end                : 'top 20%',
+	// scrub              : 3,
+	// invalidateOnRefresh: true, // 리사이즈 시 값 재계산
+	// // markers: true,
+	// },
+	// defaults     : {ease: 'power3.out'}
+	// });
+	//
+	// tl3
+	// .to(txtLines('.section3 .main-txt1'), {opacity: 1, y: 0, duration: 1.6, stagger: 0.35})
+	// .to(txtLines('.section3 .main-txt2'), {opacity: 1, y: 0, duration: 1.6, stagger: 0.35}, '>-1.5')
+	// .to('.section3 .bg-wrap', {
+	// maxWidth    : '100%',
+	// height      : () => (window.innerWidth > 768 ? '320' : '240'),
+	// borderRadius: 0,
+	// duration    : 1.2,
+	// ease        : 'none'
+	// }, '>-0.5')
+	// .to('.section3 .bg-wrap img', {scale: 1, transformOrigin: 'top center', duration: 1.2}, '<')
+	// .to('.section3 .txt-wrap', {opacity: 1, left: '50%', duration: 1.2}, '<')
+	// .to('.section3 .img_bg', {opacity: 1, duration: 1.2}, '<')
+	/* ================================================== */
+
+	// section3 현직자 인터뷰
+	gsap.set('.section3 .interview-list > li', {opacity: 0, y: 80});
+	gsap.set('.section3 .cont-wrap > .btn', {opacity: 0, y: 40});
+	gsap.set('.section3 .con3-object .obj:not([class*="obj-blur-circle"])', {opacity: 0});
+
+	const tl3 = gsap.timeline({
+		scrollTrigger: {
+			trigger            : '.section3',
+			start              : () => (window.innerWidth > 768 ? 'top 60%' : 'top 90%'),
+			end                : () => (window.innerWidth > 768 ? 'center center' : 'top 30%'),
+			scrub              : 3,
+			invalidateOnRefresh: true,
+			// markers: true,
+		},
+		defaults     : {ease: 'power3.out'}
+	});
+
+	tl3
+	/* 오브젝트는 제목보다 먼저(타임라인 0 지점) 떠야 콘텐츠보다 늦게 나타나 보이지 않습니다. */
+	.to('.section3 .con3-object .obj:not([class*="obj-blur-circle"])', {opacity: 1, duration: 1, stagger: 0.1}, 0)
+	.to(txtLines('.section3 .main-txt1'), {opacity: 1, y: 0, duration: 1.6, stagger: 0.35}, 0)
+	.to(txtLines('.section3 .sub-txt'), {opacity: 1, y: 0, duration: 1.6, stagger: 0.35}, '>-1.2')
+	.to('.section3 .interview-list > li', {opacity: 1, y: 0, duration: 1.6, stagger: 0.3}, '>-0.8')
+	.to('.section3 .cont-wrap > .btn', {opacity: 1, y: 0, duration: 1.2}, '>-0.8');
+
+	// section8 지원자격 및 전형절차
+	gsap.set(['.section8 .area2 .step-list .step', '.section8 .red-dot-txt', '.section8 .area1 .box1 .ico', '.section8 .area1 .box1 p', '.section8 .area1 .box3 p'], {
+		opacity: 0,
+		y      : 50
+	});
+
+	const tl8 = gsap.timeline({
+		scrollTrigger: {
+			trigger: '.section8',
+			start  : 'top 60%',
+			end    : 'top 40%',
+			scrub  : 3,
+			// markers: true,
+		},
+		defaults     : {ease: 'power3.out'}
+	});
+
+	tl8
+	.to(txtLines('.section8 .main-txt1'), {opacity: 1, y: 0, duration: 1.6, stagger: 0.35})
+	.to(txtLines('.section8 .main-txt2'), {opacity: 1, y: 0, duration: 1.6, stagger: 0.35}, '>-1.2')
+	.to('.section8 .tab-box', {opacity: 1, y: 0, duration: 1.8})
+
+	// section8 area1(지원자격)
+	const tl8_area1 = gsap.timeline({
+		scrollTrigger: {
+			trigger: '.section8',
+			start  : 'top 30%',
+			end    : 'top 5%',
+			scrub  : 4,
+			// markers: true,
+		},
+		defaults     : {ease: 'power3.out'}
+	});
+
+	tl8_area1
+	.to('.section8 .area1 .ico1', {opacity: 1, y: 0, duration: 1.6})
+	.to('.section8 .area1 .at1', {opacity: 1, y: 0, duration: 1.6}, '>-0.5')
+	.to('.section8 .area1 .ico2', {opacity: 1, y: 0, duration: 1.6}, '>-0.5')
+	.to('.section8 .area1 .at2', {opacity: 1, y: 0, duration: 1.6}, '>-0.5')
+	.to('.section8 .area1 .box2 .red-dot-txt', {opacity: 1, y: 0, duration: 1.6, stagger: 0.5}, '>-0.5')
+	.to('.section8 .area1 .box3 p', {opacity: 1, y: 0, duration: 1.6, stagger: 0.5}, '>-0.5')
+
+	// section8 area2(전형절차 및 접수방법)
+	const tl8_area2 = gsap.timeline({
+		scrollTrigger: {
+			trigger            : '.section8',
+			start              : () => (window.innerWidth > 768 ? 'top 30%' : 'top 20%'),
+			end                : 'top top',
+			scrub              : 4,
+			invalidateOnRefresh: true, // 리사이즈 시 값 재계산
+			// markers: true,
+		},
+		defaults     : {ease: 'power3.out'}
+	});
+
+	tl8_area2
+	.to('.section8 .area2 .box1 .step-list .step', {opacity: 1, y: 0, duration: 1.6, stagger: 0.3})
+	.to('.section8 .area2 .box2 .step-list .step', {opacity: 1, y: 0, duration: 1.6, stagger: 0.3}, '>')
+
+	const tl8_area2_txt = gsap.timeline({
+		scrollTrigger: {
+			trigger: '.section8 .area2 .box2',
+			start  : () => (window.innerWidth > 768 ? 'top 50%' : 'top 30%'),
+			end    : () => (window.innerWidth > 768 ? 'top 40%' : 'top 10%'),
+			scrub  : 3,
+			// markers: true,
+		},
+		defaults     : {ease: 'power3.out'}
+	});
+
+	tl8_area2_txt
+	.to('.section8 .area2 .box3 .red-dot-txt', {opacity: 1, y: 0, duration: 1.6, stagger: 0.5})
+
+	/* ==================================================
+		[2026 상반기 버전] section4 마퀴(한미그룹은 제약산업의 미래입니다) 스크롤 애니메이션
+		- 하반기 리뉴얼에서 제외된 애니메이션입니다. 요청 시 복구할 수 있도록 남겨둡니다.
+	================================================== */
+	// // section4
+	// const tl4 = gsap.timeline({
+	// scrollTrigger: {
+	// trigger            : '.section4',
+	// start              : 'top 60%',
+	// end                : 'top 40%',
+	// scrub              : 3,
+	// invalidateOnRefresh: true,
+	// // markers: true,
+	// },
+	// defaults     : {ease: 'power3.out'}
+	// });
+	//
+	// tl4
+	// .to(txtLines('.section4 .main-txt1'), {opacity: 1, y: 0, duration: 1.6, stagger: 0.35})
+	// .to(txtLines('.section4 .sub-txt'), {opacity: 1, y: 0, duration: 1.8, stagger: 0.35}, '>-1.5')
+	/* ================================================== */
+
+	// section4 뉴스 말풍선
+	gsap.set('.section4 .news-list > li', {opacity: 0, y: 40});
+	gsap.set('.section4 .news-box .guide-txt', {opacity: 0});
+	/* 분자 데코는 말풍선 박스 안으로 옮겨서 셀렉터에 같이 넣어 줍니다. */
+	gsap.set('.section4 .con4-object .obj:not([class*="obj-blur-circle"]), .section4 .news-box .obj', {opacity: 0});
+
+	const tl4 = gsap.timeline({
+		scrollTrigger: {
+			trigger            : '.section4',
+			/* 모바일은 제목~말풍선 사이가 짧아 같이 떠 보입니다. 제목 구간을 앞당깁니다. */
+			start              : () => (window.innerWidth > 768 ? 'top 60%' : 'top 90%'),
+			end                : () => (window.innerWidth > 768 ? 'top 10%' : 'top 45%'),
+			scrub              : 3,
+			invalidateOnRefresh: true,
+			// markers: true,
+		},
+		defaults     : {ease: 'power3.out'}
+	});
+
+	tl4
+	.to(txtLines('.section4 .main-txt1'), {opacity: 1, y: 0, duration: 1.6, stagger: 0.35})
+	.to(txtLines('.section4 .sub-txt'), {opacity: 1, y: 0, duration: 1.8, stagger: 0.35}, '>-1.5')
+	.to('.section4 .con4-object .obj:not([class*="obj-blur-circle"]), .section4 .news-box .obj', {opacity: 1, duration: 1.4, stagger: 0.15}, '<');
+
+	const tl4_news = gsap.timeline({
+		scrollTrigger: {
+			trigger            : '.section4 .news-box',
+			/* 제목이 끝난 뒤에 시작되도록 모바일은 늦춥니다. */
+			start              : () => (window.innerWidth > 768 ? 'top 75%' : 'top 60%'),
+			end                : 'bottom 60%',
+			scrub              : 3,
+			invalidateOnRefresh: true,
+			// markers: true,
+		},
+		defaults     : {ease: 'power3.out'}
+	});
+
+	tl4_news
+	.to('.section4 .news-list > li', {opacity: 1, y: 0, duration: 1.2, stagger: 0.4})
+	.to('.section4 .news-box .guide-txt', {opacity: 1, duration: 1}, '>-0.5');
+
+	// section5 복지
+	gsap.set('.section5 .benefit-box', {opacity: 0, y: 60});
+	gsap.set('.section5 .con5-object .obj', {opacity: 0});
+
+	const tl5 = gsap.timeline({
+		scrollTrigger: {
+			trigger            : '.section5',
+			start              : 'top 60%',
+			end                : 'top 10%',
+			scrub              : 3,
+			invalidateOnRefresh: true,
+			// markers: true,
+		},
+		defaults     : {ease: 'power3.out'}
+	});
+
+	tl5
+	.to(txtLines('.section5 .main-txt1'), {opacity: 1, y: 0, duration: 1.6, stagger: 0.35})
+	.to(txtLines('.section5 .sub-txt'), {opacity: 1, y: 0, duration: 1.6, stagger: 0.35}, '>-1.2')
+	.to('.section5 .benefit-box', {opacity: 1, y: 0, duration: 1.6}, '>-0.8')
+	.to('.section5 .con5-object .obj', {opacity: 1, duration: 1.4, stagger: 0.2}, '<');
+
+	// section6 로고 / 돋보기 캐릭터
+	gsap.set('.section6 .con6-char', {opacity: 0, y: 120});
+
+	const tl6 = gsap.timeline({
+		scrollTrigger: {
+			trigger            : '.section6',
+			start              : 'top 80%',
+			end                : 'center center',
+			scrub              : 3,
+			invalidateOnRefresh: true,
+			// markers: true,
+		},
+		defaults     : {ease: 'power3.out'}
+	});
+
+	tl6
+	.to('.section6 .con6-char', {opacity: 1, y: 0, duration: 1.8});
+
+	// section2 연혁
+	gsap.set(['.section2 .sub-txt', '.section2 .circle-box .box1 .rh-txt'], {opacity: 0, y: 1000});
+	gsap.set(['.d-history-list li', '.section2 .circle-box .box2 .s-txt', '.section2 .circle-box .box2 p'], {opacity: 0, y: 100});
+	gsap.set('.history-list .txt-box', {opacity: 0, y: 40});
+	gsap.set(['.li1 .side .img', '.li3 .side .img', '.li5 .side .img'], {opacity: 0, x: 50});
+	gsap.set(['.li2 .side .img', '.li4 .side .img'], {opacity: 0, x: -50});
+
+	const tl2 = gsap.timeline({
+		scrollTrigger: {
+			trigger: '.section2',
+			start  : 'top 60%',
+			end    : 'top 40%',
+			scrub  : 3,
+			// markers: true,
+		},
+		defaults     : {ease: 'power3.out'}
+	});
+
+	tl2
+	.to(txtLines('.section2 .main-txt1'), {opacity: 1, y: 0, duration: 1.6, stagger: 0.35})
+
+
+	const tl2_2 = gsap.timeline({
+		scrollTrigger: {
+			trigger            : '.section2 .main-txt1',
+			start              : 'top 60%',
+			end                : 'top 30%',
+			scrub              : 7,
+			invalidateOnRefresh: true, // 리사이즈 시 값 재계산
+			// markers: true,
+		},
+		defaults     : {ease: 'power3.out'}
+	});
+	tl2_2
+	.to(txtLines('.section2 .sub-txt'), {opacity: 1, y: 0, duration: 1.8, stagger: 0.35}, '>-0.5')
+	.to('.section2 .red-line', {
+		// 시안 : 세로선 위쪽은 첫 연혁보다 110px 위, 아래쪽은 100th 숫자 윗선에 맞닿습니다.
+		height  : function () {
+			const wrap = document.querySelector('.section2 .history-wrap');
+			const line = document.querySelector('.section2 .red-line');
+			const box1 = document.querySelector('.section2 .circle-box .box1');
+			const rh   = document.querySelector('.section2 .circle-box .rh-txt');
+			if ( !wrap || !line || !box1 || !rh ) return 'calc(100% + 325px)';
+
+			// 숫자 획 안쪽까지 충분히 내려 틈이 보이지 않게 합니다.
+			// (100th 는 .circle-box(z-index:2) 가 세로선(z-index:1) 위라 겹쳐도 가려집니다)
+			const fs     = parseFloat(getComputedStyle(rh).fontSize) || 280;
+			const inkTop = box1.getBoundingClientRect().top + fs * 0.12;
+			// .red-line 의 top 은 브레이크포인트마다 달라 CSS 값을 그대로 읽습니다.
+			const offset  = parseFloat(getComputedStyle(line).top) || 0;
+			const lineTop = wrap.getBoundingClientRect().top + offset;
+
+			return Math.round(inkTop - lineTop);
+		},
+		duration: 8, ease: 'none'
+	}, '>')
+
+	// 강조 문구 -> 년도 -> 리스트 -> 이미지 순서로 등장합니다.
+	.to('.li1 .txt-box', {opacity: 1, y: 0, duration: 1.2}, '>-7.6')
+	.to('.history-list .li1 .year', {opacity: 1, duration: 1.8}, '>-0.6')
+	.to('.history-list .li1 .d-history-list li', {opacity: 1, y: 0, duration: 2, stagger: 1}, '>')
+	.to('.li1 .side .img', {opacity: 1, x: 0, duration: 1.6}, '>-0.5')
+
+	const startPos = (window.innerWidth > 768 ? 'top 50%' : 'top 10%');
+	const endPos = (window.innerWidth > 768 ? 'top 20%' : '+=50%');
+	const tl2_li2 = gsap.timeline({
+		scrollTrigger: {
+			trigger            : '.history-list .li1',
+			start              : startPos,
+			end                : endPos,
+			scrub              : 5,
+			invalidateOnRefresh: true, // 리사이즈 시 값 재계산
+			// markers: true,
+		},
+		defaults     : {ease: 'power3.out'}
+	});
+	tl2_li2
+	.to('.history-list .li2 .year', {opacity: 1, duration: 1.8}, '>')
+	.to('.history-list .li2 .d-history-list li', {opacity: 1, y: 0, duration: 2, stagger: 1}, '>')
+	.to('.li2 .side .img', {opacity: 1, x: 0, duration: 1.6}, '>-0.5')
+
+	const tl2_li3 = gsap.timeline({
+		scrollTrigger: {
+			trigger            : '.history-list .li2',
+			start              : startPos,
+			end                : endPos,
+			scrub              : 5,
+			invalidateOnRefresh: true, // 리사이즈 시 값 재계산
+			// markers: true,
+		},
+		defaults     : {ease: 'power3.out'}
+	});
+	tl2_li3
+	// 강조 문구 -> 년도 -> 리스트 -> 이미지 순서로 등장합니다.
+	.to('.li3 .txt-box', {opacity: 1, y: 0, duration: 1.2}, '>')
+	.to('.history-list .li3 .year', {opacity: 1, duration: 1.8}, '>-0.6')
+	.to('.history-list .li3 .d-history-list li', {opacity: 1, y: 0, duration: 2, stagger: 1}, '>')
+	.to('.li3 .side .img', {opacity: 1, x: 0, duration: 1.6}, '>-0.5')
+
+	const tl2_li4 = gsap.timeline({
+		scrollTrigger: {
+			trigger            : '.history-list .li3',
+			start              : startPos,
+			end                : endPos,
+			scrub              : 5,
+			invalidateOnRefresh: true, // 리사이즈 시 값 재계산
+			// markers: true,
+		},
+		defaults     : {ease: 'power3.out'}
+	});
+	tl2_li4
+	.to('.history-list .li4 .year', {opacity: 1, duration: 1.8}, '>')
+	.to('.history-list .li4 .d-history-list li', {opacity: 1, y: 0, duration: 2, stagger: 1}, '>')
+	.to('.li4 .side .img', {opacity: 1, x: 0, duration: 1.6}, '>-0.5')
+
+	const tl2_li5 = gsap.timeline({
+		scrollTrigger: {
+			trigger            : '.history-list .li4',
+			start              : startPos,
+			end                : endPos,
+			scrub              : 5,
+			invalidateOnRefresh: true, // 리사이즈 시 값 재계산
+			// markers: true,
+		},
+		defaults     : {ease: 'power3.out'}
+	});
+	tl2_li5
+	// 강조 문구 -> 년도 -> 리스트 -> 이미지 순서로 등장합니다.
+	.to('.li5 .txt-box', {opacity: 1, y: 0, duration: 1.2}, '>')
+	.to('.history-list .li5 .year', {opacity: 1, duration: 1.8}, '>-0.6')
+	.to('.history-list .li5 .d-history-list li', {opacity: 1, y: 0, duration: 2, stagger: 1}, '>')
+	.to('.li5 .side .img', {opacity: 1, x: 0, duration: 1.6}, '>-0.5')
+
+	const tl2_box = gsap.timeline({
+		scrollTrigger: {
+			trigger: '.section2 .history-list .li5',
+			start  : () => (window.innerWidth > 768 ? 'top 40%' : 'top 10%'),
+			end    : () => (window.innerWidth > 768 ? 'top 10%' : '+=50%'),
+			scrub  : 2,
+			// markers: true,
+		},
+		defaults     : {ease: 'power3.out'}
+	});
+
+	tl2_box
+	.to('.section2 .circle-box .box1 .rh-txt', {opacity: 1, y: 0, duration: 1.8}, '>')
+	.to('.section2 .circle-box .box2 .s-txt', {opacity: 1, y: 0, duration: 1.8}, '>-0.5')
+	.to('.section2 .circle-box .box2 p', {opacity: 1, y: 0, duration: 1.6}, '>-0.5')
+
+	// section9 채용설명회 일정
+	const tl9 = gsap.timeline({
+		scrollTrigger: {
+			trigger: '.section9',
+			start  : 'top 60%',
+			end    : 'top 40%',
+			scrub  : 3,
+			// markers: true,
+		},
+		defaults     : {ease: 'power3.out'}
+	});
+
+	tl9
+	.to(txtLines('.section9 .main-txt1'), {opacity: 1, y: 0, duration: 1.6, stagger: 0.35})
+	.to(txtLines('.section9 .sub-txt'), {opacity: 1, y: 0, duration: 1.6, stagger: 0.35}, '>-1.2')
+	.to(txtLines('.section9 .sub-txt2'), {opacity: 1, y: 0, duration: 1.6, stagger: 0.35}, '>-1.2')
+	.to('.section9 .tab-box', {opacity: 1, y: 0, duration: 1.8})
+
+	const tl9_calendar = gsap.timeline({
+		scrollTrigger: {
+			trigger: '.section9 .tab-box',
+			start  : 'top 80%',
+			end    : 'top 60%',
+			scrub  : 3,
+			// markers: true,
+		},
+		defaults     : {ease: 'power3.out'}
+	});
+
+	tl9_calendar
+	.to('.section9 .cw1', {opacity: 1, y: 0, duration: 1.6, stagger: 0.1})
+
+	// section10 : 카드 pc 스크롤 & 모바일 y축 올라오는 이벤트
+	const targets = ['.section10 .li1', '.section10 .li2', '.section10 .li3'];
+
+	ScrollTrigger.matchMedia({
+		// ✅ PC (≥769) : marginTop 애니메이션
+		"(min-width: 769px)": function () {
+			// 모바일에서 남아있을 수 있는 opacity/transform/will-change 싹 제거
+			gsap.set(targets, {clearProps: "opacity,transform,will-change"});
+
+			gsap.set(targets, {marginTop: 200, willChange: "margin-top"});
+
+			const tl10 = gsap.timeline({
+				scrollTrigger: {
+					trigger: ".section10",
+					start  : "top 90%",
+					end    : "+=100%",
+					scrub  : 1.5,
+					// markers: true,
+					invalidateOnRefresh: true
+				},
+				defaults     : {ease: "power3.out"}
+			});
+
+			tl10
+			.to('.section10 .li1', {marginTop: 60, duration: 6}, 0)
+			.to('.section10 .li2', {marginTop: 0, duration: 4}, 0)
+			.to('.section10 .li3', {marginTop: 120, duration: 10}, 0);
+		},
+
+		// ✅ 모바일 (≤768) : y:100 → 0 (마진 안 씀)
+		"(max-width: 768px)": function () {
+			// PC에서 남아있을 수 있는 marginTop/will-change 제거
+			gsap.set(targets, {clearProps: "marginTop,will-change"});
+
+			gsap.set(targets, {y: 100, opacity: 0, willChange: "transform,opacity"});
+
+			gsap.to(targets, {
+				scrollTrigger: {
+					trigger      : ".section10",
+					start        : "top 40%",
+					end          : "top 10%",
+					toggleActions: "play none none reverse",
+					// markers: true,
+					invalidateOnRefresh: true
+				},
+				y            : 0,
+				opacity      : 1,
+				duration     : 1.2,
+				ease         : "power3.out",
+				stagger      : 0.7
+			}, '>');
+		}
+	});
+
+	// (선택) 레이아웃 변화가 잦다면 때때로 새로고침
+	// window.addEventListener('resize', () => ScrollTrigger.refresh());
+
+	/* ==================================================
+		[2026 상반기 버전] section11 플립카드(DAYS/HOURS/MINUTES/SECONDS) 등장 애니메이션
+		- 하반기 리뉴얼에서 제외된 애니메이션입니다. 요청 시 복구할 수 있도록 남겨둡니다.
+	================================================== */
+	// // section11
+	// gsap.set('.section11 .main-txt1', {opacity: 0, scale: 2, y: 0});
+	// const tl11 = gsap.timeline({
+	// scrollTrigger: {
+	// trigger            : '.section11',
+	// start              : () => (window.innerWidth > 768 ? 'top 60%' : 'top 50%'),
+	// end                : () => (window.innerWidth > 768 ? 'top 15%' : 'top 10%'),
+	// scrub              : 3,
+	// invalidateOnRefresh: true, // 리사이즈 시 값 재계산
+	// // markers            : true,
+	// },
+	// defaults     : {ease: 'power3.out'}
+	// });
+	//
+	// tl11
+	// .to('.section11 .main-txt1', {opacity: 1, scale: 1, duration: 1.2, ease: 'power4'})
+	// .to(txtLines('.section11 .sub-txt'), {opacity: 1, y: 0, duration: 1.6, stagger: 0.35}, '>-0.8')
+	// .to('.section11 b', {opacity: 1, y: 0, duration: 1.6}, '>-1.2')
+	// .addLabel('afterB'); // ← b 끝난 뒤 지점
+	//
+	// // 반응형: 초기 상태만 세팅하고, 같은 tl11에 "afterB" 뒤에 이어붙인다
+	// ScrollTrigger.matchMedia({
+	// '(min-width: 769px)': function () {
+	// gsap.set('.section11 .days-wrap', {opacity: 0, y: -20, x: -200, scale: 1.2});
+	// gsap.set('.section11 .hours-wrap', {opacity: 0, x: -100, scale: 1.2});
+	// gsap.set('.section11 .minutes-wrap', {opacity: 0, x: 100, scale: 1.2});
+	// gsap.set('.section11 .seconds-wrap', {opacity: 0, y: -20, x: 200, scale: 1.2});
+	//
+	// // 같은 tl11에 'afterB' 이후로 순서 보장
+	// tl11
+	// .to('.section11 .days-wrap', {opacity: 1, y: 0, x: 0, scale: 1, duration: 1.6, ease: 'power4.out'}, 'afterB')
+	// .to('.section11 .hours-wrap', {opacity: 1, x: 0, scale: 1, duration: 1.6, ease: 'power4.out'}, '<')
+	// .to('.section11 .minutes-wrap', {opacity: 1, x: 0, scale: 1, duration: 1.6, ease: 'power4.out'}, '<')
+	// .to('.section11 .seconds-wrap', {opacity: 1, y: 0, x: 0, scale: 1, duration: 1.6, ease: 'power4.out'}, '<')
+	// .to('.section11 .dot-box.center-dot-box', {opacity: 1, duration: 1.6, ease: 'power4.out'}, '<')
+	// .to('.section11 .btn', {opacity: 1, y: 0, duration: 1.2}, '>-0.8');
+	// },
+	//
+	// '(max-width: 768px)': function () {
+	// gsap.set('.section11 .days-wrap', {opacity: 0, y: -20, scale: 1.2});
+	// gsap.set('.section11 .hours-wrap', {opacity: 0, x: -100, scale: 1.2});
+	// gsap.set('.section11 .minutes-wrap', {opacity: 0, y: 50, scale: 1.2});
+	// gsap.set('.section11 .seconds-wrap', {opacity: 0, x: 100, scale: 1.2});
+	//
+	// const tl11_mo = gsap.timeline({
+	// scrollTrigger: {
+	// trigger            : '.section11 .main-txt1',
+	// start              : 'top 40%',
+	// end                : 'top top',
+	// scrub              : 3,
+	// invalidateOnRefresh: true, // 리사이즈 시 값 재계산
+	// // markers            : true,
+	// },
+	// defaults     : {ease: 'power3.out'}
+	// });
+	//
+	// tl11_mo
+	// .to('.section11 .days-wrap', {opacity: 1, y: 0, scale: 1, duration: 1.6, ease: 'power4.out'})
+	// .to('.section11 .hours-wrap', {opacity: 1, x: 0, scale: 1, duration: 1.6, ease: 'power4.out'}, '<')
+	// .to('.section11 .minutes-wrap', {opacity: 1, y: 0, scale: 1, duration: 1.6, ease: 'power4.out'}, '<')
+	// .to('.section11 .seconds-wrap', {opacity: 1, x: 0, scale: 1, duration: 1.6, ease: 'power4.out'}, '<')
+	// .to('.section11 .btn', {opacity: 1, y: 0, duration: 1.2}, '>-0.8');
+	// }
+	// });
+	/* ================================================== */
+
+	// section11 카운트다운
+	gsap.set('.section11 .main-txt1', {opacity: 0, scale: 2, y: 0});
+	gsap.set('.section11 .count-wrap .cd-item, .section11 .count-wrap .cd-txt', {opacity: 0, y: 40});
+	gsap.set('.section11 .earth-btn', {opacity: 0, y: 80, scale: 0.9});
+	// 지원하기 배지 : 가운데 정렬(xPercent/yPercent)을 GSAP 이 관리해야 scale 트윈과 충돌하지 않습니다.
+	gsap.set('.section11 .earth-apply', {xPercent: -50, yPercent: -50, x: 0, y: 0, scale: 0.92, autoAlpha: 0});
+	gsap.set('.section11 .cont-wrap .guide-txt', {opacity: 0});
+	gsap.set('.section11 .con11-bg .cloud img', {opacity: 0, y: 60});
+
+	/* 모바일은 section11 이 문서 맨 끝이라 'top 10%' 까지 스크롤이 남지 않습니다.
+	   (끝까지 내려도 섹션 상단이 화면 10% 지점에 못 닿아 지구/안내문구가 opacity 0 인 채로 멈춥니다)
+	   그래서 모바일은 화면에 들어오는 구간 안에서 끝나도록 범위를 앞당깁니다. */
+	const tl11 = gsap.timeline({
+		scrollTrigger: {
+			trigger            : '.section11',
+			start              : () => (window.innerWidth > 768 ? 'top 60%' : 'top 90%'),
+			end                : () => (window.innerWidth > 768 ? 'top 15%' : 'top 40%'),
+			scrub              : 3,
+			invalidateOnRefresh: true, // 리사이즈 시 값 재계산
+			// markers            : true,
+		},
+		defaults     : {ease: 'power3.out'}
+	});
+
+	tl11
+	.to('.section11 .main-txt1', {opacity: 1, scale: 1, duration: 1.2, ease: 'power4'})
+	.to('.section11 .count-wrap .cd-item', {opacity: 1, y: 0, duration: 1.2, stagger: 0.25}, '>-0.6')
+	.to('.section11 .count-wrap .cd-txt', {opacity: 1, y: 0, duration: 1.2}, '>-0.6')
+	.to('.section11 .con11-bg .cloud img', {opacity: 1, y: 0, duration: 1.6, stagger: 0.2}, '<')
+	.to('.section11 .earth-btn', {opacity: 1, y: 0, scale: 1, duration: 1.6, ease: 'power4.out'}, '>-0.8')
+	.to('.section11 .earth-apply', {autoAlpha: 1, scale: 1, duration: 1, ease: 'back.out(1.7)'}, '>-0.6')
+	.to('.section11 .cont-wrap .guide-txt', {opacity: 1, duration: 1}, '>-0.6');
+
+	// 메인비주얼 : 모집직무 리스트 토글 (오브젝트 <-> 리스트)
+	$('.mv-job-btn').on('click', function () {
+		$('#mVisual').toggleClass('job-open');
+		if (window.ScrollTrigger) ScrollTrigger.refresh();
+	});
+
+	// 메인비주얼 : 모집직무 리스트 무한 롤링용 복제
+	// - content.css 의 mvJobRolling 키프레임이 ul 높이의 절반만큼 이동하므로 li 를 한 벌 더 붙여 이어지게 합니다.
+	// - 모션 축소 설정에서는 롤링 대신 일반 스크롤이므로 복제하지 않습니다.
+	const $mvJobList = $('.mv-joblist-scroll ul');
+	if ($mvJobList.length && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		$mvJobList.append($mvJobList.children().clone().attr('aria-hidden', 'true'));
+	}
+
+	// 지정 섹션으로 이동 (.go-section[data-target])
+	$(document).on('click', '.go-section', function (e) {
+		e.preventDefault();
+		const $target = $($(this).data('target'));
+		if (!$target.length) return;
+
+		const headerH = $('#header .header-inner').outerHeight() || 100;
+		const top = $target.offset().top - headerH;
+		const L = (window.lenis || (typeof lenis !== 'undefined' ? lenis : null));
+
+		if (L && typeof L.scrollTo === 'function') {
+			L.scrollTo(top, {duration: 1.2});
+		} else {
+			$('html, body').stop(true).animate({scrollTop: top}, 800);
+		}
+	});
+
+	// section7 탭 가로 스크롤 시 세로 스크롤 막기
+	const $sec7_scrollX = $('.scroll-x');
+	let sec7_startX, sec7_startY;
+
+	$sec7_scrollX.on('touchstart', function (e) {
+		sec7_startX = e.originalEvent.touches[0].clientX;
+		sec7_startY = e.originalEvent.touches[0].clientY;
+	});
+
+	$sec7_scrollX.on('touchmove', function (e) {
+		const sec7_dx = Math.abs(e.originalEvent.touches[0].clientX - sec7_startX);
+		const sec7_dy = Math.abs(e.originalEvent.touches[0].clientY - sec7_startY);
+
+		if (sec7_dx > sec7_dy) {
+			e.stopPropagation(); // 가로 스크롤 우선
+		}
+	});
+
+});
+
+// 팝업----------------------------------------------------------------------------------
+// 팝업이 열릴 때 스크롤 막기
+// ------------------------------------
+// 전역 설정
+// ------------------------------------
+let __isLocked = false;
+const __KEYS_BLOCK = new Set([32, 33, 34, 35, 36, 37, 38, 39, 40]); // Space, PgUp/Down, Home/End, Arrows
+const __targets = [window, document, document.documentElement];
+let __touchStartY = 0;
+
+// 팝업 내부 스크롤 영역 셀렉터(필요 시 추가)
+const SCROLL_SEL = '.scroll-y, [data-scrollable="y"]';
+
+// 스크롤 가능한 조상 찾기(팝업 안에서만)
+function getScrollableAncestor(target) {
+	let el = target instanceof Element ? target : null;
+	if (!el) return null;
+	// 팝업 범위 확인(팝업 루트에 .popup 클래스가 없다면 #jopIntroPopup로 바꾸세요)
+	if (!$(el).closest('.popup, #jopIntroPopup').length) return null;
+
+	while (el && el !== document.body) {
+		const $el = $(el);
+		const cs = getComputedStyle(el);
+		const isMatch = $el.is(SCROLL_SEL) || /(auto|scroll)/.test(cs.overflowY);
+		if (isMatch && el.scrollHeight > el.clientHeight) return el;
+		el = el.parentElement;
+	}
+	return null;
+}
+
+function canScroll(el, deltaY) {
+	const top = el.scrollTop;
+	const max = el.scrollHeight - el.clientHeight;
+	if (deltaY < 0 && top <= 0) return false;      // 위로 더 못 감
+	if (deltaY > 0 && top >= max - 1) return false; // 아래로 더 못 감(반올림 보정)
+	return true;
+}
+
+function getDeltaY(e) {
+	if (e.type === 'wheel') {
+		// 표준 wheel
+		return e.deltaY || (-e.wheelDelta) || e.detail || 0;
+	} else if (e.type === 'touchmove' && e.touches && e.touches[0]) {
+		const dy = __touchStartY - e.touches[0].clientY; // 손가락 ↓(컨텐츠 ↑)=양수
+		return dy;
+	}
+	return 0;
+}
+
+function onWheelTouch(e) {
+	const scroller = getScrollableAncestor(e.target);
+
+	if (scroller) {
+		const dy = getDeltaY(e);
+		if (dy === 0) {
+			// 멀티축/가벼운 이동 등: 내부만 처리하게 전파 차단
+			e.stopPropagation();
+			return;
+		}
+		if (canScroll(scroller, dy)) {
+			// 내부 스크롤 가능 → 기본 스크롤 허용 + 바깥 전파만 차단
+			e.stopPropagation();
+			return;
+		} else {
+			// 내부가 더 못 움직이는 엣지 → 바깥(사이트)로 체이닝 금지
+			e.preventDefault();
+			e.stopImmediatePropagation();
+			return;
+		}
+	}
+
+	// 팝업 외부거나 스크롤러 없음 → 전역 차단 (사이트 스크롤 금지)
+	e.preventDefault();
+	e.stopImmediatePropagation();
+}
+
+function onKeydown(e) {
+	if (!__KEYS_BLOCK.has(e.keyCode)) return;
+
+	// 입력창/셀렉트는 통과
+	const t = e.target;
+	const tag = t.tagName;
+	const editable = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || t.isContentEditable;
+	if (editable) return;
+
+	const scroller = getScrollableAncestor(t);
+	if (scroller) {
+		// 내부 스크롤 가능한 경우 키보드 스크롤 허용(전파만 차단)
+		e.stopPropagation();
+		return;
+	}
+
+	// 아니면 막기
+	e.preventDefault();
+	e.stopImmediatePropagation();
+}
+
+function lockScroll() {
+	if (__isLocked) return;
+	__isLocked = true;
+
+	if (window.lenis?.stop) window.lenis.stop();
+
+	__targets.forEach(t => {
+		t.addEventListener('wheel', onWheelTouch, {passive: false, capture: true});
+		t.addEventListener('touchmove', onWheelTouch, {passive: false, capture: true});
+		t.addEventListener('keydown', onKeydown, true);
+		t.addEventListener('touchstart', e => {
+			if (e.touches && e.touches[0]) __touchStartY = e.touches[0].clientY;
+		}, {passive: true, capture: true});
+	});
+
+	document.documentElement.classList.add('scroll-locked');
+}
+
+function unlockScrollIfNoPopup() {
+	if ($('.popup:visible, #jopIntroPopup:visible').length > 0) return;
+	if (!__isLocked) return;
+	__isLocked = false;
+
+	__targets.forEach(t => {
+		t.removeEventListener('wheel', onWheelTouch, {capture: true});
+		t.removeEventListener('touchmove', onWheelTouch, {capture: true});
+		t.removeEventListener('keydown', onKeydown, true);
+		// touchstart는 여러 익명 핸들러가 생기지 않도록 상단으로 빼고 싶다면 별도 함수로 분리하세요.
+	});
+
+	document.documentElement.classList.remove('scroll-locked');
+	if (window.lenis?.start) window.lenis.start();
+}
+
+// ===== 팝업 열기/닫기 =====
+function openPopup(id, type, triggerEl) {
+	const $popup = $(id);
+	if (!$popup.length) return;
+
+	// 1) 모든 pop-cont 숨김
+	$popup.find('.pop-cont').hide();
+
+	// 2) 트리거에서 목표 선택자 읽기
+	let $target = null;
+	if (triggerEl) {
+		const sel = $(triggerEl).data('cont'); // ".popup-xxxx"
+		if (sel) $target = $popup.find(sel);
+	}
+
+	// 3) 예외/보호: 못 찾으면 첫 번째 섹션 노출
+	if (!$target || !$target.length) {
+		$target = $popup.find('.pop-cont').first();
+	}
+
+	// 4) 해당 섹션만 노출
+	$target.css('display', 'flex');
+
+	// 5) 팝업 띄우기
+	lockScroll(); // 레이아웃 고정/바디 스크롤 차단 (레이아웃은 건드리지 않고 스크롤만 차단)
+
+	$('.popup-bg').stop(true, true);
+	$popup.stop(true, true);
+
+	if (type === "fade") {
+		$popup.attr('data-open-type', 'fade').fadeIn(200);
+		$('.popup-bg').fadeIn(200);
+	} else {
+		$popup.attr('data-open-type', 'normal').show();
+		$('.popup-bg').show();
+	}
+
+	// 스크롤 영역 맨 위로
+	// (display:none 상태에서는 scrollTop 이 먹지 않으므로 팝업을 띄운 뒤에 초기화합니다)
+	const resetScroll = function () {
+		$target.find('.scroll-y').scrollTop(0);
+	};
+	resetScroll();
+	requestAnimationFrame(resetScroll);
+}
+
+
+function closePopup(trigger, type) {
+	const $popup = $(trigger).closest('.popup');
+	if ($popup.length === 0) return;
+
+	const afterHide = () => {
+		if ($('.popup:visible').length === 0) {
+			$('.popup-bg').stop(true, true).fadeOut ? $('.popup-bg').fadeOut(200) : $('.popup-bg').hide();
+		}
+		unlockScrollIfNoPopup();
+	};
+
+	$popup.stop(true, true);
+	if (type === "fade") {
+		$popup.attr('data-open-type', 'fade').fadeOut(200, afterHide);
+	} else {
+		$popup.attr('data-open-type', 'normal').hide();
+		afterHide();
+	}
+}

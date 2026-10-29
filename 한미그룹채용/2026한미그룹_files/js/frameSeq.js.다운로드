@@ -1,0 +1,185 @@
+/* ==================================================
+	PNG 시퀀스 플레이어 (gif 대체)
+
+	사용법
+	<canvas class="frame-seq" data-frames="/img/run_gif/frames.json"></canvas>
+
+	frames.json (이미지와 같은 폴더)
+	{
+		"src"   : "run_{n}.png",   // {n} 자리에 1 ~ count 번호가 들어갑니다. (json 위치 기준 상대경로)
+		"count" : 73,              // 프레임 수
+		"fps"   : 60,              // 초당 프레임 (canvas 의 data-fps 가 있으면 그 값이 우선)
+		"stage" : [1920, 1080],    // 캔버스(무대) 크기 - 원본 gif 와 같은 크기로 두면 css 박스를 그대로 쓸 수 있습니다.
+		"offset": [[454, 291], …]  // 프레임별로 무대 안에 그릴 좌표. 프레임마다 여백이 잘려 있어 크기가 달라도
+		                           // 이 좌표에 그리면 캐릭터가 흔들리지 않습니다. 없으면 전부 (0, 0) 에 그립니다.
+	}
+
+	동작
+	- 문서 순서대로 한 시퀀스씩 프레임을 모두 내려받고(위쪽 섹션이 먼저 준비되도록), 첫 장은 받자마자 정지 화면으로 보여줍니다.
+	- 화면에 보이는 동안만 requestAnimationFrame 으로 재생하고 벗어나면 멈춥니다.
+	- 프레임 번호는 경과 시간으로 계산하므로 주사율이 달라도(120Hz 등) 항상 fps 속도로 재생됩니다.
+================================================== */
+(function () {
+	'use strict';
+
+	function FrameSequence(canvas) {
+		this.canvas   = canvas;
+		this.ctx      = canvas.getContext('2d');
+		this.metaUrl  = canvas.dataset.frames || '';
+		this.fpsAttr  = parseFloat(canvas.dataset.fps) || 0;
+		this.meta     = null;
+		this.frames   = [];
+		this.sized    = false;
+		this.loaded   = false;
+		this.visible  = false;
+		this.playing  = false;
+		this.elapsed  = 0;  // 재생 누적 시간(ms) - 멈춰 있던 시간은 빼고 셉니다.
+		this.lastTime = 0;
+		this.current  = -1; // 마지막으로 그린 프레임 인덱스
+		this.rafId    = 0;
+		this.tick     = this.tick.bind(this);
+	}
+
+	// ---------- 로딩 ----------
+	FrameSequence.prototype.load = function () {
+		var self = this;
+		if (this.loadPromise) return this.loadPromise;
+
+		this.loadPromise = fetch(this.metaUrl)
+		.then(function (res) { return res.json(); })
+		.then(function (meta) {
+			self.meta = meta;
+			self.fps  = self.fpsAttr || meta.fps || 60;
+
+			var stage = meta.stage || [];
+			if (stage[0] && stage[1]) self.setSize(stage[0], stage[1]);
+
+			var base = self.metaUrl.slice(0, self.metaUrl.lastIndexOf('/') + 1);
+			var jobs = [];
+			for (var i = 0; i < meta.count; i++) {
+				jobs.push(self.loadFrame(base + meta.src.replace('{n}', i + 1), i));
+			}
+			return Promise.all(jobs);
+		})
+		.then(function () {
+			self.loaded = true;
+			self.drawFrame(0);
+			if (self.visible) self.play();
+		})
+		.catch(function (err) {
+			if (window.console) console.warn('[frameSeq] 로드 실패:', self.metaUrl, err);
+		});
+
+		return this.loadPromise;
+	};
+
+	FrameSequence.prototype.loadFrame = function (url, i) {
+		var self = this;
+		return new Promise(function (resolve) {
+			var img = new Image();
+			img.onload = function () {
+				self.frames[i] = img;
+				if (!self.sized) self.setSize(img.naturalWidth, img.naturalHeight); // stage 가 없으면 첫 프레임 크기로
+				if (i === 0) self.drawFrame(0); // 첫 장은 받자마자 정지 화면으로
+
+				// 미리 디코딩해 두면 첫 바퀴부터 끊김 없이 돌아갑니다. (미지원 브라우저는 그냥 통과)
+				var decoded = img.decode ? img.decode().catch(function () {}) : Promise.resolve();
+				decoded.then(resolve);
+			};
+			img.onerror = function () { resolve(); }; // 빠진 프레임은 건너뜁니다.
+			img.src = url;
+		});
+	};
+
+	FrameSequence.prototype.setSize = function (w, h) {
+		this.canvas.width  = w;
+		this.canvas.height = h;
+		this.sized = true;
+	};
+
+	// ---------- 재생 ----------
+	FrameSequence.prototype.play = function () {
+		if (this.playing || !this.loaded) return;
+		this.playing  = true;
+		this.lastTime = 0;
+		this.rafId    = requestAnimationFrame(this.tick);
+	};
+
+	FrameSequence.prototype.pause = function () {
+		if (!this.playing) return;
+		this.playing = false;
+		cancelAnimationFrame(this.rafId);
+	};
+
+	FrameSequence.prototype.tick = function (now) {
+		if (!this.playing) return;
+
+		var frameDur = 1000 / this.fps;
+		var total    = frameDur * this.meta.count;
+
+		if (this.lastTime) {
+			// 탭 전환 등으로 rAF 가 멈췄다 돌아와도 한꺼번에 건너뛰지 않도록 상한을 둡니다.
+			this.elapsed = (this.elapsed + Math.min(now - this.lastTime, 100)) % total;
+		}
+		this.lastTime = now;
+
+		// round : 60Hz 화면에서 rAF 간격(16.6~16.7ms)의 미세한 오차로 프레임을 건너뛰거나 두 번 그리지 않도록
+		var idx = Math.round(this.elapsed / frameDur) % this.meta.count;
+		if (idx !== this.current) this.drawFrame(idx);
+
+		this.rafId = requestAnimationFrame(this.tick);
+	};
+
+	FrameSequence.prototype.drawFrame = function (idx) {
+		var img = this.frames[idx];
+		if (!img) return;
+
+		var off = (this.meta.offset && this.meta.offset[idx]) || [0, 0];
+		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+		this.ctx.drawImage(img, off[0], off[1]);
+		this.current = idx;
+	};
+
+	// ---------- 화면에 보일 때만 재생 ----------
+	FrameSequence.prototype.observe = function () {
+		var self = this;
+
+		if (!('IntersectionObserver' in window)) {
+			this.visible = true;
+			if (this.loaded) this.play();
+			return;
+		}
+
+		new IntersectionObserver(function (entries) {
+			entries.forEach(function (entry) {
+				self.visible = entry.isIntersecting;
+				if (self.visible) self.play();
+				else self.pause();
+			});
+		}, {rootMargin: '100px 0px'}).observe(this.canvas);
+	};
+
+	// ---------- 초기화 ----------
+	function init() {
+		var canvases = document.querySelectorAll('canvas.frame-seq[data-frames]');
+		if (!canvases.length) return;
+
+		var players = Array.prototype.map.call(canvases, function (canvas) {
+			return new FrameSequence(canvas);
+		});
+		players.forEach(function (p) { p.observe(); });
+
+		// 문서 순서대로 한 시퀀스씩 내려받습니다. (위쪽 섹션이 먼저 준비되도록)
+		players.reduce(function (chain, p) {
+			return chain.then(function () { return p.load(); });
+		}, Promise.resolve());
+
+		window.frameSequences = players; // 디버깅용
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', init);
+	} else {
+		init();
+	}
+})();
