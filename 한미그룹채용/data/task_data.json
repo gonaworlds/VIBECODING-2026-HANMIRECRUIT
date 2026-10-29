@@ -1,0 +1,143 @@
+{
+  "section": "Hanmi Careers Data",
+  "data": [
+    {
+      "category": "rnd",
+      "infoList": [
+        {
+          "location": "연구센터 (경기도 동탄)",
+          "count": "6",
+          "jobs": [
+            "NCE (New Chemical Entity)",
+            "QS&F (Quality Science & Formulation)",
+            "MST (Manufacturing Science Technology)",
+            "TE (Toxicology Evaluation)",
+            "DST (Drug Science & Technology)",
+            "BSS (Biological & Structural Evaluation Science)"
+          ]
+        },
+        {
+          "location": "제제연구소 [의약혁신센터] (경기도 광교)",
+          "count": "1",
+          "jobs": [
+            "신제형연구 (전문연구요원)"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "prod",
+      "infoList": [
+        {
+          "location": "팔탄제조센터 (경기도 화성)",
+          "count": "4",
+          "jobs": [
+            "제조",
+            "포장",
+            "품질관리",
+            "기술지원"
+          ]
+        },
+        {
+          "location": "평택제조센터 (경기도 평택)",
+          "count": "2",
+          "jobs": [
+            "DS생산 (학사)",
+            "DS생산 (전문학사)"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "sales",
+      "infoList": [
+        {
+          "location": "전국 (Mobile Office)",
+          "count": "1",
+          "jobs": [
+            "제약영업"
+          ]
+        },
+        {
+          "location": "본사 (서울시 송파구)",
+          "count": "2",
+          "jobs": [
+            "해외영업",
+            "IT솔루션영업"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "mps",
+      "infoList": [
+        {
+          "location": "본사 (서울시 송파구)",
+          "count": "5",
+          "jobs": [
+            "구매",
+            "국내법무",
+            "특허",
+            "안전관리",
+            "인사총무"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "cl",
+      "infoList": [
+        {
+          "location": "본사 (서울시 송파구)",
+          "count": "4",
+          "jobs": [
+            "Pipeline Valuation (신약가치평가)",
+            "Market Intelligence (신약개발 전략분석)",
+            "Data Management",
+            "Biostatistician"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "global",
+      "infoList": [
+        {
+          "location": "본사 (서울시 송파구)",
+          "count": "2",
+          "jobs": [
+            "Global Regulatory Affairs",
+            "Licensing"
+          ]
+        }
+      ]
+    },
+    {
+      "category": "healthcare",
+      "infoList": [
+        {
+          "location": "본사 (서울시 송파구)",
+          "count": "9",
+          "jobs": [
+            "식품영업",
+            "식품커머스운영",
+            "화장품 커머스사업기획",
+            "화장품 상품기획",
+            "화장품 홈쇼핑영업/운영",
+            "화장품 국내영업",
+            "화장품 해외영업",
+            "화장품 글로벌마케팅",
+            "해외이커머스운영"
+          ]
+        },
+        {
+          "location": "서울/수도권/영남",
+          "count": "1",
+          "jobs": [
+            "의료기기영업"
+          ]
+        }
+      ]
+    }
+  ]
+}
