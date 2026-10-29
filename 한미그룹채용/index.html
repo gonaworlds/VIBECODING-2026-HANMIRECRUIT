@@ -2695,6 +2695,12 @@
         scrollbar-width: thin;
         scrollbar-color: #ff7556 #f0f0f0;
       }
+      /* .welfare__scroll 요소의 스크롤바 화살표 버튼을 숨김 */
+      .welfare__scroll::-webkit-scrollbar-button {
+        display: none;
+        width: 0;
+        height: 0;
+      }
       .welfare__scroll::-webkit-scrollbar {
         width: 5px;
       }
