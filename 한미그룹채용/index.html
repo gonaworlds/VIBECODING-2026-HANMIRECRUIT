@@ -97,14 +97,36 @@
         border: 0;
       }
 
+      html.has-scroll-reveal .scroll-reveal {
+        opacity: 0;
+        translate: 0 20%;
+        transition:
+          opacity 700ms ease,
+          translate 700ms ease;
+      }
+      html.has-scroll-reveal .scroll-reveal.is-revealed {
+        opacity: 1;
+        translate: 0 0;
+      }
+
       /* ============ Header ============ */
       .header {
-        position: absolute;
+        position: fixed;
         top: 0;
         left: 0;
         right: 0;
         height: 100px;
         z-index: 10;
+        transition:
+          transform 250ms ease,
+          background-color 250ms ease;
+      }
+      .header.is-hidden {
+        transform: translateY(-100%);
+        pointer-events: none;
+      }
+      .header.is-visible {
+        background-color: #fff;
       }
       .header__inner {
         max-width: var(--container);
@@ -838,6 +860,10 @@
         }
         * {
           transition: none !important;
+        }
+        .scroll-reveal {
+          opacity: 1 !important;
+          translate: none !important;
         }
       }
       /* ============ Section 2: 새로운 미래 (mirae) ============ */
@@ -2753,6 +2779,12 @@
         height: 52px;
         object-fit: contain;
       }
+      .welfare__error {
+        padding: 16px;
+        color: #b42318;
+        font-size: 14px;
+        line-height: 1.5;
+      }
       .welfare__group-head {
         margin-bottom: 14px;
       }
@@ -2795,7 +2827,7 @@
 
       @media (max-width: 768px) {
         .welfare {
-          padding: 28px 14px 96px;
+          padding: 50px 14px 96px;
         }
         .welfare__hero {
           min-height: 150px;
@@ -2804,23 +2836,28 @@
         .welfare__title {
           font-size: 24px;
           line-height: 1.4;
+          position: relative;
+          z-index: 1;
         }
         .welfare__lead {
           margin-top: 10px;
           font-size: 14px;
           line-height: 1.5;
+          position: relative;
+          z-index: 1;
         }
         .welfare__hero-char {
-          top: 0;
+          top: -40px;
           right: -6px;
-          width: 72px;
+          width: clamp(70px, 20vw, 150px);
+          z-index: 0;
         }
-        .welfare__group-head {
+      /*   .welfare__group-head {
           flex-direction: column;
           align-items: flex-start;
           gap: 6px;
           margin-bottom: 20px;
-        }
+        } */ /* @media (max-width: 545px) 에 적용 */
         .welfare__group-title {
           gap: 6px;
           font-size: 17px;
@@ -2864,6 +2901,15 @@
         .welfare__cloud-char {
           left: -12px;
           width: 104px;
+        }
+      }
+
+      @media (max-width: 545px) {
+       .welfare__group-head {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 6px;
+          margin-bottom: 20px;
         }
       }
 
@@ -3352,7 +3398,1190 @@
           max-height: calc(82vh - 76px);
         }
       }
+
+      /* 지원자격 및 전형절차 */
+      .requirement {
+        position: relative;
+        overflow: hidden;
+        padding: 72px 28px 100px;
+        background: #fff;
+      }
+      .requirement__inner {
+        position: relative;
+        width: min(100%, 1440px);
+        margin: 0 auto;
+      }
+      .requirement__title {
+        margin: 0 0 48px;
+        font-size: 32px;
+        font-weight: 700;
+        line-height: 1.4;
+        text-align: center;
+      }
+      .requirement__bulb {
+        position: absolute;
+        top: 52px;
+        right: max(28px, calc((100% - 1440px) / 2));
+        width: 82px;
+        pointer-events: none;
+      }
+      .requirement__bulb img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .requirement__tabs {
+        display: flex;
+        border-bottom: 1px solid #e5e5e5;
+      }
+      .requirement__tab {
+        flex: 1 1 0;
+        min-width: 0;
+        min-height: 48px;
+        margin: 0 6px 20px;
+        padding: 10px 12px;
+        border: 0;
+        border-radius: 12px;
+        background: transparent;
+        color: #777;
+        font: inherit;
+        font-size: 14px;
+        cursor: pointer;
+        transition:
+          color var(--transition),
+          background-color var(--transition),
+          box-shadow var(--transition);
+      }
+      .requirement__tab[aria-selected="true"] {
+        color: var(--red-light);
+        font-weight: 700;
+        background: linear-gradient(110deg, #fff4ef 0%, #fff 100%);
+        box-shadow:
+          0 4px 10px rgba(117, 40, 4, 0.1),
+          inset 0 0 0 1px rgba(255, 221, 211, 0.45);
+      }
+      .requirement__tab:focus-visible {
+        outline: 2px solid rgba(255, 93, 50, 0.45);
+        outline-offset: 2px;
+      }
+      .requirement__panel[hidden] {
+        display: none;
+      }
+      .requirement__eligibility {
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #e5e5e5;
+      }
+      .requirement__qualification {
+        flex: 1 1 0;
+        display: flex;
+        min-width: 0;
+        min-height: 174px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 24px;
+        text-align: center;
+      }
+      .requirement__qualification img {
+        display: block;
+        width: 54px;
+        height: 54px;
+        object-fit: contain;
+      }
+      .requirement__qualification p {
+        font-size: 17px;
+        font-weight: 700;
+        line-height: 1.45;
+      }
+      .requirement__divider {
+        flex: none;
+        width: 1px;
+        height: 76px;
+        background: #e8e8e8;
+      }
+      .requirement__notes {
+        display: grid;
+        justify-content: center;
+        gap: 8px;
+        padding: 32px 24px;
+        border-bottom: 1px solid #e5e5e5;
+        list-style: none;
+      }
+      .requirement__notes li {
+        position: relative;
+        padding-left: 12px;
+        color: #444;
+        font-size: 12px;
+        line-height: 1.6;
+      }
+      .requirement__notes li::before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        color: var(--red-light);
+        content: "•";
+      }
+      .requirement__notice {
+        margin: 0;
+        padding: 34px 20px;
+        border-bottom: 1px solid #e5e5e5;
+        color: #777;
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.6;
+        text-align: center;
+      }
+      .requirement__notice strong {
+        color: var(--red-light);
+      }
+      .requirement__process-group {
+        padding: 32px 0;
+        border-bottom: 1px solid #e5e5e5;
+      }
+      .requirement__process-group h3 {
+        margin: 0 0 28px;
+        font-size: 17px;
+        font-weight: 700;
+      }
+      .requirement__steps {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: start;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .requirement__step {
+        position: relative;
+        flex: 0 0 82px;
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        padding-right: 16px;
+        text-align: center;
+      }
+      .requirement__step-icon {
+        display: flex;
+        flex: none;
+        width: 52px;
+        height: 52px;
+        align-items: center;
+        justify-content: center;
+      }
+      .requirement__step-icon img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+      .requirement__step-label {
+        display: block;
+        color: #222;
+        font-size: clamp(7px, 1.3vw, 13px);
+        font-weight: 700;
+        line-height: 1.4;
+        white-space: nowrap;
+      }
+      .requirement__step-date {
+        display: block;
+        margin-top: 3px;
+        color: #999;
+        font-size: clamp(6px, 1.1vw, 11px);
+        line-height: 1.4;
+      }
+      .requirement__step-arrow-list {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 16px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .requirement__step-arrow {
+        display: flex;
+        width: 16px;
+        height: 52px;
+        align-items: center;
+        justify-content: center;
+        background: url("./images/ico_chevron_right_blk.svg") center 16px /
+          11px 20px no-repeat;
+      }
+      .requirement__process-notes {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 7px;
+        margin: 0;
+        padding: 30px 20px;
+        list-style: none;
+      }
+      .requirement__process-notes li {
+        position: relative;
+        padding-left: 12px;
+        color: #444;
+        font-size: 11px;
+        line-height: 1.6;
+      }
+      .requirement__process-notes li::before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        color: var(--red-light);
+        content: "•";
+      }
+
+      @media (max-width: 768px) {
+        .requirement {
+          padding: 42px 20px 72px;
+        }
+        .requirement__title {
+          max-width: 540px;
+          margin: 0 auto 38px;
+          font-size: 28px;
+        }
+        .requirement__bulb {
+          display: none;
+        }
+        .requirement__tab {
+          min-height: 58px;
+          margin: 0 4px 16px;
+          padding: 8px 6px;
+          font-size: 13px;
+        }
+        .requirement__eligibility {
+          flex-direction: column;
+        }
+        .requirement__qualification {
+          width: 100%;
+          min-height: 228px;
+          flex: none;
+          gap: 18px;
+          padding: 28px 12px;
+        }
+        .requirement__qualification img {
+          width: 64px;
+          height: 64px;
+        }
+        .requirement__qualification p {
+          font-size: 18px;
+        }
+        .requirement__divider {
+          display: none;
+        }
+        .requirement__notes {
+          gap: 12px;
+          padding: 32px 14px;
+        }
+        .requirement__notes li {
+          padding-left: 14px;
+          font-size: 14px;
+        }
+        .requirement__notice {
+          padding: 38px 20px;
+          font-size: 16px;
+        }
+        .requirement__process-group {
+          padding: 24px 0;
+        }
+        .requirement__process-group h3 {
+          margin-bottom: 22px;
+          font-size: clamp(9px, 1.4vw, 14px);
+        }
+        .requirement__steps {
+          padding: 0;
+        }
+        .requirement__step {
+          gap: 8px;
+        }
+        .requirement__process-notes {
+          padding: 24px 8px;
+        }
+        .requirement__process-notes li {
+          font-size: clamp(7px, 1vw, 11px);
+        }
+      }
+
+      @media (max-width: 390px) {
+        .requirement {
+          padding-right: 14px;
+          padding-left: 14px;
+        }
+        .requirement__title {
+          margin-bottom: 34px;
+          font-size: 26px;
+        }
+        .requirement__tab {
+          font-size: 12px;
+        }
+        .requirement__qualification {
+          min-height: 220px;
+        }
+      }
+
+      /* 박람회 및 캠퍼스 방문 일정 */
+      .exposition {
+        position: relative;
+        padding: 8px 28px 100px;
+        overflow: hidden;
+        background: #fff;
+      }
+      .exposition__inner {
+        width: min(100%, 1440px);
+        margin: 0 auto;
+      }
+      .exposition__hero {
+        position: relative;
+        min-height: 180px;
+        padding: 0 170px;
+        text-align: center;
+      }
+      .exposition__title {
+        margin: 0;
+        font-size: 34px;
+        font-weight: 700;
+        line-height: 1.4;
+      }
+      .exposition__lead {
+        margin: 14px 0 0;
+        font-size: 14px;
+        line-height: 1.7;
+      }
+      .exposition__guide {
+        position: relative;
+        display: inline-block;
+        margin: 12px 0 0;
+        padding-left: 12px;
+        color: #777;
+        font-size: 11px;
+        line-height: 1.5;
+      }
+      .exposition__guide::before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        color: var(--red-light);
+        content: "•";
+      }
+      .exposition__character {
+        position: absolute;
+        top: 44px;
+        left: 42px;
+        width: 146px;
+        height: auto;
+      }
+      .exposition__speech {
+        position: absolute;
+        top: -40px;
+        left: -28px;
+        padding: 8px 13px;
+        border-radius: 20px 20px 20px 4px;
+        background: #ff7556;
+        color: #fff;
+        font-size: 10px;
+        line-height: 1.4;
+        white-space: nowrap;
+      }
+      .exposition__tabs,
+      .exposition__regions {
+        display: flex;
+        border-bottom: 1px solid #e5e5e5;
+      }
+      .exposition__tab,
+      .exposition__region {
+        flex: 1 1 0;
+        min-width: 0;
+        border: 0;
+        background: transparent;
+        color: #777;
+        font: inherit;
+        cursor: pointer;
+      }
+      .exposition__tab {
+        min-height: 46px;
+        margin: 8px 14px 16px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        font-size: 14px;
+      }
+      .exposition__tab[aria-selected="true"],
+      .exposition__region[aria-selected="true"] {
+        color: var(--red-light);
+        font-weight: 700;
+        background: linear-gradient(110deg, #fff4ef 0%, #fff 100%);
+        box-shadow:
+          0 4px 10px rgba(117, 40, 4, 0.1),
+          inset 0 0 0 1px rgba(255, 221, 211, 0.45);
+      }
+      .exposition__tab:focus-visible,
+      .exposition__region:focus-visible,
+      .exposition__event:focus-visible {
+        outline: 2px solid rgba(255, 93, 50, 0.45);
+        outline-offset: 2px;
+      }
+      .exposition__panel[hidden],
+      .exposition__region-panel[hidden] {
+        display: none;
+      }
+      .exposition__regions {
+        margin-top: 12px;
+        padding: 0 12px 12px;
+        border: 0;
+        border-radius: 12px;
+        background: #fffaf8;
+      }
+      .exposition__region {
+        min-height: 42px;
+        margin: 8px 4px 0;
+        padding: 8px 10px;
+        border-radius: 10px;
+        font-size: 13px;
+      }
+      .exposition__calendar {
+        margin-top: 0;
+        border-top: 1px solid #e5e5e5;
+      }
+      .exposition__week {
+        border-bottom: 1px solid #e5e5e5;
+      }
+      .exposition__week-dates,
+      .exposition__week-events {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+      }
+      .exposition__week-dates {
+        min-height: 38px;
+        border-bottom: 1px solid #e5e5e5;
+      }
+      .exposition__date {
+        position: relative;
+        display: flex;
+        min-width: 0;
+        align-items: center;
+        justify-content: center;
+        padding: 7px 4px;
+        color: #222;
+        font-size: 12px;
+        font-weight: 600;
+        text-align: center;
+      }
+      .exposition__date:not(:last-child)::after {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        width: 1px;
+        height: 12px;
+        background: #e5e5e5;
+        content: "";
+        transform: translateY(-50%);
+      }
+      .exposition__week-events {
+        min-height: 170px;
+      }
+      .exposition__day {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        padding: 0 6px 16px;
+      }
+      .exposition__event {
+        max-width: 100%;
+        padding: 2px 3px;
+        border: 0;
+        background: transparent;
+        color: #e77f69;
+        font: inherit;
+        font-size: 12px;
+        line-height: 1.5;
+        text-align: center;
+        cursor: pointer;
+      }
+      .exposition__event:hover {
+        color: #d84f35;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+      .exposition__event--static {
+        cursor: default;
+      }
+      .exposition__event--static:hover {
+        color: #e77f69;
+        text-decoration: none;
+      }
+      .exposition__event[aria-expanded="true"] {
+        display: none;
+      }
+      .exposition__event:empty {
+        display: none;
+      }
+      .exposition__event-detail {
+        display: flex;
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+        min-height: 154px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 18px 8px;
+        border-radius: 0 0 8px 8px;
+        background: #fff7f4;
+        text-align: center;
+        opacity: 1;
+        transform: translateY(0);
+        transition:
+          opacity 180ms ease,
+          transform 180ms ease,
+          display 180ms allow-discrete;
+      }
+      .exposition__event-detail[hidden] {
+        display: none;
+        opacity: 0;
+        transform: translateY(-6px);
+      }
+      @starting-style {
+        .exposition__event-detail:not([hidden]) {
+          opacity: 0;
+          transform: translateY(-6px);
+        }
+      }
+      .exposition__event-detail-row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+      }
+      .exposition__event-detail-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--red-light);
+        font-size: 10px;
+        line-height: 1.2;
+      }
+      .exposition__event-detail-label::before {
+        width: 8px;
+        height: 8px;
+        border: 1.5px solid currentColor;
+        content: "";
+      }
+      .exposition__event-detail-label--place::before {
+        border-radius: 50% 50% 50% 0;
+        transform: rotate(-45deg) scale(0.85);
+      }
+      .exposition__event-detail-label--time::before {
+        border-radius: 50%;
+        background:
+          linear-gradient(currentColor, currentColor) 50% 2px / 1px 3px
+            no-repeat,
+          linear-gradient(currentColor, currentColor) 50% 50% / 3px 1px
+            no-repeat;
+      }
+      .exposition__event-detail-value {
+        max-width: 100%;
+        color: #333;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1.4;
+        overflow-wrap: anywhere;
+      }
+      .exposition__schedule-error {
+        padding: 24px 12px;
+        color: #b42318;
+        font-size: 13px;
+        text-align: center;
+      }
+
+      @media (max-width: 768px) {
+        .exposition {
+          padding: 36px 20px 72px;
+        }
+        .exposition__week {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        .exposition__week-dates,
+        .exposition__week-events {
+          display: contents;
+        }
+        .exposition__date,
+        .exposition__day {
+          grid-column: var(--mobile-column);
+        }
+        .exposition__date {
+          grid-row: var(--mobile-date-row);
+          border-bottom: 1px solid #e5e5e5;
+        }
+        .exposition__date:nth-child(even)::after {
+          display: none;
+        }
+        .exposition__day {
+          grid-row: calc(var(--mobile-date-row) + 1);
+          min-height: 156px;
+          border-bottom: 1px solid #e5e5e5;
+        }
+        .exposition__hero {
+          min-height: 180px;
+          padding: 0 24px;
+        }
+        .exposition__title {
+          font-size: 28px;
+        }
+        .exposition__lead {
+          margin-top: 12px;
+          font-size: 13px;
+        }
+        .exposition__guide {
+          font-size: 10px;
+        }
+        .exposition__character {
+          top: auto;
+          bottom: 0;
+          left: 22px;
+          width: 94px;
+        }
+        .exposition__speech {
+          top: auto;
+          bottom: 78px;
+          left: -28px;
+          font-size: 9px;
+        }
+        .exposition__tab {
+          min-height: 46px;
+          margin: 8px 8px 16px;
+          font-size: 13px;
+        }
+        .exposition__regions {
+          gap: 2px;
+          padding: 0 4px 8px;
+        }
+        .exposition__region {
+          min-height: 40px;
+          margin: 6px 2px 0;
+          padding: 6px 2px;
+          font-size: 12px;
+        }
+        .exposition__date {
+          min-height: 40px;
+          font-size: 10px;
+        }
+        .exposition__day {
+          gap: 8px;
+          padding: 0px 6px 16px;
+        }
+        .exposition__event {
+          font-size: 10px;
+          overflow-wrap: anywhere;
+        }
+        .exposition__event-detail {
+          min-height: 140px;
+          gap: 10px;
+          padding: 14px 4px;
+        }
+        .exposition__event-detail-value {
+          font-size: 10px;
+        }
+      }
+
+      @media (max-width: 390px) {
+        .exposition {
+          padding-right: 14px;
+          padding-left: 14px;
+        }
+        .exposition__hero {
+          min-height: 180px;
+          padding: 0 4px;
+        }
+        .exposition__title {
+          font-size: 24px;
+        }
+        .exposition__lead {
+          font-size: 12px;
+        }
+        .exposition__character {
+          left: 14px;
+          width: 78px;
+        }
+        .exposition__speech {
+          bottom: 66px;
+          font-size: 8px;
+        }
+        .exposition__regions {
+          padding-right: 2px;
+          padding-left: 2px;
+        }
+        .exposition__region {
+          font-size: 11px;
+        }
+        .exposition__date {
+          padding-right: 2px;
+          padding-left: 2px;
+          font-size: 9px;
+        }
+        .exposition__day {
+          min-height: 132px;
+          padding-right: 1px;
+          padding-left: 1px;
+        }
+        .exposition__event {
+          font-size: 9px;
+        }
+        .exposition__event-detail {
+          min-height: 128px;
+        }
+        .exposition__event-detail-label {
+          font-size: 8px;
+        }
+        .exposition__event-detail-value {
+          font-size: 9px;
+        }
+      }
+
+      .con8 {
+        position: relative;
+        min-height: 632px;
+        padding: 125px 34px 104px;
+        overflow: hidden;
+        background: #fff;
+      }
+      .con8__inner {
+        display: grid;
+        width: min(calc(100vw - 68px), 1120px);
+        margin: 0 auto;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        align-items: center;
+        gap: 32px;
+      }
+      .con8__link {
+        position: relative;
+        display: block;
+        min-width: 0;
+        color: #000;
+        text-align: center;
+      }
+      .con8__link:focus-visible {
+        outline: 2px solid var(--red-light);
+        outline-offset: 4px;
+      }
+      .con8__link:nth-child(1) {
+        transform: translateY(33px);
+      }
+      .con8__link:nth-child(3) {
+        transform: translateY(68px);
+      }
+      .con8__image-wrap {
+        position: relative;
+        display: block;
+        aspect-ratio: 0.774;
+      }
+      .con8__photo {
+        position: absolute;
+        inset: 0;
+        display: block;
+        overflow: hidden;
+        border-radius: 6px;
+      }
+      .con8__image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 300ms ease;
+      }
+      .con8__link:hover .con8__image,
+      .con8__link:focus-visible .con8__image {
+        transform: scale(1.04);
+      }
+      .con8__mark {
+        position: absolute;
+        z-index: 1;
+        height: auto;
+        pointer-events: none;
+      }
+      .con8__mark--left-arrow {
+        bottom: -13px;
+        left: 10px;
+        width: 24px;
+      }
+      .con8__mark--star {
+        right: -8px;
+        bottom: -14px;
+        width: 30px;
+      }
+      .con8__mark--job-arrow {
+        right: 10px;
+        bottom: -16px;
+        width: 24px;
+      }
+      .con8__copy {
+        display: block;
+        margin-top: 18px;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+      .con8__question {
+        position: relative;
+        display: inline-block;
+      }
+      .con8__underlined-phrase {
+        position: relative;
+        display: inline-block;
+      }
+      .con8__underline {
+        position: absolute;
+        z-index: 1;
+        right: 0;
+        bottom: -2px;
+        left: 0;
+        width: 100%;
+        height: auto;
+        pointer-events: none;
+      }
+      .con8__circled-word {
+        position: relative;
+        display: inline-block;
+      }
+      .con8__circle {
+        position: absolute;
+        top: -6px;
+        left: -10px;
+        width: calc(100% + 20px);
+        height: calc(100% + 10px);
+        max-width: none;
+        pointer-events: none;
+      }
+      .con8__action {
+        display: block;
+      }
+      .con8__action {
+        margin-top: 5px;
+        color: var(--red-light);
+        font-weight: 700;
+        display: none;
+      }
+      .con8__arrow {
+        display: inline-flex;
+        width: 18px;
+        height: 18px;
+        margin-left: 5px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: var(--red-light);
+        color: #fff;
+        font-size: 13px;
+        line-height: 1;
+        vertical-align: -2px;
+      }
+      .con8__character {
+        position: absolute;
+        top: 46px;
+        right: max(15px, calc((100% - 1220px) / 2));
+        width: 100px;
+      }
+
+      .con9 {
+        position: relative;
+        min-height: 490px;
+        padding: 84px 24px 48px;
+        overflow: hidden;
+        background: url("./images/con9_bg.png") center / cover no-repeat;
+        text-align: center;
+      }
+      .con9__title {
+        font-size: clamp(25px, 3vw, 36px);
+        font-weight: 700;
+        line-height: 1.4;
+      }
+      .con9__countdown {
+        margin-top: 8px;
+        font-size: clamp(24px, 3.2vw, 38px);
+        font-weight: 700;
+        line-height: 1.35;
+      }
+      .con9__countdown-unit {
+        margin-right: 10px;
+        color: var(--red-light);
+        font-size: 1.18em;
+      }
+      .con9__countdown-unit:last-of-type {
+        margin-right: 0;
+      }
+      .con9__earth-link {
+        position: absolute;
+        top: 56%;
+        left: 50%;
+        display: grid;
+        width: 190px;
+        aspect-ratio: 1;
+        place-items: center;
+        transform: translate(-50%, -50%);
+      }
+      .con9__earth {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transition: transform 250ms ease;
+      }
+      .con9__earth-link:hover .con9__earth,
+      .con9__earth-link:focus-visible .con9__earth {
+        transform: scale(1.06);
+      }
+      .con9__earth-link:focus-visible {
+        outline: 2px solid var(--red-light);
+        outline-offset: 4px;
+        border-radius: 50%;
+      }
+      .con9__apply {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        display: inline-flex;
+        min-width: 118px;
+        min-height: 40px;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.78);
+        color: var(--red-light);
+        font-size: 13px;
+        font-weight: 700;
+        transform: translate(-50%, -50%);
+      }
+      .con9__hint {
+        position: absolute;
+        right: 20px;
+        bottom: 28px;
+        left: 20px;
+        color: #333;
+        font-size: 12px;
+      }
+      .con9__cloud {
+        position: absolute;
+        bottom: 0;
+        width: min(22%, 250px);
+        pointer-events: none;
+      }
+      .con9__cloud--left {
+        left: 0;
+      }
+      .con9__cloud--right {
+        right: 0;
+        width: min(20%, 220px);
+      }
+      .con9__expired {
+        display: block;
+        margin-top: 8px;
+        color: #b42318;
+        font-size: 14px;
+        font-weight: 700;
+      }
+      .footer {
+        display: flex;
+        min-height: 44px;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 16px;
+        background: #fff;
+      }
+      .footer__logo {
+        display: block;
+        width: 110px;
+        height: auto;
+      }
+
+      @media (max-width: 768px) {
+        .con8 {
+          min-height: 440px;
+          padding: 50px 16px 54px;
+        }
+        .con8__inner {
+          width: min(calc(100vw - 45px), 660px);
+          gap: 12px;
+        }
+        .con8__link:nth-child(1) {
+          transform: translateY(24px);
+        }
+        .con8__link:nth-child(3) {
+          transform: translateY(48px);
+        }
+        .con8__copy {
+          margin-top: 8px;
+          font-size: 11px;
+          letter-spacing: -0.25px;
+        }
+        .con8__action {
+          margin-top: 2px;
+        }
+        .con8__arrow {
+          width: 12px;
+          height: 12px;
+          font-size: 9px;
+          vertical-align: -1px;
+        }
+        .con8__character {
+          top: 12px;
+          right: 12px;
+          width: 48px;
+        }
+        .con8__mark--left-arrow {
+          bottom: -9px;
+          left: 10px;
+          width: 15px;
+        }
+        .con8__mark--star {
+          right: -6px;
+          bottom: -8px;
+          width: 16px;
+        }
+        .con8__mark--job-arrow {
+          right: 2px;
+          bottom: -12px;
+          width: 14px;
+        }
+        .con9 {
+          min-height: 353px;
+          padding: 54px 18px 34px;
+        }
+        .con9__title {
+          font-size: clamp(20px, 4vw, 26px);
+        }
+        .con9__countdown {
+          margin-top: 4px;
+          font-size: clamp(17px, 3.8vw, 22px);
+        }
+        .con9__countdown-unit {
+          margin-right: 7px;
+        }
+        .con9__earth-link {
+          top: 62%;
+          width: 128px;
+        }
+        .con9__apply {
+          min-width: 88px;
+          min-height: 30px;
+          gap: 5px;
+          padding: 4px 8px;
+          font-size: 10px;
+        }
+        .con9__hint {
+          bottom: 14px;
+          font-size: 9px;
+        }
+        .con9__cloud {
+          width: 24%;
+        }
+        .con9__cloud--right {
+          width: 21%;
+        }
+        .footer {
+          min-height: 32px;
+          padding: 4px 12px;
+        }
+        .footer__logo {
+          width: 76px;
+        }
+      }
+
+      @media (max-width: 390px) {
+        .con8 {
+          min-height: 0;
+          padding: 14px 14px 56px;
+        }
+        .con8__inner {
+          width: 100%;
+          grid-template-columns: minmax(0, 1fr);
+          gap: 14px;
+        }
+        .con8__link:nth-child(1),
+        .con8__link:nth-child(3) {
+          transform: none;
+        }
+        .con8__image-wrap {
+          aspect-ratio: 1.55;
+        }
+        .con8__photo {
+          border-radius: 8px;
+        }
+        .con8__image {
+          aspect-ratio: auto;
+        }
+        .con8__mark {
+          display: none;
+        }
+        .con8__underline,
+        .con8__circle {
+          display: none;
+        }
+        .con8__copy {
+          position: absolute;
+          right: 10px;
+          bottom: 14px;
+          left: 10px;
+          margin: 0;
+          color: #fff;
+          font-size: 12px;
+          letter-spacing: normal;
+          text-shadow: 0 1px 5px rgba(0, 0, 0, 0.7);
+        }
+        .con8__action {
+          display: block;
+          margin-top: 4px;
+          color: #fff;
+          font-size: 13px;
+          text-shadow: 0 1px 5px rgba(0, 0, 0, 0.7);
+        }
+        .con8__arrow {
+          width: 17px;
+          height: 17px;
+          font-size: 12px;
+        }
+        .con8__character {
+          display: none;
+        }
+        .con9 {
+          min-height: 414px;
+          padding: 70px 14px 32px;
+        }
+        .con9__title {
+          font-size: clamp(18px, 5.2vw, 21px);
+          white-space: nowrap;
+        }
+        .con9__countdown {
+          font-size: clamp(15px, 4.4vw, 18px);
+          white-space: nowrap;
+        }
+        .con9__countdown-unit {
+          margin-right: 5px;
+        }
+        .con9__earth-link {
+          top: 57%;
+          width: 132px;
+        }
+        .con9__hint {
+          display: none;
+        }
+        .con9__cloud {
+          width: 28%;
+        }
+        .con9__cloud--right {
+          width: 30%;
+        }
+      }
     </style>
+    <script>
+      document.documentElement.classList.add("has-scroll-reveal");
+    </script>
   </head>
   <body>
     <!-- 1. 상단 메뉴 영역 -->
@@ -3451,11 +4680,11 @@
           <ul class="nav__list">
             <li><a class="nav__link" href="#tasks">직무소개</a></li>
             <li>
-              <a class="nav__link" href="#qualification"
+              <a class="nav__link" href="#requirement"
                 >지원자격 및 접수방법</a
               >
             </li>
-            <li><a class="nav__link" href="#schedule">채용설명회 일정</a></li>
+            <li><a class="nav__link" href="#exposition">채용설명회 일정</a></li>
           </ul>
           <a class="btn-apply" href="#apply">
             <span>지원하기</span>
@@ -3560,7 +4789,7 @@
         </button>
       </section>
 
-      <!-- 이후 섹션은 아래에 <section> 단위로 추가 (직무소개 #jobs / 지원자격 및 접수방법 #qualification / 채용설명회 일정 #schedule) -->
+      <!-- 이후 섹션은 아래에 <section> 단위로 추가 (직무소개 #jobs / 지원자격 및 접수방법 #requirement / 채용설명회 일정 #exposition) -->
       <!-- 2. 메인 하위 컨텐츠 영역: 새로운 미래 메시지 -->
       <section class="mirae" id="mirae" aria-labelledby="mirae-title">
         <div class="mirae__stage">
@@ -4193,7 +5422,7 @@
             tabindex="0"
             aria-label="한미그룹 복지 카드 목록"
           >
-            <!-- 두 복지 그룹은 소개 헤더와 카드 목록을 동일한 구조로 유지 -->
+            <!-- 초기 표시 구조이며, 스크립트 실행 후 복지 JSON 데이터로 대체 -->
             <section
               class="welfare__group"
               aria-labelledby="welfare-individual-title"
@@ -4501,6 +5730,53 @@
           alt="팔을 든 보라색 한미 캐릭터"
         />
       </section>
+
+      <!-- data/benefit_data.json의 스냅샷은 file:// 직접 열기에서 사용 -->
+      <script type="application/json" id="welfare-data">
+        [
+          {
+            "category": "오늘의 나도, 내일의 나도 든든하게!",
+            "description": "건강, 성장, 문화생활까지 알차게 챙겨드려요.",
+            "benefits": [
+              { "title": "건강 검진", "description": "건강한 하루가 오래 이어지도록, 정기적인 건강관리를 지원해요." },
+              { "title": "기념일 축하 지원", "description": "소중한 기념일이 더 특별해지도록 한미가 함께 축하해요." },
+              { "title": "본인주도 선택복지", "description": "나에게 필요한 복지를 내 취향과 생활에 맞게 선택할 수 있어요." },
+              { "title": "장기 근속 포상", "description": "한미와 함께 걸어온 소중한 시간에 감사의 마음을 전해요." },
+              { "title": "유연근무제", "description": "업무와 일상의 균형을 찾을 수 있도록 유연한 근무를 지원해요." },
+              { "title": "단체 상해 보험", "description": "예상하지 못한 순간에도 든든할 수 있도록 임직원을 보호해요." },
+              { "title": "직무 교육 지원", "description": "배우고 성장하는 즐거움이 계속되도록 역량 개발을 지원해요." },
+              { "title": "임직원 제휴 할인", "description": "다양한 제휴 혜택으로 일상 속 즐거움과 실속을 더해드려요." },
+              { "title": "문화 생활 지원", "description": "바쁜 일상에 기분 좋은 쉼표를 더할 수 있도록 문화생활을 응원해요." },
+              { "title": "구내식당", "description": "든든하고 맛있는 한 끼로 활기찬 하루를 채워드려요." },
+              { "title": "임직원 스트레스 관리", "description": "몸과 마음이 지치지 않도록 건강한 마음 관리를 함께해요." },
+              { "title": "제휴 약국", "description": "필요한 건강관리를 더욱 편리하게 이용할 수 있도록 지원해요." }
+            ]
+          },
+          {
+            "category": "가족의 행복도 빼놓을 수 없죠!",
+            "description": "축하할 때도, 도움이 필요할 때도 한미가 함께해요.",
+            "benefits": [
+              { "title": "경조사 지원", "description": "가족의 기쁜 순간과 힘든 순간에 한미가 함께 마음을 나눠요." },
+              { "title": "출산 축하 지원", "description": "소중한 새 가족의 탄생을 진심으로 축하하고 응원해요." },
+              { "title": "다자녀 지원", "description": "아이들과 함께하는 행복한 일상이 더욱 든든하도록 지원해요." },
+              { "title": "사내 대출", "description": "생활에 필요한 자금 부담을 덜 수 있도록 든든한 금융 지원을 제공해요." },
+              { "title": "호텔/콘도 할인", "description": "가족과 편안한 휴식을 즐길 수 있도록 여가 혜택을 지원해요." },
+              { "title": "고급 중식당 할인", "description": "가족과의 특별한 식사 시간이 더욱 즐거워지도록 할인 혜택을 드려요." },
+              { "title": "초등학생 입학 선물", "description": "설레는 첫 학교생활을 한미가 특별한 선물과 함께 응원해요." },
+              { "title": "학자금 지원", "description": "자녀의 배움과 성장을 든든하게 이어갈 수 있도록 함께해요." }
+            ]
+          },
+          {
+            "category": "회사생활이 조금 더 편해지는 방법!",
+            "description": "출퇴근과 사내생활을 위한 다양한 지원을 만나보세요.",
+            "benefits": [
+              { "title": "여성복지 운영", "description": "여성 구성원이 더욱 건강하고 편안하게 일할 수 있도록 세심한 복지 제도를 운영해요." },
+              { "title": "사우회 운영", "description": "임직원이 서로 마음을 나누고 즐겁게 교류할 수 있도록 다양한 활동을 지원해요." },
+              { "title": "사업장 통근 버스 운영", "description": "출퇴근길의 부담을 덜고 편안하게 이동할 수 있도록 통근버스를 운영해요." }
+            ]
+          }
+        ]
+      </script>
 
       <!-- 7. 직무소개: 직무 탭을 선택하고 그룹을 펼쳐 상세 직무를 확인 -->
       <section class="tasks" id="tasks" aria-labelledby="tasks-title">
@@ -5646,20 +6922,437 @@
           </div>
         </dialog>
       </section>
-    </main>
 
-    <!-- 3. 하단 푸터 영역 (현재 내용 없음 - 디자인 영향 없음) -->
-    <footer class="footer">
-      <section>
-        <div>
-          <p style="font-size: 2rem">
-            <strong>하단 푸터 영역</strong>
-          </p>
-          <p style="font-style: italic">현재 내용 없음</p>
+      <!-- 8. 지원자격:  -->
+      <section
+        class="requirement"
+        id="requirement"
+        aria-labelledby="requirement-title"
+      >
+        <div class="requirement__inner">
+          <h2 class="requirement__title" id="requirement-title">
+            한미그룹과 함께하는 문은<br />활짝 열려 있습니다
+          </h2>
+          <div
+            class="requirement__tabs"
+            role="tablist"
+            aria-label="지원 안내"
+          >
+            <button
+              class="requirement__tab"
+              id="requirement-tab-qualification"
+              type="button"
+              role="tab"
+              aria-controls="requirement-panel-qualification"
+              aria-selected="true"
+              tabindex="0"
+            >
+              지원자격
+            </button>
+            <button
+              class="requirement__tab"
+              id="requirement-tab-process"
+              type="button"
+              role="tab"
+              aria-controls="requirement-panel-process"
+              aria-selected="false"
+              tabindex="-1"
+            >
+              전형절차 및 접수방법
+            </button>
+          </div>
+
+          <div
+            class="requirement__panel"
+            id="requirement-panel-qualification"
+            role="tabpanel"
+            aria-labelledby="requirement-tab-qualification"
+            tabindex="0"
+          >
+            <div class="requirement__eligibility">
+              <div class="requirement__qualification">
+                <img
+                  src="./images/require_ico_calendar_3d_.png"
+                  alt=""
+                  aria-hidden="true"
+                />
+                <p>27년 1월 입사가 가능한 자</p>
+              </div>
+              <span class="requirement__divider" aria-hidden="true"></span>
+              <div class="requirement__qualification">
+                <img
+                  src="./images/require_ico_gradcap_3d_.png"
+                  alt=""
+                  aria-hidden="true"
+                />
+                <p>기졸업자 또는 27년 2월 졸업 예정자</p>
+              </div>
+            </div>
+            <ul class="requirement__notes">
+              <li>남성의 경우 병역을 마쳤거나 면제인 분</li>
+              <li>해외여행 (또는 해외 출장)에 결격사유가 없는 분</li>
+              <li>취업보호대상자는 관련 법령에 의거하여 우대</li>
+            </ul>
+            <p class="requirement__notice">
+              모집 직무별로 지원자격이 상이하오니 반드시
+              <strong>채용 공고</strong>를 확인해 주시기 바랍니다.
+            </p>
+          </div>
+
+          <div
+            class="requirement__panel"
+            id="requirement-panel-process"
+            role="tabpanel"
+            aria-labelledby="requirement-tab-process"
+            tabindex="0"
+            hidden
+          >
+            <section class="requirement__process-group">
+              <h3>영업직군</h3>
+              <ol class="requirement__steps">
+                <li class="requirement__step">
+                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_apply_.png" alt="" /></span>
+                  <span class="requirement__step-label">지원접수<span class="requirement__step-date">9.28~10.18</span></span>
+                  <ul class="requirement__step-arrow-list" aria-hidden="true"><li class="requirement__step-arrow"></li></ul>
+                </li>
+                <li class="requirement__step">
+                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_doc_.png" alt="" /></span>
+                  <span class="requirement__step-label">서류전형<span class="requirement__step-date">10.19~10.20</span></span>
+                  <ul class="requirement__step-arrow-list" aria-hidden="true"><li class="requirement__step-arrow"></li></ul>
+                </li>
+                <li class="requirement__step">
+                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_ai_.png" alt="" /></span>
+                  <span class="requirement__step-label">AI역량검사<span class="requirement__step-date">10.21~10.25</span></span>
+                  <ul class="requirement__step-arrow-list" aria-hidden="true"><li class="requirement__step-arrow"></li></ul>
+                </li>
+                <li class="requirement__step">
+                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_interview1_.png" alt="" /></span>
+                  <span class="requirement__step-label">1차면접<span class="requirement__step-date">11월 중</span></span>
+                  <ul class="requirement__step-arrow-list" aria-hidden="true"><li class="requirement__step-arrow"></li></ul>
+                </li>
+                <li class="requirement__step">
+                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_field_.png" alt="" /></span>
+                  <span class="requirement__step-label">현장체험<span class="requirement__step-date">12월 초</span></span>
+                  <ul class="requirement__step-arrow-list" aria-hidden="true"><li class="requirement__step-arrow"></li></ul>
+                </li>
+                <li class="requirement__step">
+                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_interview2_.png" alt="" /></span>
+                  <span class="requirement__step-label">2차면접<span class="requirement__step-date">12월 중</span></span>
+                  <ul class="requirement__step-arrow-list" aria-hidden="true"><li class="requirement__step-arrow"></li></ul>
+                </li>
+                <li class="requirement__step">
+                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_edu_.png" alt="" /></span>
+                  <span class="requirement__step-label">교육전형<span class="requirement__step-date">27.1.4~</span></span>
+                </li>
+              </ol>
+            </section>
+            <section class="requirement__process-group">
+              <h3>영업 외 전직군</h3>
+              <ol class="requirement__steps">
+                <li class="requirement__step">
+                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_apply_.png" alt="" /></span>
+                  <span class="requirement__step-label">지원접수<span class="requirement__step-date">9.28~10.18</span></span>
+                  <ul class="requirement__step-arrow-list" aria-hidden="true"><li class="requirement__step-arrow"></li></ul>
+                </li>
+                <li class="requirement__step">
+                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_doc_.png" alt="" /></span>
+                  <span class="requirement__step-label">서류전형<span class="requirement__step-date">10.19~10.20</span></span>
+                  <ul class="requirement__step-arrow-list" aria-hidden="true"><li class="requirement__step-arrow"></li></ul>
+                </li>
+                <li class="requirement__step">
+                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_ai_.png" alt="" /></span>
+                  <span class="requirement__step-label">AI역량검사<span class="requirement__step-date">10.21~10.25</span></span>
+                  <ul class="requirement__step-arrow-list" aria-hidden="true"><li class="requirement__step-arrow"></li></ul>
+                </li>
+                <li class="requirement__step">
+                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_interview1_.png" alt="" /></span>
+                  <span class="requirement__step-label">1차면접<span class="requirement__step-date">11월 중</span></span>
+                  <ul class="requirement__step-arrow-list" aria-hidden="true"><li class="requirement__step-arrow"></li></ul>
+                </li>
+                <li class="requirement__step">
+                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_interview2_.png" alt="" /></span>
+                  <span class="requirement__step-label">2차면접<span class="requirement__step-date">12월 중</span></span>
+                  <ul class="requirement__step-arrow-list" aria-hidden="true"><li class="requirement__step-arrow"></li></ul>
+                </li>
+                <li class="requirement__step">
+                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_join_.png" alt="" /></span>
+                  <span class="requirement__step-label">입사<span class="requirement__step-date">27.1.4<br />(경력직 협의 가능)</span></span>
+                </li>
+              </ol>
+            </section>
+            <ul class="requirement__process-notes">
+              <li>상기 일정은 상황에 따라 변경될 수 있으며 각 전형별 상세 일정은 대상자에 한해 개별 안내 예정입니다.</li>
+              <li>입사지원서에 허위 기재가 있거나 제출서류가 허위로 판명되는 경우, 입사가 취소될 수 있습니다.</li>
+              <li>지원서 제출 후에는 수정이 불가하오니, 주의하시기 바랍니다.</li>
+              <li>전형단계별 결과는 E-Mail 및 SMS를 통하여 안내하오니 연락처를 정확히 기재해 주시기 바랍니다.</li>
+              <li>입사 후 3개월간 수습기간이 적용되며, 수습 중 직무 수행 능력이 부족하다고 판단되는 경우 입사가 취소될 수 있습니다.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="requirement__bulb" aria-hidden="true">
+          <img src="./images/require_obj_bulb_.png" alt="" />
         </div>
       </section>
+
+      <section
+        class="exposition"
+        id="exposition"
+        aria-labelledby="exposition-title"
+      >
+        <div class="exposition__inner">
+          <header class="exposition__hero">
+            <h2 class="exposition__title" id="exposition-title">
+              Hanmi 박람회/캠퍼스로 출발!
+            </h2>
+            <p class="exposition__lead">
+              한미그룹이 여러분을 만나러 박람회와 캠퍼스로 찾아갑니다.<br />
+              우리가 어디서 만날지 궁금하다면 아래 지역에서 찾아보세요!
+            </p>
+            <p class="exposition__guide">
+              학교명/장소를 확인해 주세요.
+            </p>
+            <div class="exposition__character" aria-hidden="true">
+              <span class="exposition__speech">우리 학교에도 한미가 찾아올까?</span>
+              <img src="./images/expo_con3_char.png" alt="" />
+            </div>
+          </header>
+
+          <div
+            class="exposition__tabs"
+            role="tablist"
+            aria-label="채용 행사 구분"
+          >
+            <button
+              class="exposition__tab"
+              id="exposition-tab-fair"
+              type="button"
+              role="tab"
+              aria-controls="exposition-panel-fair"
+              aria-selected="true"
+              tabindex="0"
+            >
+              박람회
+            </button>
+            <button
+              class="exposition__tab"
+              id="exposition-tab-campus"
+              type="button"
+              role="tab"
+              aria-controls="exposition-panel-campus"
+              aria-selected="false"
+              tabindex="-1"
+            >
+              캠퍼스
+            </button>
+          </div>
+
+          <div
+            class="exposition__panel"
+            id="exposition-panel-fair"
+            role="tabpanel"
+            aria-labelledby="exposition-tab-fair"
+            tabindex="0"
+          >
+            <div class="exposition__calendar" id="exposition-fair-calendar"></div>
+          </div>
+
+          <div
+            class="exposition__panel"
+            id="exposition-panel-campus"
+            role="tabpanel"
+            aria-labelledby="exposition-tab-campus"
+            tabindex="0"
+            hidden
+          >
+            <div
+              class="exposition__regions"
+              role="tablist"
+              aria-label="캠퍼스 방문 지역"
+            >
+              <button
+                class="exposition__region"
+                id="exposition-region-seoul"
+                type="button"
+                role="tab"
+                aria-controls="exposition-region-panel-seoul"
+                aria-selected="true"
+                tabindex="0"
+              >서울</button>
+              <button class="exposition__region" id="exposition-region-gyeonggi" type="button" role="tab" aria-controls="exposition-region-panel-gyeonggi" aria-selected="false" tabindex="-1">경기</button>
+              <button class="exposition__region" id="exposition-region-gangwon" type="button" role="tab" aria-controls="exposition-region-panel-gangwon" aria-selected="false" tabindex="-1">강원</button>
+              <button class="exposition__region" id="exposition-region-gyeongsang" type="button" role="tab" aria-controls="exposition-region-panel-gyeongsang" aria-selected="false" tabindex="-1">경상</button>
+              <button class="exposition__region" id="exposition-region-chungcheong" type="button" role="tab" aria-controls="exposition-region-panel-chungcheong" aria-selected="false" tabindex="-1">충청</button>
+              <button class="exposition__region" id="exposition-region-jeolla" type="button" role="tab" aria-controls="exposition-region-panel-jeolla" aria-selected="false" tabindex="-1">전라</button>
+            </div>
+            <div
+              class="exposition__region-panel"
+              id="exposition-region-panel-seoul"
+              role="tabpanel"
+              aria-labelledby="exposition-region-seoul"
+              tabindex="0"
+            >
+              <div class="exposition__calendar" id="exposition-campus-calendar"></div>
+            </div>
+            <div class="exposition__region-panel" id="exposition-region-panel-gyeonggi" role="tabpanel" aria-labelledby="exposition-region-gyeonggi" tabindex="0" hidden></div>
+            <div class="exposition__region-panel" id="exposition-region-panel-gangwon" role="tabpanel" aria-labelledby="exposition-region-gangwon" tabindex="0" hidden></div>
+            <div class="exposition__region-panel" id="exposition-region-panel-gyeongsang" role="tabpanel" aria-labelledby="exposition-region-gyeongsang" tabindex="0" hidden></div>
+            <div class="exposition__region-panel" id="exposition-region-panel-chungcheong" role="tabpanel" aria-labelledby="exposition-region-chungcheong" tabindex="0" hidden></div>
+            <div class="exposition__region-panel" id="exposition-region-panel-jeolla" role="tabpanel" aria-labelledby="exposition-region-jeolla" tabindex="0" hidden></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="con8" aria-label="한미그룹 바로가기">
+        <div class="con8__inner">
+          <a class="con8__link" href="#jobs">
+            <span class="con8__image-wrap">
+              <span class="con8__photo">
+                <img
+                  class="con8__image"
+                  src="./images/con8_img1.jpg"
+                  alt="한미그룹 구성원들이 손을 모은 모습"
+                />
+              </span>
+              <img class="con8__mark con8__mark--left-arrow" src="./images/con8_Image.png" alt="" />
+              <img class="con8__mark con8__mark--star" src="./images/con8_Image-2.png" alt="" />
+            </span>
+            <span class="con8__copy">
+              <span class="con8__question">한미그룹의 <span class="con8__underlined-phrase">문화와 복지<img class="con8__underline" src="./images/con8_Image-1.png" alt="" /></span>가 궁금하다면?</span>
+              <span class="con8__action">한미그룹 문화와 복지 보기<span class="con8__arrow" aria-hidden="true">›</span></span>
+            </span>
+          </a>
+          <a class="con8__link" href="#tasks">
+            <span class="con8__image-wrap">
+              <span class="con8__photo">
+                <img
+                  class="con8__image"
+                  src="./images/con8_img2.jpg"
+                  alt="촬영 장비를 비춘 이미지"
+                />
+              </span>
+              <img class="con8__mark con8__mark--job-arrow" src="./images/con8_Image-4.png" alt="" />
+            </span>
+            <span class="con8__copy">
+              <span class="con8__question">한미그룹의 <span class="con8__circled-word">직무<img class="con8__circle" src="./images/con8_Image-3.png" alt="" /></span>가 궁금하다면?</span>
+              <span class="con8__action">한미그룹 직무 소개 페이지<span class="con8__arrow" aria-hidden="true">›</span></span>
+            </span>
+          </a>
+          <a class="con8__link" href="#requirement">
+            <span class="con8__image-wrap">
+              <span class="con8__photo">
+                <img
+                  class="con8__image"
+                  src="./images/con8_img3.jpg"
+                  alt="한미약품 연구센터 전경"
+                />
+              </span>
+            </span>
+            <span class="con8__copy">
+              <span class="con8__question">한미그룹의 <span class="con8__underlined-phrase">채용소식<img class="con8__underline" src="./images/con8_Image-5.png" alt="" /></span>을 빠르게 받고 싶다면?</span>
+              <span class="con8__action">한미그룹 채용 페이지<span class="con8__arrow" aria-hidden="true">›</span></span>
+            </span>
+          </a>
+        </div>
+        <img class="con8__character" src="./images/con8_char.png" alt="" />
+      </section>
+
+      <section class="con9" aria-labelledby="con9-title">
+        <img class="con9__cloud con9__cloud--left" src="./images/con9_cloud_l.png" alt="" />
+        <img class="con9__cloud con9__cloud--right" src="./images/con9_cloud_r.png" alt="" />
+        <h2 class="con9__title" id="con9-title">당신에게 딱 맞는 자리를 찾으러 출발!</h2>
+        <p class="con9__countdown" aria-label="지원 마감까지 남은 시간">
+          <span><span class="con9__countdown-unit" data-countdown="days">0</span>일</span>
+          <span><span class="con9__countdown-unit" data-countdown="hours">0</span>시간</span>
+          <span><span class="con9__countdown-unit" data-countdown="minutes">0</span>분</span>
+          <span><span class="con9__countdown-unit" data-countdown="seconds">0</span>초 남았어요</span>
+        </p>
+        <p class="con9__expired" data-countdown-expired hidden>모집이 마감되었습니다.</p>
+        <a class="con9__earth-link" href="#requirement" aria-label="지원 자격 및 접수 방법 보기">
+          <img class="con9__earth" src="./images/con9_earth.png" alt="" />
+          <span class="con9__apply">지원하기<span class="con8__arrow" aria-hidden="true">›</span></span>
+        </a>
+        <p class="con9__hint">아이콘을 클릭해서 지원해 주세요!</p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <a href="#" aria-label="한미그룹 홈">
+        <img class="footer__logo" src="./images/logo.svg" alt="한미그룹" />
+      </a>
     </footer>
 
+    <script>
+      (function () {
+        var countdown = document.querySelector(".con9__countdown");
+        var expiredMessage = document.querySelector("[data-countdown-expired]");
+        if (!countdown || !expiredMessage) return;
+
+        var deadline = new Date("2026-10-18T23:59:59+09:00").getTime();
+        var units = {
+          days: countdown.querySelector('[data-countdown="days"]'),
+          hours: countdown.querySelector('[data-countdown="hours"]'),
+          minutes: countdown.querySelector('[data-countdown="minutes"]'),
+          seconds: countdown.querySelector('[data-countdown="seconds"]'),
+        };
+        var timer;
+
+        function updateCountdown() {
+          var remaining = deadline - Date.now();
+          if (remaining <= 0) {
+            Object.keys(units).forEach(function (unit) {
+              units[unit].textContent = "0";
+            });
+            expiredMessage.hidden = false;
+            if (timer) window.clearInterval(timer);
+            return;
+          }
+
+          var seconds = Math.floor(remaining / 1000);
+          units.days.textContent = String(Math.floor(seconds / 86400));
+          units.hours.textContent = String(Math.floor((seconds % 86400) / 3600));
+          units.minutes.textContent = String(Math.floor((seconds % 3600) / 60));
+          units.seconds.textContent = String(seconds % 60);
+        }
+
+        updateCountdown();
+        if (deadline > Date.now()) {
+          timer = window.setInterval(updateCountdown, 1000);
+        }
+      })();
+    </script>
+
+    <!-- Static-file preview fallback; served pages load data/campus_recruiting_schedule.json. -->
+    <script type="application/json" id="campus-schedule-data">
+      [
+        {"region":"서울","date":"9월 17일 (목)","school":"중앙대학교","location":"310관 2층 201호","time":"14:00~15:30"},
+        {"region":"서울","date":"10월 1일 (목)","school":"건국대학교","location":"경영관 302호","time":"14:00~15:30"},
+        {"region":"서울","date":"10월 14일 (수)","school":"경희대학교","location":"청운관 B117호","time":"14:30~16:00"},
+        {"region":"경기","date":"9월 14일 (월)","school":"가천대학교","location":"비전타워 B구역 B104호","time":"14:00~15:30"},
+        {"region":"경기","date":"9월 21일 (월)","school":"경기대학교","location":"복지관 2층 잡카페","time":"14:00~15:30"},
+        {"region":"경기","date":"9월 22일 (화)","school":"인하대학교","location":"학생회관 346호","time":"14:00~15:30"},
+        {"region":"강원","date":"9월 23일 (수)","school":"한림대학교","location":"캠퍼스라이프센터 2층 커리어라운지","time":"13:00~14:30"},
+        {"region":"강원","date":"9월 29일 (화)","school":"강원대학교(강릉)","location":"후생관 1층(C4) 잡카페","time":"15:00~16:30"},
+        {"region":"강원","date":"10월 1일 (목)","school":"강원대학교(춘천)","location":"의생명과학대학 B동 501호","time":"14:00~15:30"},
+        {"region":"경상","date":"9월 30일 (수)","school":"경북대학교","location":"복지관 4층 강의실2","time":"14:00~15:30"},
+        {"region":"경상","date":"10월 1일 (목)","school":"영남대학교","location":"학생지원센터 322호 강의실","time":"14:00~15:30"},
+        {"region":"경상","date":"10월 6일 (화)","school":"동아대학교","location":"S08 인재개발과 3층 Inspire Hall","time":"10:00~11:30"},
+        {"region":"경상","date":"10월 6일 (화)","school":"부산대학교","location":"문창회관 2층 다목적강의실1","time":"15:00~16:30"},
+        {"region":"경상","date":"10월 7일 (수)","school":"창원대학교","location":"COSS(6호관) 2층 강의실","time":"14:00~15:30"},
+        {"region":"경상","date":"10월 8일 (목)","school":"경상국립대학교","location":"GNU컨벤션센터 1층 잡서포트룸","time":"13:00~14:30"},
+        {"region":"경상","date":"10월 13일 (화)","school":"계명대학교","location":"취업지원센터 1층 강의실","time":"14:00~15:30"},
+        {"region":"충청","date":"9월 15일 (화)","school":"청주대학교","location":"AI-SW 융합대학(06) 세미나실(008)","time":"16:00~17:30"},
+        {"region":"충청","date":"9월 29일 (화)","school":"충남대학교","location":"인재개발원(E5) 3층 창의실","time":"14:00~15:30"},
+        {"region":"충청","date":"9월 30일 (수)","school":"건국대학교","location":"학생회관 이승진홀","time":"14:00~15:30"},
+        {"region":"충청","date":"10월 1일 (목)","school":"충북대학교","location":"중앙도서관 2관 세미나실 (5층)","time":"14:00~15:30"},
+        {"region":"충청","date":"10월 7일 (수)","school":"순천향대학교","location":"유니토피아관 3D극장","time":"14:00~15:30"},
+        {"region":"충청","date":"10월 8일 (목)","school":"국립공주대학교","location":"대학본부 1층 국제회의실","time":"13:00~14:30"},
+        {"region":"전라","date":"9월 15일 (화)","school":"전주대학교","location":"스타센터 238호","time":"16:00~17:00"},
+        {"region":"전라","date":"9월 16일 (수)","school":"원광대학교","location":"학생지원관(건물번호 14) 지하 취창업 강의실2","time":"14:00~15:30"},
+        {"region":"전라","date":"9월 16일 (수)","school":"조선대학교","location":"중앙도서관 7층 커넥트홀","time":"14:00~15:30"},
+        {"region":"전라","date":"9월 17일 (목)","school":"전남대학교","location":"도서관 별관 지하 취업강의실 1","time":"14:30~16:00"},
+        {"region":"전라","date":"10월 8일 (목)","school":"전북대학교","location":"학생타운 2층 211호","time":"14:00~15:30"}
+      ]
+    </script>
     <script>
       (function () {
         // 아래로 스크롤 버튼: 다음 섹션이 있으면 해당 위치로, 없으면 메인 비주얼 높이만큼 이동
@@ -5687,6 +7380,8 @@
         }
         function setMenu(open) {
           header.classList.toggle("is-menu-open", open);
+          header.classList.toggle("is-hidden", false);
+          header.classList.toggle("is-visible", open || window.scrollY > 0);
           root.classList.toggle("is-menu-open", open);
           toggle.setAttribute("aria-expanded", String(open));
           toggle.setAttribute(
@@ -5696,6 +7391,37 @@
         }
 
         if (header && toggle && nav) {
+          var lastScrollY = window.scrollY;
+          var scrollUpdatePending = false;
+
+          if (lastScrollY > 0) header.classList.add("is-visible");
+
+          window.addEventListener(
+            "scroll",
+            function () {
+              if (scrollUpdatePending) return;
+              scrollUpdatePending = true;
+              window.requestAnimationFrame(function () {
+                var currentScrollY = Math.max(0, window.scrollY);
+                if (currentScrollY === 0) {
+                  header.classList.remove("is-hidden", "is-visible");
+                } else if (isMenuOpen()) {
+                  header.classList.remove("is-hidden");
+                  header.classList.add("is-visible");
+                } else if (currentScrollY > lastScrollY + 4) {
+                  header.classList.add("is-hidden");
+                  header.classList.remove("is-visible");
+                } else if (currentScrollY < lastScrollY - 4) {
+                  header.classList.remove("is-hidden");
+                  header.classList.add("is-visible");
+                }
+                lastScrollY = currentScrollY;
+                scrollUpdatePending = false;
+              });
+            },
+            { passive: true },
+          );
+
           toggle.addEventListener("click", function () {
             setMenu(!isMenuOpen());
           });
@@ -5739,6 +7465,89 @@
         });
       })();
 
+      (function () {
+        var targetSelector = [
+          "#mirae .mirae__title",
+          "#mirae .mirae__figure",
+          "#history .history__head",
+          "#history .history__timeline > .era",
+          "#jobs .cont__intro",
+          "#jobs .cont__item",
+          "#jobs .cont__cta-wrap",
+          "#innovation .cont__growth",
+          "#innovation .cont__item",
+          "#welfare .welfare__hero",
+          "#welfare .welfare__group",
+          "#welfare .welfare__card",
+          "#tasks .tasks__intro",
+          "#tasks .tasks__tabs",
+          "#tasks .tasks__panels > *",
+          "#requirement .requirement__title",
+          "#requirement .requirement__tabs",
+          "#requirement .requirement__eligibility",
+          "#requirement .requirement__notes",
+          "#requirement .requirement__notice",
+          "#requirement .requirement__process-group",
+          "#requirement .requirement__process-notes",
+          "#exposition .exposition__hero",
+          "#exposition .exposition__tabs",
+          "#exposition .exposition__regions",
+          "#exposition .exposition__week",
+          ".con8 .con8__link",
+          ".con9 .con9__title",
+          ".con9 .con9__countdown",
+          ".con9 .con9__earth-link",
+        ].join(", ");
+        var targets = new Set(document.querySelectorAll(targetSelector));
+        if (!targets.size) return;
+
+        if (!("IntersectionObserver" in window)) {
+          document.documentElement.classList.remove("has-scroll-reveal");
+          return;
+        }
+
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              entry.target.classList.toggle(
+                "is-revealed",
+                entry.isIntersecting,
+              );
+            });
+          },
+          {
+            rootMargin: "-25% 0px -25% 0px",
+            threshold: 0,
+          },
+        );
+
+        function observeTarget(target) {
+          if (targets.has(target)) return;
+          targets.add(target);
+          target.classList.add("scroll-reveal");
+          observer.observe(target);
+        }
+
+        targets.forEach(function (target) {
+          target.classList.add("scroll-reveal");
+          observer.observe(target);
+        });
+
+        var additionsObserver = new MutationObserver(function (mutations) {
+          mutations.forEach(function (mutation) {
+            mutation.addedNodes.forEach(function (node) {
+              if (node.nodeType !== Node.ELEMENT_NODE) return;
+              if (node.matches(targetSelector)) observeTarget(node);
+              node.querySelectorAll(targetSelector).forEach(observeTarget);
+            });
+          });
+        });
+        additionsObserver.observe(document.querySelector("main"), {
+          childList: true,
+          subtree: true,
+        });
+      })();
+
       // 연혁 섹션 펼치기/접기: .is-expanded 토글 + 버튼 텍스트('펼치기' ↔ '접기') 변경
       (function () {
         var section = document.getElementById("history");
@@ -5759,6 +7568,604 @@
               behavior: "smooth",
             });
           }
+        });
+      })();
+
+      // 복지 카드 목록은 JSON 데이터로 구성하고, file://에서는 내장 스냅샷을 사용
+      (function () {
+        var welfare = document.getElementById("welfare");
+        if (!welfare) return;
+
+        var scroll = welfare.querySelector(".welfare__scroll");
+        var embeddedData = document.getElementById("welfare-data");
+        if (!scroll || !embeddedData) return;
+
+        function createElement(tag, className, text) {
+          var element = document.createElement(tag);
+          if (className) element.className = className;
+          if (text) element.textContent = text;
+          return element;
+        }
+
+        function validateData(data) {
+          if (!Array.isArray(data) || data.length === 0 || data.length > 3) {
+            throw new Error("복지 그룹 데이터는 1~3개 그룹이어야 합니다.");
+          }
+
+          var benefitCount = 0;
+          data.forEach(function (group) {
+            if (
+              !group ||
+              typeof group.category !== "string" ||
+              !group.category.trim() ||
+              typeof group.description !== "string" ||
+              !group.description.trim() ||
+              !Array.isArray(group.benefits)
+            ) {
+              throw new Error("복지 그룹 데이터 형식이 올바르지 않습니다.");
+            }
+
+            group.benefits.forEach(function (benefit) {
+              if (
+                !benefit ||
+                typeof benefit.title !== "string" ||
+                !benefit.title.trim() ||
+                typeof benefit.description !== "string" ||
+                !benefit.description.trim()
+              ) {
+                throw new Error("복지 항목 데이터 형식이 올바르지 않습니다.");
+              }
+              benefitCount += 1;
+            });
+          });
+
+          if (benefitCount > 23) {
+            throw new Error("복지 항목 아이콘은 최대 23개까지 사용할 수 있습니다.");
+          }
+          return data;
+        }
+
+        function renderGroups(data) {
+          var fragment = document.createDocumentFragment();
+          var iconIndex = 0;
+
+          data.forEach(function (group, groupIndex) {
+            var titleId = "welfare-group-title-" + (groupIndex + 1);
+            var groupElement = createElement("section", "welfare__group");
+            var header = createElement("header", "welfare__group-head");
+            var heading = createElement("h3", "welfare__group-title");
+            var groupIcon = createElement("img");
+            groupIcon.src = "./images/wf_tit" + (groupIndex + 1) + ".png";
+            groupIcon.alt = "";
+            groupIcon.setAttribute("aria-hidden", "true");
+            heading.id = titleId;
+            heading.appendChild(groupIcon);
+            heading.appendChild(document.createTextNode(group.category));
+
+            var copy = createElement(
+              "p",
+              "welfare__group-copy",
+              group.description,
+            );
+            header.appendChild(heading);
+            header.appendChild(copy);
+            groupElement.setAttribute("aria-labelledby", titleId);
+            groupElement.appendChild(header);
+
+            var list = createElement("ul", "welfare__list");
+            list.setAttribute("aria-label", group.category + " 복지");
+            group.benefits.forEach(function (benefit) {
+              iconIndex += 1;
+              var card = createElement("li", "welfare__card");
+              var cardCopy = createElement("div", "welfare__card-copy");
+              var title = createElement(
+                "h4",
+                "welfare__card-title",
+                benefit.title,
+              );
+              var description = createElement(
+                "p",
+                "welfare__card-description",
+                benefit.description,
+              );
+              var icon = createElement("img", "welfare__card-icon");
+              icon.src = "./images/wf_ico" + iconIndex + ".png";
+              icon.alt = "";
+              icon.setAttribute("aria-hidden", "true");
+              cardCopy.appendChild(title);
+              cardCopy.appendChild(description);
+              card.appendChild(cardCopy);
+              card.appendChild(icon);
+              list.appendChild(card);
+            });
+            groupElement.appendChild(list);
+            fragment.appendChild(groupElement);
+          });
+
+          scroll.replaceChildren(fragment);
+        }
+
+        function showDataError(error) {
+          console.error("복지 데이터를 불러오지 못했습니다.", error);
+          var message = createElement(
+            "p",
+            "welfare__error",
+            "복지 정보를 불러오지 못했습니다. data/benefit_data.json 파일을 확인해 주세요.",
+          );
+          scroll.replaceChildren(message);
+        }
+
+        Promise.resolve()
+          .then(function () {
+            if (window.location.protocol === "file:") {
+              return JSON.parse(embeddedData.textContent);
+            }
+            return fetch("./data/benefit_data.json").then(function (response) {
+              if (!response.ok) {
+                throw new Error(
+                  "복지 JSON 요청 실패: HTTP " + response.status,
+                );
+              }
+              return response.json();
+            });
+          })
+          .then(validateData)
+          .then(renderGroups)
+          .catch(showDataError);
+      })();
+
+      // 박람회 및 캠퍼스 방문 일정
+      (function () {
+        var exposition = document.getElementById("exposition");
+        if (!exposition) return;
+
+        var fairCalendar = exposition.querySelector("#exposition-fair-calendar");
+        var campusCalendar = exposition.querySelector(
+          "#exposition-campus-calendar",
+        );
+        var mainTabs = exposition.querySelectorAll(
+          ".exposition__tabs [role=tab]",
+        );
+        var mainPanels = exposition.querySelectorAll(
+          ".exposition__tabs ~ .exposition__panel",
+        );
+        var regionTabs = exposition.querySelectorAll(
+          ".exposition__region[role=tab]",
+        );
+        var regionPanels = exposition.querySelectorAll(
+          ".exposition__region-panel",
+        );
+        if (!fairCalendar || !campusCalendar) return;
+
+        var fairWeeks = [
+          {
+            dates: [
+              "8월 31일 (월)",
+              "9월 1일 (화)",
+              "9월 2일 (수)",
+              "9월 3일 (목)",
+              "9월 4일 (금)",
+            ],
+            events: [
+              ["KAIST"],
+              ["서울대학교", "서강대학교", "연세대학교"],
+              ["UNIST", "한양대학교"],
+              ["GIST"],
+              ["고려대학교", "성균관대학교(자연)"],
+            ],
+          },
+          {
+            dates: [
+              "9월 7일 (월)",
+              "9월 8일 (화)",
+              "9월 9일 (수)",
+              "",
+              "10월 7일 (수)",
+            ],
+            events: [
+              ["KIST", "동국대학교"],
+              ["이화여자대학교", "중견기업박람회(대전)"],
+              ["POSTECH"],
+              [],
+              ["서울고용센터"],
+            ],
+          },
+        ];
+        function createElement(tag, className, text) {
+          var element = document.createElement(tag);
+          if (className) element.className = className;
+          if (text) element.textContent = text;
+          return element;
+        }
+
+        function parseScheduleDate(value) {
+          var match = value.match(
+            /^(\d{1,2})월\s*(\d{1,2})일\s*\(([월화수목금토일])\)$/,
+          );
+          if (!match) {
+            throw new Error("캠퍼스 일정 날짜 형식이 올바르지 않습니다: " + value);
+          }
+          var month = Number(match[1]);
+          var day = Number(match[2]);
+          var date = new Date(2026, month - 1, day);
+          var weekdayIndex = ["월", "화", "수", "목", "금"].indexOf(match[3]);
+          if (date.getMonth() !== month - 1 || date.getDate() !== day) {
+            throw new Error("캠퍼스 일정 날짜가 올바르지 않습니다: " + value);
+          }
+          if (weekdayIndex === -1) {
+            throw new Error("캠퍼스 일정은 평일이어야 합니다: " + value);
+          }
+          return { date: date, weekdayIndex: weekdayIndex };
+        }
+
+        function validateSchedule(data) {
+          if (!Array.isArray(data)) {
+            throw new Error("캠퍼스 일정 JSON은 배열이어야 합니다.");
+          }
+          data.forEach(function (item, index) {
+            if (
+              !item ||
+              typeof item.region !== "string" ||
+              typeof item.date !== "string" ||
+              typeof item.school !== "string" ||
+              typeof item.location !== "string" ||
+              typeof item.time !== "string"
+            ) {
+              throw new Error(
+                "캠퍼스 일정 JSON의 " + (index + 1) + "번째 항목 형식이 올바르지 않습니다.",
+              );
+            }
+            item.parsedDate = parseScheduleDate(item.date);
+          });
+          return data;
+        }
+
+        function createCampusWeeks(schedule, region) {
+          var regionSchedule = schedule
+            .filter(function (item) {
+              return item.region === region;
+            })
+            .sort(function (left, right) {
+              return left.parsedDate.date - right.parsedDate.date;
+            });
+          var weekMap = new Map();
+
+          regionSchedule.forEach(function (item) {
+            var weekStart = new Date(item.parsedDate.date);
+            weekStart.setDate(weekStart.getDate() - item.parsedDate.weekdayIndex);
+            var weekKey = weekStart.getTime();
+            if (!weekMap.has(weekKey)) {
+              weekMap.set(weekKey, {
+                start: weekStart,
+                eventsByDay: [[], [], [], [], []],
+                lastEventDay: 0,
+              });
+            }
+            var week = weekMap.get(weekKey);
+            var dayIndex = item.parsedDate.weekdayIndex;
+            week.eventsByDay[dayIndex].push({
+              name: item.school,
+              location: item.location,
+              time: item.time,
+            });
+            week.lastEventDay = Math.max(week.lastEventDay, dayIndex);
+          });
+
+          var orderedWeeks = Array.from(weekMap.values()).sort(function (
+            left,
+            right,
+          ) {
+            return left.start - right.start;
+          });
+          return orderedWeeks.map(function (week, weekIndex) {
+            var isLastWeek = weekIndex === orderedWeeks.length - 1;
+            var dayCount = isLastWeek ? week.lastEventDay + 1 : 5;
+            var dates = [];
+            var events = [];
+            for (var dayIndex = 0; dayIndex < dayCount; dayIndex += 1) {
+              var date = new Date(week.start);
+              date.setDate(date.getDate() + dayIndex);
+              dates.push(
+                date.getMonth() +
+                  1 +
+                  "월 " +
+                  date.getDate() +
+                  "일 (" +
+                  ["월", "화", "수", "목", "금"][dayIndex] +
+                  ")",
+              );
+              events.push(week.eventsByDay[dayIndex]);
+            }
+            return { dates: dates, events: events };
+          });
+        }
+
+        function loadCampusSchedule() {
+          var fallback = document.getElementById("campus-schedule-data");
+          if (window.location.protocol === "file:") {
+            if (!fallback) {
+              return Promise.reject(
+                new Error("캠퍼스 일정 JSON 스냅샷을 찾을 수 없습니다."),
+              );
+            }
+            return Promise.resolve().then(function () {
+              return JSON.parse(fallback.textContent);
+            });
+          }
+          return fetch("./data/campus_recruiting_schedule.json").then(
+            function (response) {
+              if (!response.ok) {
+                throw new Error(
+                  "캠퍼스 일정 요청 실패: HTTP " + response.status,
+                );
+              }
+              return response.json();
+            },
+          );
+        }
+
+        var campusEventIndex = 0;
+
+        function renderCalendar(container, weeks, campusCalendar) {
+          var fragment = document.createDocumentFragment();
+          weeks.forEach(function (week) {
+            var weekElement = createElement("div", "exposition__week");
+            var dates = createElement("div", "exposition__week-dates");
+            var events = createElement("div", "exposition__week-events");
+
+            week.dates.forEach(function (date, index) {
+              var dateElement = createElement(
+                "div",
+                "exposition__date",
+                date,
+              );
+              var mobileDateRow = Math.floor(index / 2) * 2 + 1;
+              var mobileColumn = (index % 2) + 1;
+              dateElement.style.setProperty(
+                "--mobile-date-row",
+                mobileDateRow,
+              );
+              dateElement.style.setProperty("--mobile-column", mobileColumn);
+              dates.appendChild(dateElement);
+              var day = createElement("div", "exposition__day");
+              day.style.setProperty("--mobile-date-row", mobileDateRow);
+              day.style.setProperty("--mobile-column", mobileColumn);
+              (week.events[index] || []).forEach(function (event) {
+                if (!campusCalendar) {
+                  day.appendChild(
+                    createElement(
+                      "span",
+                      "exposition__event exposition__event--static",
+                      event,
+                    ),
+                  );
+                  return;
+                }
+
+                var eventName =
+                  typeof event === "string" ? event : event.name;
+                campusEventIndex += 1;
+                var detailId = "exposition-event-detail-" + campusEventIndex;
+                var eventButton = createElement(
+                  "button",
+                  "exposition__event",
+                  eventName,
+                );
+                eventButton.type = "button";
+                eventButton.setAttribute("aria-expanded", "false");
+                eventButton.setAttribute("aria-controls", detailId);
+
+                var detail = createElement(
+                  "div",
+                  "exposition__event-detail",
+                );
+                detail.id = detailId;
+                detail.hidden = true;
+                detail.setAttribute(
+                  "aria-label",
+                  eventName + " 방문 상세 일정",
+                );
+                detail.setAttribute("role", "group");
+                detail.tabIndex = -1;
+                [
+                  {
+                    label: "장소",
+                    value: event.location || "추후 안내",
+                    className: "place",
+                  },
+                  {
+                    label: "시간",
+                    value: event.time || "추후 안내",
+                    className: "time",
+                  },
+                ].forEach(function (item) {
+                  var row = createElement(
+                    "div",
+                    "exposition__event-detail-row",
+                  );
+                  var label = createElement(
+                    "span",
+                    "exposition__event-detail-label exposition__event-detail-label--" +
+                      item.className,
+                    item.label,
+                  );
+                  var value = createElement(
+                    "span",
+                    "exposition__event-detail-value",
+                    item.value,
+                  );
+                  row.appendChild(label);
+                  row.appendChild(value);
+                  detail.appendChild(row);
+                });
+
+                function closeDetail(returnFocus) {
+                  detail.hidden = true;
+                  eventButton.setAttribute("aria-expanded", "false");
+                  if (returnFocus) eventButton.focus();
+                }
+
+                eventButton.addEventListener("click", function () {
+                  if (eventButton.getAttribute("aria-expanded") === "true") {
+                    closeDetail(true);
+                    return;
+                  }
+                  container
+                    .querySelectorAll(".exposition__event-detail:not([hidden])")
+                    .forEach(function (openDetail) {
+                      var openButton = container.querySelector(
+                        '[aria-controls="' + openDetail.id + '"]',
+                      );
+                      openDetail.hidden = true;
+                      if (openButton) {
+                        openButton.setAttribute("aria-expanded", "false");
+                      }
+                    });
+                  detail.hidden = false;
+                  eventButton.setAttribute("aria-expanded", "true");
+                  detail.focus();
+                });
+                detail.addEventListener("click", function () {
+                  closeDetail(true);
+                });
+                day.addEventListener("focusout", function (event) {
+                  if (!day.contains(event.relatedTarget)) {
+                    closeDetail(false);
+                  }
+                });
+
+                day.appendChild(eventButton);
+                day.appendChild(detail);
+              });
+              events.appendChild(day);
+            });
+
+            weekElement.appendChild(dates);
+            weekElement.appendChild(events);
+            fragment.appendChild(weekElement);
+          });
+          container.replaceChildren(fragment);
+        }
+
+        function selectTab(tabs, panels, index, moveFocus) {
+          tabs.forEach(function (tab, tabIndex) {
+            var selected = tabIndex === index;
+            tab.setAttribute("aria-selected", String(selected));
+            tab.tabIndex = selected ? 0 : -1;
+            panels[tabIndex].hidden = !selected;
+            if (selected && moveFocus) tab.focus();
+          });
+        }
+
+        function addTabBehavior(tabs, panels, onSelect) {
+          tabs.forEach(function (tab, index) {
+            function select(moveFocus) {
+              selectTab(tabs, panels, index, moveFocus);
+              if (onSelect) onSelect(index);
+            }
+
+            tab.addEventListener("click", function () {
+              select(false);
+            });
+            tab.addEventListener("keydown", function (event) {
+              if (
+                event.key !== "ArrowRight" &&
+                event.key !== "ArrowLeft" &&
+                event.key !== "Home" &&
+                event.key !== "End"
+              ) {
+                return;
+              }
+              event.preventDefault();
+              var next =
+                event.key === "Home"
+                  ? 0
+                  : event.key === "End"
+                    ? tabs.length - 1
+                    : (index +
+                        (event.key === "ArrowRight" ? 1 : -1) +
+                        tabs.length) %
+                      tabs.length;
+              selectTab(tabs, panels, next, true);
+              if (onSelect) onSelect(next);
+            });
+          });
+        }
+
+        renderCalendar(fairCalendar, fairWeeks, false);
+        loadCampusSchedule()
+          .then(validateSchedule)
+          .then(function (schedule) {
+            regionPanels.forEach(function (panel, index) {
+              var calendar = panel.querySelector(".exposition__calendar");
+              if (!calendar) {
+                calendar = createElement("div", "exposition__calendar");
+                panel.appendChild(calendar);
+              }
+              renderCalendar(
+                calendar,
+                createCampusWeeks(schedule, regionTabs[index].textContent.trim()),
+                true,
+              );
+            });
+          })
+          .catch(function (error) {
+            console.error("캠퍼스 일정을 불러오지 못했습니다.", error);
+            regionPanels.forEach(function (panel) {
+              var message = createElement(
+                "p",
+                "exposition__schedule-error",
+                "캠퍼스 일정을 불러오지 못했습니다. data/campus_recruiting_schedule.json 파일을 확인해 주세요.",
+              );
+              message.setAttribute("role", "alert");
+              panel.replaceChildren(message);
+            });
+          });
+        addTabBehavior(mainTabs, mainPanels);
+        addTabBehavior(regionTabs, regionPanels);
+      })();
+
+      // 지원자격과 전형절차 탭 전환
+      (function () {
+        var tabs = document.querySelectorAll(".requirement__tab");
+        var panels = document.querySelectorAll(".requirement__panel");
+        if (!tabs.length || tabs.length !== panels.length) return;
+
+        function selectTab(index, moveFocus) {
+          tabs.forEach(function (tab, tabIndex) {
+            var selected = tabIndex === index;
+            tab.setAttribute("aria-selected", String(selected));
+            tab.tabIndex = selected ? 0 : -1;
+            panels[tabIndex].hidden = !selected;
+            if (selected && moveFocus) tab.focus();
+          });
+        }
+
+        tabs.forEach(function (tab, index) {
+          tab.addEventListener("click", function () {
+            selectTab(index, false);
+          });
+          tab.addEventListener("keydown", function (event) {
+            if (
+              event.key !== "ArrowRight" &&
+              event.key !== "ArrowLeft" &&
+              event.key !== "Home" &&
+              event.key !== "End"
+            ) {
+              return;
+            }
+            event.preventDefault();
+            var next =
+              event.key === "Home"
+                ? 0
+                : event.key === "End"
+                  ? tabs.length - 1
+                  : (index +
+                      (event.key === "ArrowRight" ? 1 : -1) +
+                      tabs.length) %
+                    tabs.length;
+            selectTab(next, true);
+          });
         });
       })();
 
