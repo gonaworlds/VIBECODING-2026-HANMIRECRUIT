@@ -57,7 +57,6 @@
             img.onload=resolve;img.onerror=()=>reject(new Error(`run_${i+1}.png`));
             img.src=assetURL(`run_${i+1}.png`);
           });
-          if(img.decode)await img.decode();
           this.frames[i]=img;loaded++;
           if(i===0)this.draw();
           if(status)status.textContent=`이미지 준비 중 ${loaded}/${this.meta.count}`;
@@ -114,7 +113,7 @@
       ctx.drawImage(img,off[0],off[1]);
       // 매 프레임 원본 눈을 덮고 새 흰자와 눈동자를 합성합니다.
       // 이미지 파일은 수정하지 않으며, tracking을 끄면 원본 눈이 표시됩니다.
-      if(!this.tracking)return;
+      if(!this.tracking||!this.pointer)return;
       for(const eye of this.meta.eyes[this.index]){
         const x=off[0]+eye.x,y=off[1]+eye.y;
         const rx=eye.rx,ry=eye.ry;
@@ -138,5 +137,5 @@
     }
   }
   window.HanmiWalker=HanmiWalker;
-  document.querySelectorAll('[data-hanmi-walker]').forEach(root=>{root.hanmiWalker=new HanmiWalker(root);});
+  document.querySelectorAll('[data-hanmi-walker]:not([data-hanmi-reading-walker])').forEach(root=>{root.hanmiWalker=new HanmiWalker(root);});
 })();
