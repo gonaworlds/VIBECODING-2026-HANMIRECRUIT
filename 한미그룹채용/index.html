@@ -1,19 +1,10 @@
-<!doctype html>
-<html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+<html lang="ko" class="has-scroll-reveal"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>경은's 2026년 하반기 한미그룹 공개채용</title>
-    <meta
-      name="description"
-      content="2026년 하반기 한미그룹 공개채용. 모집기간 2026.9.28(월) ~ 2026.10.18(일) 23:59까지"
-    />
-    <link
-      rel="stylesheet"
-      as="style"
-      crossorigin
-      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
-    />
+    <meta name="description" content="2026년 하반기 한미그룹 공개채용. 모집기간 2026.9.28(월) ~ 2026.10.18(일) 23:59까지">
+    <link rel="stylesheet" as="style" crossorigin="" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+    <link rel="stylesheet" href="./hanmi-eye-tracking/player.css">
     <style>
       /* ============ Design Tokens ============ */
       /* CSS 변수구역 */
@@ -107,6 +98,50 @@
       html.has-scroll-reveal .scroll-reveal.is-revealed {
         opacity: 1;
         translate: 0 0;
+      }
+      /* Animation : 상하, 좌우, 크기 애니메이션 */
+      .updown {
+        animation: updown var(--motion-duration, 2.4s) ease-in-out var(--motion-delay, 0s) infinite;
+      }
+      .leftright {
+        animation: leftright 2.4s ease-in-out infinite;
+      }
+      .bigsmall {
+        animation: bigsmall 2.4s ease-in-out infinite;
+      }
+      @keyframes updown {
+        0%,
+        100% {
+          translate: 0 var(--motion-from, -10%);
+        }
+        50% {
+          translate: 0 var(--motion-to, 10%);
+        }
+      }
+      @keyframes leftright {
+        0%,
+        100% {
+          translate: -10% 0;
+        }
+        50% {
+          translate: 10% 0;
+        }
+      }
+      @keyframes bigsmall {
+        0%,
+        100% {
+          scale: 0.9;
+        }
+        50% {
+          scale: 1.1;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .updown,
+        .leftright,
+        .bigsmall {
+          animation: none;
+        }
       }
 
       /* ============ Header ============ */
@@ -376,6 +411,38 @@
       .mv__visual > * {
         position: absolute;
         display: block;
+      }
+
+      /* 캐릭터마다 이동 폭(자기 크기 기준), 주기, 음수 지연을 달리해 움직임에 시차를 줍니다. */
+      .mv__visual .mv__micro {
+        --motion-from: -4%;
+        --motion-to: 4%;
+        --motion-duration: 3.2s;
+        --motion-delay: -0.7s;
+      }
+      .mv__visual .mv__char1 {
+        --motion-from: -7%;
+        --motion-to: 7%;
+        --motion-duration: 3.8s;
+        --motion-delay: -1.6s;
+      }
+      .mv__visual .mv__char2 {
+        --motion-from: -11%;
+        --motion-to: 11%;
+        --motion-duration: 4.6s;
+        --motion-delay: -2.3s;
+      }
+      .mv__visual .mv__char3 {
+        --motion-from: -5%;
+        --motion-to: 5%;
+        --motion-duration: 3.4s;
+        --motion-delay: -0.9s;
+      }
+      .mv__visual .mv__char4 {
+        --motion-from: -9%;
+        --motion-to: 9%;
+        --motion-duration: 4.2s;
+        --motion-delay: -3.1s;
       }
 
       .mv__ring {
@@ -987,10 +1054,14 @@
         margin: 0;
         pointer-events: none;
       }
-      .mirae__img--walking {
+      .mirae__walker {
+        position: absolute;
         left: var(--walking-l);
         top: var(--walking-t);
         width: var(--walking-w);
+        max-width: none;
+        margin: 0;
+        pointer-events: auto;
       }
 
       /* 태블릿 (785 x 537 시안) */
@@ -1017,9 +1088,10 @@
           --star2-l: 40.8%;
           --star2-t: 78.8%;
           --star2-w: 2.2%;
-          --walking-l: 9%;
-          --walking-t: 37.6%;
-          --walking-w: 82%;
+          /* 390px~1024px 구간에서 캔버스 좌표와 폭을 부드럽게 보간합니다. */
+          --walking-l: clamp(9%, calc(8.385cqw + 6.3px), 10%);
+          --walking-t: clamp(37.6%, calc(8.917cqw + 172.15px), 49%);
+          --walking-w: clamp(80%, calc(83.23cqw - 12.6px), 82%);
         }
         .mirae__title {
           font-size: 3.7cqw;
@@ -1056,6 +1128,15 @@
         }
         .mirae__title {
           font-size: 6.8cqw;
+        }
+      }
+
+      /* 1024px~1440px 구간도 tablet에서 desktop 좌표까지 연속적으로 보간합니다. */
+      @media (min-width: 1025px) and (max-width: 1440px) {
+        .mirae__stage {
+          --walking-l: clamp(0px, calc(319.02px - 22.154cqw), 92.16px);
+          --walking-t: clamp(167.04px, calc(500.75px - 23.177cqw), 263.46px);
+          --walking-w: clamp(82%, calc(144.3cqw - 637.4px), 100%);
         }
       }
 
@@ -2126,7 +2207,7 @@
       }
       .cont__bottle {
         position: absolute;
-        z-index: 1;
+        z-index: 0;
         left: 3cqw;
         bottom: -14cqw;
         width: 17cqw;
@@ -4588,89 +4669,31 @@
     <header class="header">
       <div class="header__inner">
         <a class="header__logo" href="#" aria-label="한미그룹 홈">
-          <svg
-            width="182"
-            height="31"
-            viewBox="0 0 182 31"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            role="img"
-            aria-label="Hanmi 한미그룹"
-          >
+          <svg width="182" height="31" viewBox="0 0 182 31" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hanmi 한미그룹">
             <g clip-path="url(#hanmiClip)">
-              <mask
-                id="hanmiMask"
-                style="mask-type: luminance"
-                maskUnits="userSpaceOnUse"
-                x="0"
-                y="0"
-                width="182"
-                height="31"
-              >
-                <path d="M182 0H0V31H182V0Z" fill="white" />
+              <mask id="hanmiMask" style="mask-type: luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="182" height="31">
+                <path d="M182 0H0V31H182V0Z" fill="white"></path>
               </mask>
               <g mask="url(#hanmiMask)">
-                <path
-                  d="M35.9672 0.443359C16.1174 0.443359 0 7.27985 0 15.7255C0 24.1496 16.1174 31.001 35.9672 31.001C55.8388 31.001 71.9397 24.1499 71.9397 15.7255C71.9397 7.27985 55.8388 0.443359 35.9672 0.443359Z"
-                  fill="#E60012"
-                />
-                <path
-                  d="M63.5058 8.09635C64.4762 8.16284 65.1778 8.88898 65.019 9.68948C64.861 10.49 63.8924 11.1044 62.922 11.0385C61.9524 10.9729 61.2988 10.2296 61.4533 9.44802C61.6086 8.66589 62.5362 8.03161 63.5058 8.09635Z"
-                  fill="white"
-                />
-                <path
-                  d="M64.0822 12.0312H61.4441C61.3769 12.0312 61.3097 12.0867 61.2975 12.1549L59.2607 21.7458C59.2459 21.8134 59.2895 21.8685 59.3558 21.8685H61.9957C62.0629 21.8685 62.1283 21.8134 62.1432 21.7458L64.1791 12.1549C64.1931 12.0867 64.1486 12.0312 64.0822 12.0312Z"
-                  fill="white"
-                />
-                <path
-                  d="M55.9404 11.7715C54.545 11.7715 53.3337 12.4113 52.6321 13.3124C52.3459 12.3334 51.4994 11.7715 50.2672 11.7715C48.9582 11.7715 47.8638 12.2439 47.0706 13.1345C47.1142 12.9351 47.2844 12.1538 47.2844 12.1538C47.2992 12.0864 47.2556 12.0313 47.1884 12.0313H44.6803C44.6122 12.0313 44.5468 12.0864 44.532 12.1538L42.5344 21.745C42.5187 21.8132 42.5632 21.8683 42.6295 21.8683H45.2476C45.3147 21.8683 45.3819 21.8132 45.395 21.745L46.4658 16.6305C46.7267 15.4538 47.4999 14.0803 48.822 14.0803C49.412 14.0803 49.8561 14.4713 49.8561 14.9892C49.8561 15.131 49.8343 15.3033 49.8055 15.5037L49.7846 15.662L48.5218 21.745C48.5079 21.8132 48.5506 21.8683 48.6187 21.8683H51.2585C51.3257 21.8683 51.3903 21.8132 51.4051 21.745L52.4724 16.6305C52.7325 15.4538 53.5074 14.0803 54.8278 14.0803C55.4186 14.0803 55.8645 14.4713 55.8645 14.9892C55.8645 15.131 55.8401 15.3033 55.8139 15.5037L55.7912 15.662L54.5293 21.745C54.5145 21.8132 54.5572 21.8683 54.6253 21.8683H57.2451C57.3131 21.8683 57.3786 21.8132 57.3917 21.745L58.6614 15.7303C58.7609 15.2692 58.8525 14.8239 58.8525 14.4381C58.8525 12.7128 57.7704 11.7715 55.9404 11.7715Z"
-                  fill="white"
-                />
-                <path
-                  d="M38.9896 11.7715C37.7059 11.7715 36.6325 12.2343 35.7886 13.1401C35.8322 12.9464 36.0076 12.1538 36.0076 12.1538C36.0216 12.0864 35.978 12.0313 35.9116 12.0313H33.4018C33.3346 12.0313 33.2674 12.0864 33.2544 12.1538L31.2568 21.745C31.242 21.8132 31.2856 21.8683 31.3519 21.8683H33.9726C34.0398 21.8683 34.1061 21.8132 34.12 21.745L35.1891 16.6672C35.3505 15.8883 35.9247 14.0803 37.7661 14.0803C38.308 14.0803 38.9128 14.4381 38.9128 14.9516C38.9128 15.194 38.8255 15.8134 38.7513 16.0933C38.7504 16.0959 38.4581 17.5062 38.1649 18.9148C37.8734 20.3233 37.5784 21.745 37.5784 21.745C37.5645 21.8132 37.6072 21.8683 37.6744 21.8683H40.2933C40.3614 21.8683 40.4277 21.8132 40.4408 21.745L41.6233 16.1458C41.8109 15.2954 41.9034 14.746 41.9034 14.4699C41.9034 12.7295 40.8676 11.7715 38.9896 11.7715Z"
-                  fill="white"
-                />
-                <path
-                  d="M30.2427 12.7137C29.8378 12.1949 28.8935 11.7715 26.9693 11.7715C25.2309 11.7715 23.161 12.425 22.6234 12.6052C22.5492 12.6286 22.4794 12.7029 22.4654 12.7697L22.0518 14.7615C22.0396 14.8283 22.0867 14.8603 22.1609 14.8358C22.6644 14.655 24.5049 14.0278 26.0905 13.919C26.6438 13.8805 28.1972 14.0108 28.1081 14.9513C28.0959 15.0712 28.0985 15.1009 28.0872 15.1456C28.0837 15.1563 28.061 15.2666 28.0279 15.4281C26.5722 15.3643 25.5224 15.4844 24.3522 15.7466C21.831 16.3117 20.5988 17.6328 20.4993 19.4866C20.4295 20.7788 21.4968 22.127 23.7265 22.127C24.984 22.127 26.1752 21.6038 26.8724 21.0106L26.7145 21.7447C26.6996 21.812 26.7433 21.868 26.8105 21.868H29.2243C29.2906 21.868 29.3569 21.812 29.3709 21.7447L30.5726 16.0537C30.7262 15.3196 30.8283 14.7694 30.8318 14.4124C30.839 13.6559 30.6563 13.2424 30.2427 12.7137ZM27.4789 17.8807C27.1753 18.8404 25.6551 19.8937 24.6 19.9742C23.8591 20.0302 23.2055 19.7689 23.2055 19.1478C23.2055 18.3723 24.1863 17.8215 25.402 17.5441C26.2843 17.3438 26.937 17.2712 27.6491 17.2563C27.6439 17.2808 27.6404 17.3001 27.6404 17.3001L27.4789 17.8807Z"
-                  fill="white"
-                />
-                <path
-                  d="M20.6762 8.99805H17.8618C17.7955 8.99805 17.7291 9.05229 17.7152 9.11965L16.695 13.955H11.6204L12.6415 9.11965C12.6554 9.05229 12.6127 8.99805 12.5446 8.99805H9.73197C9.6639 8.99805 9.59932 9.05229 9.58362 9.11965L6.91934 21.7457C6.90625 21.8134 6.94902 21.8691 7.01708 21.8691H9.82884C9.8969 21.8691 9.96323 21.8131 9.97719 21.7457L11.0532 16.6348H16.1278L15.0518 21.7457C15.0369 21.8134 15.0806 21.8691 15.1469 21.8691H17.9604C18.0276 21.8691 18.0939 21.8131 18.1079 21.7457L20.7713 9.11965C20.7861 9.05229 20.7434 8.99805 20.6762 8.99805Z"
-                  fill="white"
-                />
-                <path
-                  d="M100.193 2.62021H103.948V7.45035H106.614V10.8527H103.948V19.3914H100.193V2.62021Z"
-                  fill="black"
-                />
-                <path
-                  d="M86.0186 20.6932H89.771V25.8981H103.948V29.2223H86.0186V20.6932Z"
-                  fill="black"
-                />
-                <path
-                  d="M98.7504 2.60273H91.8973V0H88.287V2.60273H81.5762V5.94559H83.908C82.8389 7.29872 82.1521 9.05311 82.1521 10.9253C82.1521 15.3568 85.7423 18.9575 90.1633 18.9575C94.5842 18.9575 98.1709 15.3565 98.1709 10.9253C98.1709 8.97729 97.5723 7.327 96.4273 5.94209L98.7504 5.93538V2.60273ZM90.1633 15.6295C87.574 15.6295 85.4727 13.5237 85.4727 10.9253C85.4727 8.3261 87.574 6.2203 90.1633 6.2203C92.7577 6.2203 94.8574 8.3261 94.8574 10.9253C94.8574 13.5237 92.7577 15.6295 90.1633 15.6295Z"
-                  fill="black"
-                />
-                <path
-                  d="M130.454 2.60681H126.834V29.2229H130.454V2.60681Z"
-                  fill="black"
-                />
-                <path
-                  d="M109.16 17.9385H124.597V2.60361H109.16V17.9385ZM112.481 14.6103L112.488 5.93539H121.134V14.6103H112.481Z"
-                  fill="black"
-                />
-                <path
-                  d="M175.803 21.4602H164.737V19.2424H160.976V29.2246H179.564V19.2424H175.803V21.4602ZM175.803 26.1197H164.738V24.5659H175.803V26.1197ZM180.229 11.0335H164.077V9.70286H180.229V2.60507H160.315V5.48863H176.466V6.81843H160.315V13.9171H180.229V11.0335ZM158.543 15.0264V18.1322H168.391V20.5748H172.154V18.1322H182V15.0264H158.543Z"
-                  fill="black"
-                />
-                <path
-                  d="M150.962 21.0455H154.724V2.41171H134.811V5.51749H150.962V21.0455ZM133.481 29.0313H156.052V25.9255H133.481V29.0313Z"
-                  fill="black"
-                />
+                <path d="M35.9672 0.443359C16.1174 0.443359 0 7.27985 0 15.7255C0 24.1496 16.1174 31.001 35.9672 31.001C55.8388 31.001 71.9397 24.1499 71.9397 15.7255C71.9397 7.27985 55.8388 0.443359 35.9672 0.443359Z" fill="#E60012"></path>
+                <path d="M63.5058 8.09635C64.4762 8.16284 65.1778 8.88898 65.019 9.68948C64.861 10.49 63.8924 11.1044 62.922 11.0385C61.9524 10.9729 61.2988 10.2296 61.4533 9.44802C61.6086 8.66589 62.5362 8.03161 63.5058 8.09635Z" fill="white"></path>
+                <path d="M64.0822 12.0312H61.4441C61.3769 12.0312 61.3097 12.0867 61.2975 12.1549L59.2607 21.7458C59.2459 21.8134 59.2895 21.8685 59.3558 21.8685H61.9957C62.0629 21.8685 62.1283 21.8134 62.1432 21.7458L64.1791 12.1549C64.1931 12.0867 64.1486 12.0312 64.0822 12.0312Z" fill="white"></path>
+                <path d="M55.9404 11.7715C54.545 11.7715 53.3337 12.4113 52.6321 13.3124C52.3459 12.3334 51.4994 11.7715 50.2672 11.7715C48.9582 11.7715 47.8638 12.2439 47.0706 13.1345C47.1142 12.9351 47.2844 12.1538 47.2844 12.1538C47.2992 12.0864 47.2556 12.0313 47.1884 12.0313H44.6803C44.6122 12.0313 44.5468 12.0864 44.532 12.1538L42.5344 21.745C42.5187 21.8132 42.5632 21.8683 42.6295 21.8683H45.2476C45.3147 21.8683 45.3819 21.8132 45.395 21.745L46.4658 16.6305C46.7267 15.4538 47.4999 14.0803 48.822 14.0803C49.412 14.0803 49.8561 14.4713 49.8561 14.9892C49.8561 15.131 49.8343 15.3033 49.8055 15.5037L49.7846 15.662L48.5218 21.745C48.5079 21.8132 48.5506 21.8683 48.6187 21.8683H51.2585C51.3257 21.8683 51.3903 21.8132 51.4051 21.745L52.4724 16.6305C52.7325 15.4538 53.5074 14.0803 54.8278 14.0803C55.4186 14.0803 55.8645 14.4713 55.8645 14.9892C55.8645 15.131 55.8401 15.3033 55.8139 15.5037L55.7912 15.662L54.5293 21.745C54.5145 21.8132 54.5572 21.8683 54.6253 21.8683H57.2451C57.3131 21.8683 57.3786 21.8132 57.3917 21.745L58.6614 15.7303C58.7609 15.2692 58.8525 14.8239 58.8525 14.4381C58.8525 12.7128 57.7704 11.7715 55.9404 11.7715Z" fill="white"></path>
+                <path d="M38.9896 11.7715C37.7059 11.7715 36.6325 12.2343 35.7886 13.1401C35.8322 12.9464 36.0076 12.1538 36.0076 12.1538C36.0216 12.0864 35.978 12.0313 35.9116 12.0313H33.4018C33.3346 12.0313 33.2674 12.0864 33.2544 12.1538L31.2568 21.745C31.242 21.8132 31.2856 21.8683 31.3519 21.8683H33.9726C34.0398 21.8683 34.1061 21.8132 34.12 21.745L35.1891 16.6672C35.3505 15.8883 35.9247 14.0803 37.7661 14.0803C38.308 14.0803 38.9128 14.4381 38.9128 14.9516C38.9128 15.194 38.8255 15.8134 38.7513 16.0933C38.7504 16.0959 38.4581 17.5062 38.1649 18.9148C37.8734 20.3233 37.5784 21.745 37.5784 21.745C37.5645 21.8132 37.6072 21.8683 37.6744 21.8683H40.2933C40.3614 21.8683 40.4277 21.8132 40.4408 21.745L41.6233 16.1458C41.8109 15.2954 41.9034 14.746 41.9034 14.4699C41.9034 12.7295 40.8676 11.7715 38.9896 11.7715Z" fill="white"></path>
+                <path d="M30.2427 12.7137C29.8378 12.1949 28.8935 11.7715 26.9693 11.7715C25.2309 11.7715 23.161 12.425 22.6234 12.6052C22.5492 12.6286 22.4794 12.7029 22.4654 12.7697L22.0518 14.7615C22.0396 14.8283 22.0867 14.8603 22.1609 14.8358C22.6644 14.655 24.5049 14.0278 26.0905 13.919C26.6438 13.8805 28.1972 14.0108 28.1081 14.9513C28.0959 15.0712 28.0985 15.1009 28.0872 15.1456C28.0837 15.1563 28.061 15.2666 28.0279 15.4281C26.5722 15.3643 25.5224 15.4844 24.3522 15.7466C21.831 16.3117 20.5988 17.6328 20.4993 19.4866C20.4295 20.7788 21.4968 22.127 23.7265 22.127C24.984 22.127 26.1752 21.6038 26.8724 21.0106L26.7145 21.7447C26.6996 21.812 26.7433 21.868 26.8105 21.868H29.2243C29.2906 21.868 29.3569 21.812 29.3709 21.7447L30.5726 16.0537C30.7262 15.3196 30.8283 14.7694 30.8318 14.4124C30.839 13.6559 30.6563 13.2424 30.2427 12.7137ZM27.4789 17.8807C27.1753 18.8404 25.6551 19.8937 24.6 19.9742C23.8591 20.0302 23.2055 19.7689 23.2055 19.1478C23.2055 18.3723 24.1863 17.8215 25.402 17.5441C26.2843 17.3438 26.937 17.2712 27.6491 17.2563C27.6439 17.2808 27.6404 17.3001 27.6404 17.3001L27.4789 17.8807Z" fill="white"></path>
+                <path d="M20.6762 8.99805H17.8618C17.7955 8.99805 17.7291 9.05229 17.7152 9.11965L16.695 13.955H11.6204L12.6415 9.11965C12.6554 9.05229 12.6127 8.99805 12.5446 8.99805H9.73197C9.6639 8.99805 9.59932 9.05229 9.58362 9.11965L6.91934 21.7457C6.90625 21.8134 6.94902 21.8691 7.01708 21.8691H9.82884C9.8969 21.8691 9.96323 21.8131 9.97719 21.7457L11.0532 16.6348H16.1278L15.0518 21.7457C15.0369 21.8134 15.0806 21.8691 15.1469 21.8691H17.9604C18.0276 21.8691 18.0939 21.8131 18.1079 21.7457L20.7713 9.11965C20.7861 9.05229 20.7434 8.99805 20.6762 8.99805Z" fill="white"></path>
+                <path d="M100.193 2.62021H103.948V7.45035H106.614V10.8527H103.948V19.3914H100.193V2.62021Z" fill="black"></path>
+                <path d="M86.0186 20.6932H89.771V25.8981H103.948V29.2223H86.0186V20.6932Z" fill="black"></path>
+                <path d="M98.7504 2.60273H91.8973V0H88.287V2.60273H81.5762V5.94559H83.908C82.8389 7.29872 82.1521 9.05311 82.1521 10.9253C82.1521 15.3568 85.7423 18.9575 90.1633 18.9575C94.5842 18.9575 98.1709 15.3565 98.1709 10.9253C98.1709 8.97729 97.5723 7.327 96.4273 5.94209L98.7504 5.93538V2.60273ZM90.1633 15.6295C87.574 15.6295 85.4727 13.5237 85.4727 10.9253C85.4727 8.3261 87.574 6.2203 90.1633 6.2203C92.7577 6.2203 94.8574 8.3261 94.8574 10.9253C94.8574 13.5237 92.7577 15.6295 90.1633 15.6295Z" fill="black"></path>
+                <path d="M130.454 2.60681H126.834V29.2229H130.454V2.60681Z" fill="black"></path>
+                <path d="M109.16 17.9385H124.597V2.60361H109.16V17.9385ZM112.481 14.6103L112.488 5.93539H121.134V14.6103H112.481Z" fill="black"></path>
+                <path d="M175.803 21.4602H164.737V19.2424H160.976V29.2246H179.564V19.2424H175.803V21.4602ZM175.803 26.1197H164.738V24.5659H175.803V26.1197ZM180.229 11.0335H164.077V9.70286H180.229V2.60507H160.315V5.48863H176.466V6.81843H160.315V13.9171H180.229V11.0335ZM158.543 15.0264V18.1322H168.391V20.5748H172.154V18.1322H182V15.0264H158.543Z" fill="black"></path>
+                <path d="M150.962 21.0455H154.724V2.41171H134.811V5.51749H150.962V21.0455ZM133.481 29.0313H156.052V25.9255H133.481V29.0313Z" fill="black"></path>
               </g>
             </g>
             <defs>
               <clipPath id="hanmiClip">
-                <rect width="182" height="31" fill="white" />
+                <rect width="182" height="31" fill="white"></rect>
               </clipPath>
             </defs>
           </svg>
@@ -4680,52 +4703,27 @@
           <ul class="nav__list">
             <li><a class="nav__link" href="#tasks">직무소개</a></li>
             <li>
-              <a class="nav__link" href="#requirement"
-                >지원자격 및 접수방법</a
-              >
+              <a class="nav__link" href="#requirement">지원자격 및 접수방법</a>
             </li>
             <li><a class="nav__link" href="#exposition">채용설명회 일정</a></li>
           </ul>
           <a class="btn-apply" href="#apply">
             <span>지원하기</span>
             <svg viewBox="0 0 7 12" fill="none" aria-hidden="true">
-              <path
-                d="M1 1l5 5-5 5"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
+              <path d="M1 1l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
           </a>
         </nav>
 
         <!-- 모바일(390px 이하) 전용: 헤더의 작은 지원하기 버튼 + 햄버거 버튼 -->
         <a class="btn-apply btn-apply--mo" href="#apply">지원하기</a>
-        <button
-          class="btn-menu"
-          type="button"
-          aria-label="전체 메뉴 열기"
-          aria-expanded="false"
-          aria-controls="site-nav"
-          data-menu-toggle
-        >
+        <button class="btn-menu" type="button" aria-label="전체 메뉴 열기" aria-expanded="false" aria-controls="site-nav" data-menu-toggle="">
           <svg viewBox="0 0 20 18" fill="none" aria-hidden="true">
-            <g
-              class="btn-menu__bars"
-              stroke="currentColor"
-              stroke-width="1.6"
-              stroke-linecap="round"
-            >
-              <path d="M1 2h18M1 9h18M1 16h18" />
+            <g class="btn-menu__bars" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+              <path d="M1 2h18M1 9h18M1 16h18"></path>
             </g>
-            <g
-              class="btn-menu__close"
-              stroke="currentColor"
-              stroke-width="1.6"
-              stroke-linecap="round"
-            >
-              <path d="M3 2l14 14M17 2L3 16" />
+            <g class="btn-menu__close" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+              <path d="M3 2l14 14M17 2L3 16"></path>
             </g>
           </svg>
         </button>
@@ -4742,17 +4740,17 @@
             <span class="mv__ring mv__ring--glow"></span>
             <span class="mv__ring mv__ring--line"></span>
 
-            <img class="mv__img mv__micro" src="./images/mv_micro.png" alt="" />
-            <img class="mv__img mv__char1" src="./images/mv_char1.png" alt="" />
-            <img class="mv__img mv__char2" src="./images/mv_char2.png" alt="" />
-            <img class="mv__img mv__char3" src="./images/mv_char3.png" alt="" />
-            <img class="mv__img mv__char4" src="./images/mv_char4.png" alt="" />
+            <img class="mv__img mv__micro updown" src="./images/mv_micro.png" alt="">
+            <img class="mv__char1 mv__img updown" src="./images/mv_char1.png" alt="">
+            <img class="mv__img mv__char2 updown" src="./images/mv_char2.png" alt="">
+            <img class="mv__img mv__char3 updown" src="./images/mv_char3.png" alt="">
+            <img class="mv__img mv__char4 updown" src="./images/mv_char4.png" alt="">
 
-            <span class="mv__star mv__star--1"></span>
-            <span class="mv__star mv__star--2"></span>
-            <span class="mv__star mv__star--3"></span>
-            <span class="mv__star mv__star--3b"></span>
-            <span class="mv__star mv__star--4"></span>
+            <span class="mv__star mv__star--1 updown"></span>
+            <span class="mv__star mv__star--2 updown"></span>
+            <span class="mv__star mv__star--3 updown"></span>
+            <span class="mv__star mv__star--3b updown"></span>
+            <span class="mv__star mv__star--4 updown"></span>
           </div>
 
           <!-- 텍스트 -->
@@ -4771,20 +4769,9 @@
           </div>
         </div>
 
-        <button
-          class="btn-scroll"
-          type="button"
-          aria-label="아래로 스크롤"
-          data-scroll-next
-        >
+        <button class="btn-scroll" type="button" aria-label="아래로 스크롤" data-scroll-next="">
           <svg viewBox="0 0 40 40" fill="none" aria-hidden="true">
-            <path
-              d="M10 16l10 10 10-10"
-              stroke="currentColor"
-              stroke-width="3"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
+            <path d="M10 16l10 10 10-10" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
           </svg>
         </button>
       </section>
@@ -4793,51 +4780,26 @@
       <!-- 2. 메인 하위 컨텐츠 영역: 새로운 미래 메시지 -->
       <section class="mirae" id="mirae" aria-labelledby="mirae-title">
         <div class="mirae__stage">
-          <h2 class="mirae__title" id="mirae-title">
+          <h2 class="mirae__title scroll-reveal" id="mirae-title">
             <span class="mirae__point">새로운 미래</span>를 향해 나아갑니다
           </h2>
 
           <!-- 배경 구름 -->
           <div class="mirae__deco">
-            <img
-              class="mirae__img mirae__img--cloudl"
-              src="./images/mirae_cloud1.png"
-              alt="왼쪽 위에 흐릿하게 번진 큰 구름"
-            />
-            <img
-              class="mirae__img mirae__img--cloud2"
-              src="./images/mirae_cloud2.png"
-              alt="오른쪽 아래에 흐릿하게 번진 작은 구름"
-            />
-            <img
-              class="mirae__img mirae__img--cloud3"
-              src="./images/mirae_cloud3.png"
-              alt="화면 왼쪽 가장자리에 걸친 하얀 입체 구름"
-            />
-            <img
-              class="mirae__img mirae__img--cloud4"
-              src="./images/mirae_cloud4.png"
-              alt="화면 오른쪽 가장자리에 걸친 하얀 입체 구름"
-            />
-            <img
-              class="mirae__img mirae__img--star1"
-              src="./images/mirae_star1.png"
-              alt="캐릭터 오른쪽 위에서 반짝이는 노란 별"
-            />
-            <img
-              class="mirae__img mirae__img--star2"
-              src="./images/mirae_star2.png"
-              alt="캐릭터 왼쪽 아래에서 반짝이는 노란 별"
-            />
+            <img class="mirae__img mirae__img--cloudl" src="./images/mirae_cloud1.png" alt="왼쪽 위에 흐릿하게 번진 큰 구름">
+            <img class="mirae__img mirae__img--cloud2" src="./images/mirae_cloud2.png" alt="오른쪽 아래에 흐릿하게 번진 작은 구름">
+            <img class="mirae__img mirae__img--cloud3" src="./images/mirae_cloud3.png" alt="화면 왼쪽 가장자리에 걸친 하얀 입체 구름">
+            <img class="mirae__img mirae__img--cloud4" src="./images/mirae_cloud4.png" alt="화면 오른쪽 가장자리에 걸친 하얀 입체 구름">
+            <img class="mirae__img mirae__img--star1" src="./images/mirae_star1.png" alt="캐릭터 오른쪽 위에서 반짝이는 노란 별">
+            <img class="mirae__img mirae__img--star2" src="./images/mirae_star2.png" alt="캐릭터 왼쪽 아래에서 반짝이는 노란 별">
           </div>
 
           <!-- 메인 캐릭터 -->
-          <figure class="mirae__figure">
-            <img
-              class="mirae__img mirae__img--walking"
-              src="./images/mirae_walking.png"
-              alt="사원증을 목에 건 한미 캐릭터가 초록 언덕 위를 힘차게 걸어가는 모습"
-            />
+          <figure class="mirae__figure scroll-reveal">
+            <div class="hanmi-walker mirae__walker" data-hanmi-walker>
+              <canvas width="1920" height="1080" role="img" aria-label="사원증을 목에 건 한미 캐릭터가 초록 언덕 위를 힘차게 걸어가는 모습"></canvas>
+              <span data-status role="status">이미지 준비 중</span>
+            </div>
           </figure>
         </div>
       </section>
@@ -4846,8 +4808,8 @@
       <section class="history" id="history" aria-labelledby="history-title">
         <div class="history__inner">
           <!-- 펼치기/접기 대상 컨테이너 -->
-          <div class="history__fold" id="history-fold">
-            <header class="history__head">
+          <div class="history__fold is-expanded" id="history-fold">
+            <header class="history__head scroll-reveal">
               <h2 class="history__title" id="history-title">
                 <span>한미의 도전은 작은 가능성에서</span>
                 <span>시작되었습니다.</span>
@@ -4857,17 +4819,12 @@
                 <span aria-hidden="true">53</span>
                 <span class="history__count-suffix" aria-hidden="true">th</span>
               </p>
-              <img
-                class="history__deco history__deco--star"
-                src="./images/obj_star_big.png"
-                alt=""
-                aria-hidden="true"
-              />
+              <img class="history__deco history__deco--star updown" src="./images/obj_star_big.png" alt="" aria-hidden="true">
             </header>
 
             <ol class="history__timeline">
               <!-- 1973~2001 -->
-              <li class="era era--odd era--1">
+              <li class="era era--odd era--1 scroll-reveal">
                 <h3 class="era__period">1973~2001</h3>
                 <p class="era__lead">한계를 하나씩 넘을 때마다,</p>
                 <ul class="era__list">
@@ -4894,21 +4851,13 @@
                 </ul>
                 <span class="era__dots" aria-hidden="true"></span>
                 <figure class="era__figure">
-                  <img
-                    src="./images/his1.png"
-                    alt="한미약품의 초기 대표 제품인 텐텐과 쎄쎄 제품 이미지"
-                  />
+                  <img src="./images/his1.png" alt="한미약품의 초기 대표 제품인 텐텐과 쎄쎄 제품 이미지">
                 </figure>
-                <img
-                  class="history__deco history__deco--beaker"
-                  src="./images/obj_beaker.png"
-                  alt=""
-                  aria-hidden="true"
-                />
+                <img class="history__deco history__deco--beaker updown" src="./images/obj_beaker.png" alt="" aria-hidden="true">
               </li>
 
               <!-- 2002~2010 -->
-              <li class="era era--even era--2">
+              <li class="era era--even era--2 scroll-reveal">
                 <h3 class="era__period">2002~2010</h3>
                 <ul class="era__list">
                   <li class="era__item">
@@ -4938,27 +4887,14 @@
                 </ul>
                 <span class="era__dots" aria-hidden="true"></span>
                 <figure class="era__figure">
-                  <img
-                    src="./images/his2.png"
-                    alt="노을 지는 해변에서 손을 잡고 함께 점프하는 사람들의 실루엣"
-                  />
+                  <img src="./images/his2.png" alt="노을 지는 해변에서 손을 잡고 함께 점프하는 사람들의 실루엣">
                 </figure>
-                <img
-                  class="history__deco history__deco--ring-blue"
-                  src="./images/obj_mol_blur1.png"
-                  alt=""
-                  aria-hidden="true"
-                />
-                <img
-                  class="history__deco history__deco--microscope"
-                  src="./images/obj_microscope.png"
-                  alt=""
-                  aria-hidden="true"
-                />
+                <img class="history__deco history__deco--ring-blue" src="./images/obj_mol_blur1.png" alt="" aria-hidden="true">
+                <img class="history__deco history__deco--microscope updown" src="./images/obj_microscope.png" alt="" aria-hidden="true">
               </li>
 
               <!-- 2011~2015 -->
-              <li class="era era--odd era--3">
+              <li class="era era--odd era--3 scroll-reveal">
                 <h3 class="era__period">2011~2015</h3>
                 <p class="era__lead">새로운 가능성이 현실이 되었어요.</p>
                 <ul class="era__list">
@@ -4993,21 +4929,13 @@
                 </ul>
                 <span class="era__dots" aria-hidden="true"></span>
                 <figure class="era__figure">
-                  <img
-                    src="./images/his3.png"
-                    alt="스펙트럼 파마슈티컬스 로고와 에소메졸 제품 이미지"
-                  />
+                  <img src="./images/his3.png" alt="스펙트럼 파마슈티컬스 로고와 에소메졸 제품 이미지">
                 </figure>
-                <img
-                  class="history__deco history__deco--ring-gray"
-                  src="./images/obj_mol_blur2.png"
-                  alt=""
-                  aria-hidden="true"
-                />
+                <img class="history__deco history__deco--ring-gray updown" src="./images/obj_mol_blur2.png" alt="" aria-hidden="true">
               </li>
 
               <!-- 2016~2020 -->
-              <li class="era era--even era--4">
+              <li class="era era--even era--4 scroll-reveal">
                 <h3 class="era__period">2016~2020</h3>
                 <ul class="era__list">
                   <li class="era__item">
@@ -5038,15 +4966,12 @@
                 </ul>
                 <span class="era__dots" aria-hidden="true"></span>
                 <figure class="era__figure">
-                  <img
-                    src="./images/his4.png"
-                    alt="ASCO 로고, 로수젯 제품 이미지, USP 로고"
-                  />
+                  <img src="./images/his4.png" alt="ASCO 로고, 로수젯 제품 이미지, USP 로고">
                 </figure>
               </li>
 
               <!-- 2021~2026 -->
-              <li class="era era--odd era--5">
+              <li class="era era--odd era--5 scroll-reveal">
                 <h3 class="era__period">2021~2026</h3>
                 <p class="era__lead">
                   하지만 아직, 가야 할 길이 더 남아 있습니다.
@@ -5099,17 +5024,9 @@
                 </ul>
                 <span class="era__dots" aria-hidden="true"></span>
                 <figure class="era__figure">
-                  <img
-                    src="./images/his5.png"
-                    alt="랜싯 200주년 표지, 롤론티스 작용 원리 도식, 롤론티스 제품 이미지"
-                  />
+                  <img src="./images/his5.png" alt="랜싯 200주년 표지, 롤론티스 작용 원리 도식, 롤론티스 제품 이미지">
                 </figure>
-                <img
-                  class="history__deco history__deco--molecule"
-                  src="./images/obj_mol_big.png"
-                  alt=""
-                  aria-hidden="true"
-                />
+                <img class="history__deco history__deco--molecule updown" src="./images/obj_mol_big.png" alt="" aria-hidden="true">
               </li>
             </ol>
 
@@ -5121,12 +5038,8 @@
               </p>
               <div class="history__closing">
                 <p class="history__closing-sub">
-                  <span class="s"
-                    >한계를 넘을 때마다, 건강한 미래는 가까워졌습니다.</span
-                  >
-                  <span class="s"
-                    >한계를 넘는 일, 우리에게는 꽤 익숙하니까.</span
-                  >
+                  <span class="s">한계를 넘을 때마다, 건강한 미래는 가까워졌습니다.</span>
+                  <span class="s">한계를 넘는 일, 우리에게는 꽤 익숙하니까.</span>
                 </p>
                 <p class="history__closing-lead">
                   <span class="s">
@@ -5139,47 +5052,18 @@
                   </span>
                 </p>
               </div>
-              <img
-                class="history__deco history__deco--cloud"
-                src="./images/cloud_blur_medium.png"
-                alt=""
-                aria-hidden="true"
-              />
-              <img
-                class="history__deco history__deco--char"
-                src="./images/con2_char.png"
-                alt=""
-                aria-hidden="true"
-              />
+              <img class="history__deco history__deco--cloud updown" src="./images/cloud_blur_medium.png" alt="" aria-hidden="true">
+              <img class="history__deco history__deco--char updown leftright" src="./images/con2_char.png" alt="" aria-hidden="true">
             </div>
           </div>
 
           <!-- 펼치기/접기 버튼 -->
-          <button
-            class="history__toggle"
-            type="button"
-            aria-expanded="false"
-            aria-controls="history-fold"
-            data-history-toggle
-          >
+          <button class="history__toggle" type="button" aria-expanded="true" aria-controls="history-fold" data-history-toggle="">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path
-                d="M6 13l6-6 6 6"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M6 19l6-6 6 6"
-                stroke="currentColor"
-                stroke-opacity="0.4"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
+              <path d="M6 13l6-6 6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M6 19l6-6 6 6" stroke="currentColor" stroke-opacity="0.4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
-            <span class="history__toggle-text">펼치기</span>
+            <span class="history__toggle-text">접기</span>
           </button>
         </div>
       </section>
@@ -5189,13 +5073,9 @@
         <div class="cont__inner">
           <div class="cont__body">
             <!-- 현직자 인터뷰 -->
-            <header class="cont__intro">
+            <header class="cont__intro scroll-reveal">
               <div class="cont__headline">
-                <img
-                  class="cont__badge"
-                  src="./images/con3_logo.png"
-                  alt="붉은 타원형 Hanmi 로고"
-                />
+                <img class="cont__badge updown" src="./images/con3_logo.png" alt="붉은 타원형 Hanmi 로고">
                 <h2 class="cont__title" id="jobs-title">
                   한미에서는 어떤 일을 할까요?
                 </h2>
@@ -5204,22 +5084,15 @@
                 일의 보람부터 성장의 순간까지, 먼저 경험한 현직자들이 솔직하게
                 들려드립니다.
               </p>
-              <img
-                class="cont__char"
-                src="./images/con3_char.png"
-                alt="사원증을 목에 걸고 서류가방을 든 보라색 한미 캐릭터"
-              />
+              <img class="cont__char leftright" src="./images/con3_char.png" alt="사원증을 목에 걸고 서류가방을 든 보라색 한미 캐릭터">
             </header>
 
             <div class="cont__cards">
               <ul class="cont__list">
-                <li class="cont__item">
+                <li class="cont__item scroll-reveal">
                   <a class="cont__card" href="#interview-1">
                     <figure class="cont__photo">
-                      <img
-                        src="./images/con3_int1.jpg"
-                        alt="실험 장비가 놓인 연구실에서 주먹을 쥐어 보이며 웃고 있는 한미약품 품질관리 이건호 사원"
-                      />
+                      <img src="./images/con3_int1.jpg" alt="실험 장비가 놓인 연구실에서 주먹을 쥐어 보이며 웃고 있는 한미약품 품질관리 이건호 사원">
                     </figure>
                     <p class="cont__desc">
                       정밀한 시험과 분석으로 의약품의 품질을 확인해 안전하고
@@ -5232,25 +5105,16 @@
                       </p>
                       <span class="cont__arrow" aria-hidden="true">
                         <svg viewBox="0 0 12 12" fill="none">
-                          <path
-                            d="M2 6h8M6.5 2.5L10 6l-3.5 3.5"
-                            stroke="currentColor"
-                            stroke-width="1.4"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
+                          <path d="M2 6h8M6.5 2.5L10 6l-3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
                       </span>
                     </div>
                   </a>
                 </li>
-                <li class="cont__item">
+                <li class="cont__item scroll-reveal">
                   <a class="cont__card" href="#interview-2">
                     <figure class="cont__photo">
-                      <img
-                        src="./images/con3_int2.jpg"
-                        alt="가죽 소파에 앉아 미소 짓고 있는 한미약품 전임상연구 박진아 연구원"
-                      />
+                      <img src="./images/con3_int2.jpg" alt="가죽 소파에 앉아 미소 짓고 있는 한미약품 전임상연구 박진아 연구원">
                     </figure>
                     <p class="cont__desc">
                       신약 후보물질의 가능성을 과학적으로 검증해 새로운 치료제가
@@ -5263,42 +5127,25 @@
                       </p>
                       <span class="cont__arrow" aria-hidden="true">
                         <svg viewBox="0 0 12 12" fill="none">
-                          <path
-                            d="M2 6h8M6.5 2.5L10 6l-3.5 3.5"
-                            stroke="currentColor"
-                            stroke-width="1.4"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          />
+                          <path d="M2 6h8M6.5 2.5L10 6l-3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
                       </span>
                     </div>
                   </a>
                 </li>
               </ul>
-              <img
-                class="cont__bottle"
-                src="./images/con3_bottle.png"
-                alt=""
-                aria-hidden="true"
-              />
+              <img class="cont__bottle updown" src="./images/con3_bottle.png" alt="" aria-hidden="true">
             </div>
 
-            <div class="cont__cta-wrap">
-              <a class="cont__cta" href="#interview-all"
-                >모든 현직자 알아가기!</a
-              >
+            <div class="cont__cta-wrap scroll-reveal">
+              <a class="cont__cta" href="#interview-all">모든 현직자 알아가기!</a>
             </div>
           </div>
         </div>
       </section>
 
       <!-- 5. 혁신 및 성장 뉴스: innovation 섹션 (클래스명과 아이디명을 innovation으로 일치) -->
-      <section
-        class="innovation"
-        id="innovation"
-        aria-labelledby="innovation-title"
-      >
+      <section class="innovation" id="innovation" aria-labelledby="innovation-title">
         <div class="cont__inner">
           <div class="cont__body">
             <!-- 배경 번짐(글로우): 기존 = 우측 상단 -->
@@ -5307,81 +5154,51 @@
             <div class="cont__glow cont__glow--bl" aria-hidden="true"></div>
 
             <!-- 성장 뉴스 -->
-            <header class="cont__growth">
+            <header class="cont__growth scroll-reveal">
               <h2 class="cont__title" id="innovation-title">
-                당신의 가능성,<br />한미그룹에서 더 크게 성장합니다
+                당신의 가능성,<br>한미그룹에서 더 크게 성장합니다
               </h2>
               <p class="cont__lead">
-                연구와 혁신으로 성장하며 글로벌 제약/바이오 기업을 향해<br
-                  class="mo-only"
-                />
+                연구와 혁신으로 성장하며 글로벌 제약/바이오 기업을 향해<br class="mo-only">
                 나아갑니다.
               </p>
             </header>
 
-            <div
-              class="cont__news"
-              role="group"
-              aria-labelledby="innovation-title"
-            >
+            <div class="cont__news" role="group" aria-labelledby="innovation-title">
               <!-- 화학식 장식: 원자 오브제(.cont__dna2)와 겹치며 뒤쪽 레이어 -->
-              <img
-                class="cont__formula"
-                src="./images/inno_formula.png"
-                alt=""
-                aria-hidden="true"
-              />
+              <img class="cont__formula" src="./images/inno_formula.png" alt="" aria-hidden="true">
               <!-- 원자 오브제: 뉴스 박스 우측 상단 (시안 기준 inno_mol.png) -->
-              <img
-                class="cont__dna2"
-                src="./images/inno_mol.png"
-                alt=""
-                aria-hidden="true"
-              />
+              <img class="cont__dna2 bigsmall" src="./images/inno_mol.png" alt="" aria-hidden="true">
               <ul class="cont__bubbles">
                 <li class="cont__bubble cont__bubble--point">
-                  <a href="#news-1"
-                    >한미약품, 상반기 누적 매출 8,602억원…2분기 영업이익 117%
-                    증가</a
-                  >
+                  <a href="#news-1">한미약품, 상반기 누적 매출 8,602억원…2분기 영업이익 117%
+                    증가</a>
                 </li>
                 <li class="cont__bubble cont__bubble--white">
-                  <a href="#news-2"
-                    >“사업형 지주사 경쟁력 입증”…한미사이언스, 2분기 영업이익
-                    71%↑<br />2분기 매출 3,679억원…상반기 누적 매출 7,216억원
-                    돌파</a
-                  >
+                  <a href="#news-2">“사업형 지주사 경쟁력 입증”…한미사이언스, 2분기 영업이익
+                    71%↑<br>2분기 매출 3,679억원…상반기 누적 매출 7,216억원
+                    돌파</a>
                 </li>
                 <li class="cont__bubble cont__bubble--point">
-                  <a href="#news-3"
-                    >한미약품, 로슈 제넨텍에 비만신약 기술수출…최대 3조 2,000억
-                    규모</a
-                  >
+                  <a href="#news-3">한미약품, 로슈 제넨텍에 비만신약 기술수출…최대 3조 2,000억
+                    규모</a>
                 </li>
                 <li class="cont__bubble cont__bubble--white">
-                  <a href="#news-4"
-                    >“UCN2 이어 또…” 한미약품, 두 번째 근육 증가 비만신약
-                    공개</a
-                  >
+                  <a href="#news-4">“UCN2 이어 또…” 한미약품, 두 번째 근육 증가 비만신약
+                    공개</a>
                 </li>
                 <li class="cont__bubble cont__bubble--point">
-                  <a href="#news-5"
-                    >명품 반열 오른 한미 ‘로수젯’…압도적 데이터 경쟁력으로 시장
-                    석권<br />2년 연속 국내사 개발 전문의약품 시장 ‘1위’…올해
-                    상반기 누적 처방액도 선두</a
-                  >
+                  <a href="#news-5">명품 반열 오른 한미 ‘로수젯’…압도적 데이터 경쟁력으로 시장
+                    석권<br>2년 연속 국내사 개발 전문의약품 시장 ‘1위’…올해
+                    상반기 누적 처방액도 선두</a>
                 </li>
                 <li class="cont__bubble cont__bubble--white">
-                  <a href="#news-6"
-                    >“비만 넘어 항암으로 혁신 확장”…한미, AACR서 차세대 신약
-                    대거 공개</a
-                  >
+                  <a href="#news-6">“비만 넘어 항암으로 혁신 확장”…한미, AACR서 차세대 신약
+                    대거 공개</a>
                 </li>
                 <li class="cont__bubble cont__bubble--point">
-                  <a href="#news-7"
-                    >한미 완전두유·케어미, 영양에 ‘맛’까지 인정…국제 우수 미각상
-                    수상</a
-                  >
+                  <a href="#news-7">한미 완전두유·케어미, 영양에 ‘맛’까지 인정…국제 우수 미각상
+                    수상</a>
                 </li>
               </ul>
               <p class="cont__notice">
@@ -5390,12 +5207,7 @@
             </div>
 
             <!-- 분자 오브제: 섹션 좌측 하단 (시안 기준 inno_dna2.png) -->
-            <img
-              class="cont__molecule"
-              src="./images/inno_dna2.png"
-              alt=""
-              aria-hidden="true"
-            />
+            <img class="cont__molecule updown" src="./images/inno_dna2.png" alt="" aria-hidden="true">
           </div>
         </div>
       </section>
@@ -5403,332 +5215,19 @@
       <!-- 6. 회사 복지 영역: 데스크톱 2열, 태블릿·모바일 1열의 스크롤형 복지 카드 -->
       <section class="welfare" id="welfare" aria-labelledby="welfare-title">
         <div class="welfare__inner">
-          <header class="welfare__hero">
+          <header class="welfare__hero scroll-reveal">
             <h2 class="welfare__title" id="welfare-title">
               한미 생활을 더 즐겁게 만드는 방법
             </h2>
             <p class="welfare__lead">
               건강부터 성장, 휴식까지 알차게 준비한 복지를 소개할게요.
             </p>
-            <img
-              class="welfare__hero-char"
-              src="./images/con5_char.png"
-              alt="돋보기를 든 주황색 한미 캐릭터"
-            />
+            <img class="welfare__hero-char updown" src="./images/con5_char.png" alt="돋보기를 든 주황색 한미 캐릭터">
           </header>
 
-          <div
-            class="welfare__scroll"
-            tabindex="0"
-            aria-label="한미그룹 복지 카드 목록"
-          >
-            <!-- 초기 표시 구조이며, 스크립트 실행 후 복지 JSON 데이터로 대체 -->
-            <section
-              class="welfare__group"
-              aria-labelledby="welfare-individual-title"
-            >
-              <header class="welfare__group-head">
-                <h3 class="welfare__group-title" id="welfare-individual-title">
-                  <img src="./images/wf_tit1.png" alt="하트" />
-                  오늘의 나도, 내일의 나도 든든하게!
-                </h3>
-                <p class="welfare__group-copy">
-                  건강, 성장, 문화생활까지 알차게 챙겨드려요.
-                </p>
-              </header>
-              <ul class="welfare__list" aria-label="임직원 복지">
-                <li class="welfare__card">
-                  <div class="welfare__card-copy">
-                    <h4 class="welfare__card-title">건강 검진</h4>
-                    <p class="welfare__card-description">
-                      건강한 하루가 오래 이어지도록, 정기적인 건강관리를
-                      지원해요.
-                    </p>
-                  </div>
-                  <img
-                    class="welfare__card-icon"
-                    src="./images/wf_ico1.png"
-                    alt="건강 검진 달력 아이콘"
-                  />
-                </li>
-                <li class="welfare__card">
-                  <div class="welfare__card-copy">
-                    <h4 class="welfare__card-title">기념일 축하 지원</h4>
-                    <p class="welfare__card-description">
-                      소중한 기념일이 더 특별해지도록 한미가 함께 축하해요.
-                    </p>
-                  </div>
-                  <img
-                    class="welfare__card-icon"
-                    src="./images/wf_ico2.png"
-                    alt="기념일 축하 케이크 아이콘"
-                  />
-                </li>
-                <li class="welfare__card">
-                  <div class="welfare__card-copy">
-                    <h4 class="welfare__card-title">본인주도 선택복지</h4>
-                    <p class="welfare__card-description">
-                      나에게 필요한 복지를 내 취향과 생활에 맞게 선택할 수
-                      있어요.
-                    </p>
-                  </div>
-                  <img
-                    class="welfare__card-icon"
-                    src="./images/wf_ico3.png"
-                    alt="선택복지 카드 아이콘"
-                  />
-                </li>
-                <li class="welfare__card">
-                  <div class="welfare__card-copy">
-                    <h4 class="welfare__card-title">장기 근속 포상</h4>
-                    <p class="welfare__card-description">
-                      한미와 함께 걸어온 소중한 시간에 감사의 마음을 전해요.
-                    </p>
-                  </div>
-                  <img
-                    class="welfare__card-icon"
-                    src="./images/wf_ico4.png"
-                    alt="장기 근속 과녁 아이콘"
-                  />
-                </li>
-                <li class="welfare__card">
-                  <div class="welfare__card-copy">
-                    <h4 class="welfare__card-title">유연근무제</h4>
-                    <p class="welfare__card-description">
-                      업무와 일상의 균형을 찾을 수 있도록 유연한 근무를
-                      지원해요.
-                    </p>
-                  </div>
-                  <img
-                    class="welfare__card-icon"
-                    src="./images/wf_ico5.png"
-                    alt="유연근무 모래시계 아이콘"
-                  />
-                </li>
-                <li class="welfare__card">
-                  <div class="welfare__card-copy">
-                    <h4 class="welfare__card-title">단체 상해 보험</h4>
-                    <p class="welfare__card-description">
-                      예상하지 못한 순간에도 든든할 수 있도록 임직원을 보호해요.
-                    </p>
-                  </div>
-                  <img
-                    class="welfare__card-icon"
-                    src="./images/wf_ico6.png"
-                    alt="상해 보험 보호 배지 아이콘"
-                  />
-                </li>
-                <li class="welfare__card">
-                  <div class="welfare__card-copy">
-                    <h4 class="welfare__card-title">직무 교육 지원</h4>
-                    <p class="welfare__card-description">
-                      배우고 성장하는 즐거움이 계속되도록 역량 개발을 지원해요.
-                    </p>
-                  </div>
-                  <img
-                    class="welfare__card-icon"
-                    src="./images/wf_ico7.png"
-                    alt="직무 교육 영상 아이콘"
-                  />
-                </li>
-                <li class="welfare__card">
-                  <div class="welfare__card-copy">
-                    <h4 class="welfare__card-title">임직원 제휴 할인</h4>
-                    <p class="welfare__card-description">
-                      다양한 제휴 혜택으로 일상 속 즐거움과 실속을 더해드려요.
-                    </p>
-                  </div>
-                  <img
-                    class="welfare__card-icon"
-                    src="./images/wf_ico8.png"
-                    alt="제휴 할인 쇼핑백 아이콘"
-                  />
-                </li>
-                <li class="welfare__card">
-                  <div class="welfare__card-copy">
-                    <h4 class="welfare__card-title">문화 생활 지원</h4>
-                    <p class="welfare__card-description">
-                      바쁜 일상에 기분 좋은 쉼표를 더할 수 있도록 문화생활을
-                      응원해요.
-                    </p>
-                  </div>
-                  <img
-                    class="welfare__card-icon"
-                    src="./images/wf_ico9.png"
-                    alt="문화 생활 곰 인형 아이콘"
-                  />
-                </li>
-                <li class="welfare__card">
-                  <div class="welfare__card-copy">
-                    <h4 class="welfare__card-title">구내식당</h4>
-                    <p class="welfare__card-description">
-                      든든하고 맛있는 한 끼로 활기찬 하루를 채워드려요.
-                    </p>
-                  </div>
-                  <img
-                    class="welfare__card-icon"
-                    src="./images/wf_ico10.png"
-                    alt="구내식당 식기 아이콘"
-                  />
-                </li>
-                <li class="welfare__card">
-                  <div class="welfare__card-copy">
-                    <h4 class="welfare__card-title">임직원 스트레스 관리</h4>
-                    <p class="welfare__card-description">
-                      몸과 마음이 지치지 않도록 건강한 마음 관리를 함께해요.
-                    </p>
-                  </div>
-                  <img
-                    class="welfare__card-icon"
-                    src="./images/wf_ico11.png"
-                    alt="스트레스 관리 초콜릿 아이콘"
-                  />
-                </li>
-                <li class="welfare__card">
-                  <div class="welfare__card-copy">
-                    <h4 class="welfare__card-title">제휴 약국</h4>
-                    <p class="welfare__card-description">
-                      필요한 건강관리를 더욱 편리하게 이용할 수 있도록 지원해요.
-                    </p>
-                  </div>
-                  <img
-                    class="welfare__card-icon"
-                    src="./images/wf_ico12.png"
-                    alt="제휴 약국 캡슐 아이콘"
-                  />
-                </li>
-              </ul>
-            </section>
-
-            <section
-              class="welfare__group"
-              aria-labelledby="welfare-family-title"
-            >
-              <header class="welfare__group-head">
-                <h3 class="welfare__group-title" id="welfare-family-title">
-                  <img src="./images/wf_tit2.png" alt="가족" />
-                  가족의 행복도 빼놓을 수 없죠!
-                </h3>
-                <p class="welfare__group-copy">
-                  축하할 때도, 도움이 필요할 때도 한미가 함께해요.
-                </p>
-              </header>
-              <ul class="welfare__list" aria-label="가족 복지">
-                <li class="welfare__card">
-                  <div class="welfare__card-copy">
-                    <h4 class="welfare__card-title">경조사 지원</h4>
-                    <p class="welfare__card-description">
-                      가족의 기쁜 순간과 힘든 순간에 한미가 함께 마음을 나눠요.
-                    </p>
-                  </div>
-                  <img
-                    class="welfare__card-icon"
-                    src="./images/wf_ico13.png"
-                    alt="경조사 지원 선물 아이콘"
-                  />
-                </li>
-                <li class="welfare__card">
-                  <div class="welfare__card-copy">
-                    <h4 class="welfare__card-title">출산 축하 지원</h4>
-                    <p class="welfare__card-description">
-                      소중한 새 가족의 탄생을 진심으로 축하하고 응원해요.
-                    </p>
-                  </div>
-                  <img
-                    class="welfare__card-icon"
-                    src="./images/wf_ico14.png"
-                    alt="출산 축하 선물 아이콘"
-                  />
-                </li>
-                <li class="welfare__card">
-                  <div class="welfare__card-copy">
-                    <h4 class="welfare__card-title">다자녀 지원</h4>
-                    <p class="welfare__card-description">
-                      아이들과 함께하는 행복한 일상이 더욱 든든하도록 지원해요.
-                    </p>
-                  </div>
-                  <img
-                    class="welfare__card-icon"
-                    src="./images/wf_ico15.png"
-                    alt="다자녀 가족 아이콘"
-                  />
-                </li>
-                <li class="welfare__card">
-                  <div class="welfare__card-copy">
-                    <h4 class="welfare__card-title">사내 대출</h4>
-                    <p class="welfare__card-description">
-                      생활에 필요한 자금 부담을 덜 수 있도록 든든한 금융 지원을
-                      제공해요.
-                    </p>
-                  </div>
-                  <img
-                    class="welfare__card-icon"
-                    src="./images/wf_ico16.png"
-                    alt="사내 대출 계산기 아이콘"
-                  />
-                </li>
-                <li class="welfare__card">
-                  <div class="welfare__card-copy">
-                    <h4 class="welfare__card-title">호텔/콘도 할인</h4>
-                    <p class="welfare__card-description">
-                      가족과 편안한 휴식을 즐길 수 있도록 여가 혜택을 지원해요.
-                    </p>
-                  </div>
-                  <img
-                    class="welfare__card-icon"
-                    src="./images/wf_ico17.png"
-                    alt="호텔과 콘도 건물 아이콘"
-                  />
-                </li>
-                <li class="welfare__card">
-                  <div class="welfare__card-copy">
-                    <h4 class="welfare__card-title">고급 중식당 할인</h4>
-                    <p class="welfare__card-description">
-                      가족과의 특별한 식사 시간이 더욱 즐거워지도록 할인 혜택을
-                      드려요.
-                    </p>
-                  </div>
-                  <img
-                    class="welfare__card-icon"
-                    src="./images/wf_ico18.png"
-                    alt="중식당 할인 음식 아이콘"
-                  />
-                </li>
-                <li class="welfare__card">
-                  <div class="welfare__card-copy">
-                    <h4 class="welfare__card-title">초등학생 입학 선물</h4>
-                    <p class="welfare__card-description">
-                      설레는 첫 학교생활을 한미가 특별한 선물과 함께 응원해요.
-                    </p>
-                  </div>
-                  <img
-                    class="welfare__card-icon"
-                    src="./images/wf_ico19.png"
-                    alt="초등학생 입학 가방 아이콘"
-                  />
-                </li>
-                <li class="welfare__card">
-                  <div class="welfare__card-copy">
-                    <h4 class="welfare__card-title">학자금 지원</h4>
-                    <p class="welfare__card-description">
-                      자녀의 배움과 성장을 든든하게 이어갈 수 있도록 함께해요.
-                    </p>
-                  </div>
-                  <img
-                    class="welfare__card-icon"
-                    src="./images/wf_ico20.png"
-                    alt="학자금 지원 메달 아이콘"
-                  />
-                </li>
-              </ul>
-            </section>
-          </div>
+          <div class="welfare__scroll" tabindex="0" aria-label="한미그룹 복지 카드 목록"><section class="welfare__group scroll-reveal" aria-labelledby="welfare-group-title-1"><header class="welfare__group-head"><h3 class="welfare__group-title" id="welfare-group-title-1"><img src="./images/wf_tit1.png" alt="" aria-hidden="true">오늘의 나도, 내일의 나도 든든하게!</h3><p class="welfare__group-copy">건강, 성장, 문화생활까지 알차게 챙겨드려요.</p></header><ul class="welfare__list" aria-label="오늘의 나도, 내일의 나도 든든하게! 복지"><li class="welfare__card scroll-reveal"><div class="welfare__card-copy"><h4 class="welfare__card-title">건강 검진</h4><p class="welfare__card-description">건강한 하루가 오래 이어지도록, 정기적인 건강관리를 지원해요.</p></div><img class="welfare__card-icon" src="./images/wf_ico1.png" alt="" aria-hidden="true"></li><li class="welfare__card scroll-reveal"><div class="welfare__card-copy"><h4 class="welfare__card-title">기념일 축하 지원</h4><p class="welfare__card-description">소중한 기념일이 더 특별해지도록 한미가 함께 축하해요.</p></div><img class="welfare__card-icon" src="./images/wf_ico2.png" alt="" aria-hidden="true"></li><li class="welfare__card scroll-reveal"><div class="welfare__card-copy"><h4 class="welfare__card-title">본인주도 선택복지</h4><p class="welfare__card-description">나에게 필요한 복지를 내 취향과 생활에 맞게 선택할 수 있어요.</p></div><img class="welfare__card-icon" src="./images/wf_ico3.png" alt="" aria-hidden="true"></li><li class="welfare__card scroll-reveal"><div class="welfare__card-copy"><h4 class="welfare__card-title">장기 근속 포상</h4><p class="welfare__card-description">한미와 함께 걸어온 소중한 시간에 감사의 마음을 전해요.</p></div><img class="welfare__card-icon" src="./images/wf_ico4.png" alt="" aria-hidden="true"></li><li class="welfare__card scroll-reveal"><div class="welfare__card-copy"><h4 class="welfare__card-title">유연근무제</h4><p class="welfare__card-description">업무와 일상의 균형을 찾을 수 있도록 유연한 근무를 지원해요.</p></div><img class="welfare__card-icon" src="./images/wf_ico5.png" alt="" aria-hidden="true"></li><li class="welfare__card scroll-reveal"><div class="welfare__card-copy"><h4 class="welfare__card-title">단체 상해 보험</h4><p class="welfare__card-description">예상하지 못한 순간에도 든든할 수 있도록 임직원을 보호해요.</p></div><img class="welfare__card-icon" src="./images/wf_ico6.png" alt="" aria-hidden="true"></li><li class="welfare__card scroll-reveal"><div class="welfare__card-copy"><h4 class="welfare__card-title">직무 교육 지원</h4><p class="welfare__card-description">배우고 성장하는 즐거움이 계속되도록 역량 개발을 지원해요.</p></div><img class="welfare__card-icon" src="./images/wf_ico7.png" alt="" aria-hidden="true"></li><li class="welfare__card scroll-reveal"><div class="welfare__card-copy"><h4 class="welfare__card-title">임직원 제휴 할인</h4><p class="welfare__card-description">다양한 제휴 혜택으로 일상 속 즐거움과 실속을 더해드려요.</p></div><img class="welfare__card-icon" src="./images/wf_ico8.png" alt="" aria-hidden="true"></li><li class="welfare__card scroll-reveal"><div class="welfare__card-copy"><h4 class="welfare__card-title">문화 생활 지원</h4><p class="welfare__card-description">바쁜 일상에 기분 좋은 쉼표를 더할 수 있도록 문화생활을 응원해요.</p></div><img class="welfare__card-icon" src="./images/wf_ico9.png" alt="" aria-hidden="true"></li><li class="welfare__card scroll-reveal"><div class="welfare__card-copy"><h4 class="welfare__card-title">구내식당</h4><p class="welfare__card-description">든든하고 맛있는 한 끼로 활기찬 하루를 채워드려요.</p></div><img class="welfare__card-icon" src="./images/wf_ico10.png" alt="" aria-hidden="true"></li><li class="welfare__card scroll-reveal"><div class="welfare__card-copy"><h4 class="welfare__card-title">임직원 스트레스 관리</h4><p class="welfare__card-description">몸과 마음이 지치지 않도록 건강한 마음 관리를 함께해요.</p></div><img class="welfare__card-icon" src="./images/wf_ico11.png" alt="" aria-hidden="true"></li><li class="welfare__card scroll-reveal"><div class="welfare__card-copy"><h4 class="welfare__card-title">제휴 약국</h4><p class="welfare__card-description">필요한 건강관리를 더욱 편리하게 이용할 수 있도록 지원해요.</p></div><img class="welfare__card-icon" src="./images/wf_ico12.png" alt="" aria-hidden="true"></li></ul></section><section class="welfare__group scroll-reveal" aria-labelledby="welfare-group-title-2"><header class="welfare__group-head"><h3 class="welfare__group-title" id="welfare-group-title-2"><img src="./images/wf_tit2.png" alt="" aria-hidden="true">가족의 행복도 빼놓을 수 없죠!</h3><p class="welfare__group-copy">축하할 때도, 도움이 필요할 때도 한미가 함께해요.</p></header><ul class="welfare__list" aria-label="가족의 행복도 빼놓을 수 없죠! 복지"><li class="welfare__card scroll-reveal"><div class="welfare__card-copy"><h4 class="welfare__card-title">경조사 지원</h4><p class="welfare__card-description">가족의 기쁜 순간과 힘든 순간에 한미가 함께 마음을 나눠요.</p></div><img class="welfare__card-icon" src="./images/wf_ico13.png" alt="" aria-hidden="true"></li><li class="welfare__card scroll-reveal"><div class="welfare__card-copy"><h4 class="welfare__card-title">출산 축하 지원</h4><p class="welfare__card-description">소중한 새 가족의 탄생을 진심으로 축하하고 응원해요.</p></div><img class="welfare__card-icon" src="./images/wf_ico14.png" alt="" aria-hidden="true"></li><li class="welfare__card scroll-reveal"><div class="welfare__card-copy"><h4 class="welfare__card-title">다자녀 지원</h4><p class="welfare__card-description">아이들과 함께하는 행복한 일상이 더욱 든든하도록 지원해요.</p></div><img class="welfare__card-icon" src="./images/wf_ico15.png" alt="" aria-hidden="true"></li><li class="welfare__card scroll-reveal"><div class="welfare__card-copy"><h4 class="welfare__card-title">사내 대출</h4><p class="welfare__card-description">생활에 필요한 자금 부담을 덜 수 있도록 든든한 금융 지원을 제공해요.</p></div><img class="welfare__card-icon" src="./images/wf_ico16.png" alt="" aria-hidden="true"></li><li class="welfare__card scroll-reveal"><div class="welfare__card-copy"><h4 class="welfare__card-title">호텔/콘도 할인</h4><p class="welfare__card-description">가족과 편안한 휴식을 즐길 수 있도록 여가 혜택을 지원해요.</p></div><img class="welfare__card-icon" src="./images/wf_ico17.png" alt="" aria-hidden="true"></li><li class="welfare__card scroll-reveal"><div class="welfare__card-copy"><h4 class="welfare__card-title">고급 중식당 할인</h4><p class="welfare__card-description">가족과의 특별한 식사 시간이 더욱 즐거워지도록 할인 혜택을 드려요.</p></div><img class="welfare__card-icon" src="./images/wf_ico18.png" alt="" aria-hidden="true"></li><li class="welfare__card scroll-reveal"><div class="welfare__card-copy"><h4 class="welfare__card-title">초등학생 입학 선물</h4><p class="welfare__card-description">설레는 첫 학교생활을 한미가 특별한 선물과 함께 응원해요.</p></div><img class="welfare__card-icon" src="./images/wf_ico19.png" alt="" aria-hidden="true"></li><li class="welfare__card scroll-reveal"><div class="welfare__card-copy"><h4 class="welfare__card-title">학자금 지원</h4><p class="welfare__card-description">자녀의 배움과 성장을 든든하게 이어갈 수 있도록 함께해요.</p></div><img class="welfare__card-icon" src="./images/wf_ico20.png" alt="" aria-hidden="true"></li></ul></section><section class="welfare__group scroll-reveal" aria-labelledby="welfare-group-title-3"><header class="welfare__group-head"><h3 class="welfare__group-title" id="welfare-group-title-3"><img src="./images/wf_tit3.png" alt="" aria-hidden="true">회사생활이 조금 더 편해지는 방법!</h3><p class="welfare__group-copy">출퇴근과 사내생활을 위한 다양한 지원을 만나보세요.</p></header><ul class="welfare__list" aria-label="회사생활이 조금 더 편해지는 방법! 복지"><li class="welfare__card scroll-reveal"><div class="welfare__card-copy"><h4 class="welfare__card-title">여성복지 운영</h4><p class="welfare__card-description">여성 구성원이 더욱 건강하고 편안하게 일할 수 있도록 세심한 복지 제도를 운영해요.</p></div><img class="welfare__card-icon" src="./images/wf_ico21.png" alt="" aria-hidden="true"></li><li class="welfare__card scroll-reveal"><div class="welfare__card-copy"><h4 class="welfare__card-title">사우회 운영</h4><p class="welfare__card-description">임직원이 서로 마음을 나누고 즐겁게 교류할 수 있도록 다양한 활동을 지원해요.</p></div><img class="welfare__card-icon" src="./images/wf_ico22.png" alt="" aria-hidden="true"></li><li class="welfare__card scroll-reveal"><div class="welfare__card-copy"><h4 class="welfare__card-title">사업장 통근 버스 운영</h4><p class="welfare__card-description">출퇴근길의 부담을 덜고 편안하게 이동할 수 있도록 통근버스를 운영해요.</p></div><img class="welfare__card-icon" src="./images/wf_ico23.png" alt="" aria-hidden="true"></li></ul></section></div>
         </div>
-        <img
-          class="welfare__cloud-char"
-          src="./images/con5_cloud.png"
-          alt="팔을 든 보라색 한미 캐릭터"
-        />
+        <img class="welfare__cloud-char" src="./images/con5_cloud.png" alt="팔을 든 보라색 한미 캐릭터">
       </section>
 
       <!-- data/benefit_data.json의 스냅샷은 file:// 직접 열기에서 사용 -->
@@ -5783,31 +5282,22 @@
         <!-- 배경과 캐릭터 영역은 내부 콘텐츠 폭에 제한되지 않도록 분리 -->
         <header class="tasks__hero">
           <div class="tasks__visual">
-            <img
-              class="tasks__watermark"
-              src="./images/tasks_bg_title.png"
-              alt=""
-              aria-hidden="true"
-            />
-            <img
-              class="tasks__character"
-              src="./images/tasks_character.png"
-              alt="돋보기를 들고 직무를 살펴보는 보라색 한미 캐릭터"
-            />
+            <img class="tasks__watermark" src="./images/tasks_bg_title.png" alt="" aria-hidden="true">
+            <img class="tasks__character" src="./images/tasks_character.png" alt="돋보기를 들고 직무를 살펴보는 보라색 한미 캐릭터">
           </div>
         </header>
         <div class="tasks__inner">
-          <div class="tasks__intro">
+          <div class="tasks__intro scroll-reveal">
             <h2 class="tasks__title" id="tasks-title">
-              알약이를 따라<br />나에게 맞는 직무를 찾아봐요!
+              알약이를 따라<br>나에게 맞는 직무를 찾아봐요!
             </h2>
             <p class="tasks__lead">
               연구부터 생산, 영업, 경영지원까지 당신의 가능성이 빛날 자리를
               안내해 드릴게요.
             </p>
           </div>
-          <div class="tasks__tabs" role="tablist" aria-label="직무 분야"></div>
-          <div class="tasks__panels"></div>
+          <div class="tasks__tabs scroll-reveal" role="tablist" aria-label="직무 분야"><button class="tasks__tab" type="button" id="tasks-tab-rnd" role="tab" aria-controls="tasks-panel-rnd" aria-selected="true" tabindex="0">R&amp;D</button><button class="tasks__tab" type="button" id="tasks-tab-prod" role="tab" aria-controls="tasks-panel-prod" aria-selected="false" tabindex="-1">생산/품질</button><button class="tasks__tab" type="button" id="tasks-tab-sales" role="tab" aria-controls="tasks-panel-sales" aria-selected="false" tabindex="-1">영업</button><button class="tasks__tab" type="button" id="tasks-tab-mps" role="tab" aria-controls="tasks-panel-mps" aria-selected="false" tabindex="-1">경영관리</button><button class="tasks__tab" type="button" id="tasks-tab-cl" role="tab" aria-controls="tasks-panel-cl" aria-selected="false" tabindex="-1">임상</button><button class="tasks__tab" type="button" id="tasks-tab-global" role="tab" aria-controls="tasks-panel-global" aria-selected="false" tabindex="-1">글로벌</button><button class="tasks__tab" type="button" id="tasks-tab-healthcare" role="tab" aria-controls="tasks-panel-healthcare" aria-selected="false" tabindex="-1">헬스케어</button><button class="tasks__tab" type="button" id="tasks-tab-rnd" role="tab" aria-controls="tasks-panel-rnd" aria-selected="true" tabindex="0">R&amp;D</button><button class="tasks__tab" type="button" id="tasks-tab-prod" role="tab" aria-controls="tasks-panel-prod" aria-selected="false" tabindex="-1">생산/품질</button><button class="tasks__tab" type="button" id="tasks-tab-sales" role="tab" aria-controls="tasks-panel-sales" aria-selected="false" tabindex="-1">영업</button><button class="tasks__tab" type="button" id="tasks-tab-mps" role="tab" aria-controls="tasks-panel-mps" aria-selected="false" tabindex="-1">경영관리</button><button class="tasks__tab" type="button" id="tasks-tab-cl" role="tab" aria-controls="tasks-panel-cl" aria-selected="false" tabindex="-1">임상</button><button class="tasks__tab" type="button" id="tasks-tab-global" role="tab" aria-controls="tasks-panel-global" aria-selected="false" tabindex="-1">글로벌</button><button class="tasks__tab" type="button" id="tasks-tab-healthcare" role="tab" aria-controls="tasks-panel-healthcare" aria-selected="false" tabindex="-1">헬스케어</button><button class="tasks__tab" type="button" id="tasks-tab-rnd" role="tab" aria-controls="tasks-panel-rnd" aria-selected="true" tabindex="0">R&amp;D</button><button class="tasks__tab" type="button" id="tasks-tab-prod" role="tab" aria-controls="tasks-panel-prod" aria-selected="false" tabindex="-1">생산/품질</button><button class="tasks__tab" type="button" id="tasks-tab-sales" role="tab" aria-controls="tasks-panel-sales" aria-selected="false" tabindex="-1">영업</button><button class="tasks__tab" type="button" id="tasks-tab-mps" role="tab" aria-controls="tasks-panel-mps" aria-selected="false" tabindex="-1">경영관리</button><button class="tasks__tab" type="button" id="tasks-tab-cl" role="tab" aria-controls="tasks-panel-cl" aria-selected="false" tabindex="-1">임상</button><button class="tasks__tab" type="button" id="tasks-tab-global" role="tab" aria-controls="tasks-panel-global" aria-selected="false" tabindex="-1">글로벌</button><button class="tasks__tab" type="button" id="tasks-tab-healthcare" role="tab" aria-controls="tasks-panel-healthcare" aria-selected="false" tabindex="-1">헬스케어</button></div>
+          <div class="tasks__panels"><div class="tasks__panel scroll-reveal" id="tasks-panel-rnd" role="tabpanel" aria-labelledby="tasks-tab-rnd"><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">연구센터 (경기도 동탄)</span><span class="tasks__count" aria-label="6개 직무">6</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>NCE (New Chemical Entity)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>QS&amp;F (Quality Science &amp; Formulation)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>MST (Manufacturing Science Technology)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>TE (Toxicology Evaluation)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>DST (Drug Science &amp; Technology)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>BSS (Biological &amp; Structural Evaluation Science)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">제제연구소 [의약혁신센터] (경기도 광교)</span><span class="tasks__count" aria-label="1개 직무">1</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>신제형연구 (전문연구요원)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details></div><div class="tasks__panel scroll-reveal" id="tasks-panel-prod" role="tabpanel" aria-labelledby="tasks-tab-prod" hidden=""><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">팔탄제조센터 (경기도 화성)</span><span class="tasks__count" aria-label="4개 직무">4</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>제조</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>포장</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>품질관리</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>기술지원</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">평택제조센터 (경기도 평택)</span><span class="tasks__count" aria-label="2개 직무">2</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>DS생산 (학사)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>DS생산 (전문학사)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details></div><div class="tasks__panel scroll-reveal" id="tasks-panel-sales" role="tabpanel" aria-labelledby="tasks-tab-sales" hidden=""><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">전국 (Mobile Office)</span><span class="tasks__count" aria-label="1개 직무">1</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>제약영업</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">본사 (서울시 송파구)</span><span class="tasks__count" aria-label="2개 직무">2</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>해외영업</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>IT솔루션영업</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details></div><div class="tasks__panel scroll-reveal" id="tasks-panel-mps" role="tabpanel" aria-labelledby="tasks-tab-mps" hidden=""><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">본사 (서울시 송파구)</span><span class="tasks__count" aria-label="5개 직무">5</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>구매</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>국내법무</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>특허</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>안전관리</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>인사총무</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details></div><div class="tasks__panel scroll-reveal" id="tasks-panel-cl" role="tabpanel" aria-labelledby="tasks-tab-cl" hidden=""><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">본사 (서울시 송파구)</span><span class="tasks__count" aria-label="4개 직무">4</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>Pipeline Valuation (신약가치평가)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>Market Intelligence (신약개발 전략분석)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>Data Management</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>Biostatistician</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details></div><div class="tasks__panel scroll-reveal" id="tasks-panel-global" role="tabpanel" aria-labelledby="tasks-tab-global" hidden=""><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">본사 (서울시 송파구)</span><span class="tasks__count" aria-label="2개 직무">2</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>Global Regulatory Affairs</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>Licensing</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details></div><div class="tasks__panel scroll-reveal" id="tasks-panel-healthcare" role="tabpanel" aria-labelledby="tasks-tab-healthcare" hidden=""><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">본사 (서울시 송파구)</span><span class="tasks__count" aria-label="9개 직무">9</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>식품영업</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>식품커머스운영</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>화장품 커머스사업기획</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>화장품 상품기획</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>화장품 홈쇼핑영업/운영</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>화장품 국내영업</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>화장품 해외영업</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>화장품 글로벌마케팅</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>해외이커머스운영</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">서울/수도권/영남</span><span class="tasks__count" aria-label="1개 직무">1</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>의료기기영업</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details></div><div class="tasks__panel scroll-reveal" id="tasks-panel-rnd" role="tabpanel" aria-labelledby="tasks-tab-rnd"><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">연구센터 (경기도 동탄)</span><span class="tasks__count" aria-label="6개 직무">6</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>NCE (New Chemical Entity)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>QS&amp;F (Quality Science &amp; Formulation)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>MST (Manufacturing Science Technology)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>TE (Toxicology Evaluation)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>DST (Drug Science &amp; Technology)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>BSS (Biological &amp; Structural Evaluation Science)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">제제연구소 [의약혁신센터] (경기도 광교)</span><span class="tasks__count" aria-label="1개 직무">1</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>신제형연구 (전문연구요원)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details></div><div class="tasks__panel scroll-reveal" id="tasks-panel-prod" role="tabpanel" aria-labelledby="tasks-tab-prod" hidden=""><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">팔탄제조센터 (경기도 화성)</span><span class="tasks__count" aria-label="4개 직무">4</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>제조</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>포장</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>품질관리</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>기술지원</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">평택제조센터 (경기도 평택)</span><span class="tasks__count" aria-label="2개 직무">2</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>DS생산 (학사)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>DS생산 (전문학사)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details></div><div class="tasks__panel scroll-reveal" id="tasks-panel-sales" role="tabpanel" aria-labelledby="tasks-tab-sales" hidden=""><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">전국 (Mobile Office)</span><span class="tasks__count" aria-label="1개 직무">1</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>제약영업</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">본사 (서울시 송파구)</span><span class="tasks__count" aria-label="2개 직무">2</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>해외영업</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>IT솔루션영업</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details></div><div class="tasks__panel scroll-reveal" id="tasks-panel-mps" role="tabpanel" aria-labelledby="tasks-tab-mps" hidden=""><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">본사 (서울시 송파구)</span><span class="tasks__count" aria-label="5개 직무">5</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>구매</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>국내법무</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>특허</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>안전관리</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>인사총무</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details></div><div class="tasks__panel scroll-reveal" id="tasks-panel-cl" role="tabpanel" aria-labelledby="tasks-tab-cl" hidden=""><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">본사 (서울시 송파구)</span><span class="tasks__count" aria-label="4개 직무">4</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>Pipeline Valuation (신약가치평가)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>Market Intelligence (신약개발 전략분석)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>Data Management</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>Biostatistician</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details></div><div class="tasks__panel scroll-reveal" id="tasks-panel-global" role="tabpanel" aria-labelledby="tasks-tab-global" hidden=""><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">본사 (서울시 송파구)</span><span class="tasks__count" aria-label="2개 직무">2</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>Global Regulatory Affairs</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>Licensing</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details></div><div class="tasks__panel scroll-reveal" id="tasks-panel-healthcare" role="tabpanel" aria-labelledby="tasks-tab-healthcare" hidden=""><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">본사 (서울시 송파구)</span><span class="tasks__count" aria-label="9개 직무">9</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>식품영업</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>식품커머스운영</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>화장품 커머스사업기획</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>화장품 상품기획</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>화장품 홈쇼핑영업/운영</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>화장품 국내영업</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>화장품 해외영업</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>화장품 글로벌마케팅</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>해외이커머스운영</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">서울/수도권/영남</span><span class="tasks__count" aria-label="1개 직무">1</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>의료기기영업</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details></div><div class="tasks__panel scroll-reveal" id="tasks-panel-rnd" role="tabpanel" aria-labelledby="tasks-tab-rnd"><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">연구센터 (경기도 동탄)</span><span class="tasks__count" aria-label="6개 직무">6</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>NCE (New Chemical Entity)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>QS&amp;F (Quality Science &amp; Formulation)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>MST (Manufacturing Science Technology)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>TE (Toxicology Evaluation)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>DST (Drug Science &amp; Technology)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>BSS (Biological &amp; Structural Evaluation Science)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">제제연구소 [의약혁신센터] (경기도 광교)</span><span class="tasks__count" aria-label="1개 직무">1</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>신제형연구 (전문연구요원)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details></div><div class="tasks__panel scroll-reveal" id="tasks-panel-prod" role="tabpanel" aria-labelledby="tasks-tab-prod" hidden=""><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">팔탄제조센터 (경기도 화성)</span><span class="tasks__count" aria-label="4개 직무">4</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>제조</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>포장</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>품질관리</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>기술지원</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">평택제조센터 (경기도 평택)</span><span class="tasks__count" aria-label="2개 직무">2</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>DS생산 (학사)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>DS생산 (전문학사)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details></div><div class="tasks__panel scroll-reveal" id="tasks-panel-sales" role="tabpanel" aria-labelledby="tasks-tab-sales" hidden=""><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">전국 (Mobile Office)</span><span class="tasks__count" aria-label="1개 직무">1</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>제약영업</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">본사 (서울시 송파구)</span><span class="tasks__count" aria-label="2개 직무">2</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>해외영업</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>IT솔루션영업</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details></div><div class="tasks__panel scroll-reveal" id="tasks-panel-mps" role="tabpanel" aria-labelledby="tasks-tab-mps" hidden=""><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">본사 (서울시 송파구)</span><span class="tasks__count" aria-label="5개 직무">5</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>구매</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>국내법무</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>특허</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>안전관리</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>인사총무</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details></div><div class="tasks__panel scroll-reveal" id="tasks-panel-cl" role="tabpanel" aria-labelledby="tasks-tab-cl" hidden=""><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">본사 (서울시 송파구)</span><span class="tasks__count" aria-label="4개 직무">4</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>Pipeline Valuation (신약가치평가)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>Market Intelligence (신약개발 전략분석)</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>Data Management</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>Biostatistician</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details></div><div class="tasks__panel scroll-reveal" id="tasks-panel-global" role="tabpanel" aria-labelledby="tasks-tab-global" hidden=""><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">본사 (서울시 송파구)</span><span class="tasks__count" aria-label="2개 직무">2</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>Global Regulatory Affairs</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>Licensing</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details></div><div class="tasks__panel scroll-reveal" id="tasks-panel-healthcare" role="tabpanel" aria-labelledby="tasks-tab-healthcare" hidden=""><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">본사 (서울시 송파구)</span><span class="tasks__count" aria-label="9개 직무">9</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>식품영업</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>식품커머스운영</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>화장품 커머스사업기획</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>화장품 상품기획</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>화장품 홈쇼핑영업/운영</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>화장품 국내영업</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>화장품 해외영업</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>화장품 글로벌마케팅</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button><button class="tasks__job" type="button"><span>해외이커머스운영</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details><details class="tasks__group"><summary class="tasks__group-head"><span class="tasks__group-title">서울/수도권/영남</span><span class="tasks__count" aria-label="1개 직무">1</span></summary><div class="tasks__group-content"><div class="tasks__group-content-inner"><div class="tasks__jobs"><button class="tasks__job" type="button"><span>의료기기영업</span><span class="tasks__job-arrow" aria-hidden="true">→</span></button></div></div></div></details></div></div>
           <!-- data/task_data.json과 data/task_popup_data.json의 스냅샷을 내장해 파일 직접 열기에서도 사용 -->
           <script type="application/json" id="tasks-menu-data">
             {
@@ -6899,16 +6389,8 @@
 
         <!-- 직무 상세 모달 상단에 tasks_rnd_bg.jpg 배너를 표시 -->
         <dialog class="tasks__modal" aria-labelledby="tasks-modal-title">
-          <img
-            class="tasks__modal-banner"
-            src="./images/tasks_rnd_bg.jpg"
-            alt=""
-          />
-          <button
-            class="tasks__modal-close"
-            type="button"
-            aria-label="상세 창 닫기"
-          >
+          <img class="tasks__modal-banner" src="./images/tasks_rnd_bg.jpg" alt="">
+          <button class="tasks__modal-close" type="button" aria-label="상세 창 닫기">
             ×
           </button>
           <div class="tasks__modal-content">
@@ -6924,163 +6406,118 @@
       </section>
 
       <!-- 8. 지원자격:  -->
-      <section
-        class="requirement"
-        id="requirement"
-        aria-labelledby="requirement-title"
-      >
+      <section class="requirement" id="requirement" aria-labelledby="requirement-title">
         <div class="requirement__inner">
-          <h2 class="requirement__title" id="requirement-title">
-            한미그룹과 함께하는 문은<br />활짝 열려 있습니다
+          <h2 class="requirement__title scroll-reveal" id="requirement-title">
+            한미그룹과 함께하는 문은<br>활짝 열려 있습니다
           </h2>
-          <div
-            class="requirement__tabs"
-            role="tablist"
-            aria-label="지원 안내"
-          >
-            <button
-              class="requirement__tab"
-              id="requirement-tab-qualification"
-              type="button"
-              role="tab"
-              aria-controls="requirement-panel-qualification"
-              aria-selected="true"
-              tabindex="0"
-            >
+          <div class="requirement__tabs scroll-reveal" role="tablist" aria-label="지원 안내">
+            <button class="requirement__tab" id="requirement-tab-qualification" type="button" role="tab" aria-controls="requirement-panel-qualification" aria-selected="true" tabindex="0">
               지원자격
             </button>
-            <button
-              class="requirement__tab"
-              id="requirement-tab-process"
-              type="button"
-              role="tab"
-              aria-controls="requirement-panel-process"
-              aria-selected="false"
-              tabindex="-1"
-            >
+            <button class="requirement__tab" id="requirement-tab-process" type="button" role="tab" aria-controls="requirement-panel-process" aria-selected="false" tabindex="-1">
               전형절차 및 접수방법
             </button>
           </div>
 
-          <div
-            class="requirement__panel"
-            id="requirement-panel-qualification"
-            role="tabpanel"
-            aria-labelledby="requirement-tab-qualification"
-            tabindex="0"
-          >
-            <div class="requirement__eligibility">
+          <div class="requirement__panel" id="requirement-panel-qualification" role="tabpanel" aria-labelledby="requirement-tab-qualification" tabindex="0">
+            <div class="requirement__eligibility scroll-reveal">
               <div class="requirement__qualification">
-                <img
-                  src="./images/require_ico_calendar_3d_.png"
-                  alt=""
-                  aria-hidden="true"
-                />
+                <img src="./images/require_ico_calendar_3d_.png" alt="" aria-hidden="true">
                 <p>27년 1월 입사가 가능한 자</p>
               </div>
               <span class="requirement__divider" aria-hidden="true"></span>
               <div class="requirement__qualification">
-                <img
-                  src="./images/require_ico_gradcap_3d_.png"
-                  alt=""
-                  aria-hidden="true"
-                />
+                <img src="./images/require_ico_gradcap_3d_.png" alt="" aria-hidden="true">
                 <p>기졸업자 또는 27년 2월 졸업 예정자</p>
               </div>
             </div>
-            <ul class="requirement__notes">
+            <ul class="requirement__notes scroll-reveal">
               <li>남성의 경우 병역을 마쳤거나 면제인 분</li>
               <li>해외여행 (또는 해외 출장)에 결격사유가 없는 분</li>
               <li>취업보호대상자는 관련 법령에 의거하여 우대</li>
             </ul>
-            <p class="requirement__notice">
+            <p class="requirement__notice scroll-reveal">
               모집 직무별로 지원자격이 상이하오니 반드시
               <strong>채용 공고</strong>를 확인해 주시기 바랍니다.
             </p>
           </div>
 
-          <div
-            class="requirement__panel"
-            id="requirement-panel-process"
-            role="tabpanel"
-            aria-labelledby="requirement-tab-process"
-            tabindex="0"
-            hidden
-          >
-            <section class="requirement__process-group">
+          <div class="requirement__panel" id="requirement-panel-process" role="tabpanel" aria-labelledby="requirement-tab-process" tabindex="0" hidden="">
+            <section class="requirement__process-group scroll-reveal">
               <h3>영업직군</h3>
               <ol class="requirement__steps">
                 <li class="requirement__step">
-                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_apply_.png" alt="" /></span>
+                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_apply_.png" alt=""></span>
                   <span class="requirement__step-label">지원접수<span class="requirement__step-date">9.28~10.18</span></span>
                   <ul class="requirement__step-arrow-list" aria-hidden="true"><li class="requirement__step-arrow"></li></ul>
                 </li>
                 <li class="requirement__step">
-                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_doc_.png" alt="" /></span>
+                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_doc_.png" alt=""></span>
                   <span class="requirement__step-label">서류전형<span class="requirement__step-date">10.19~10.20</span></span>
                   <ul class="requirement__step-arrow-list" aria-hidden="true"><li class="requirement__step-arrow"></li></ul>
                 </li>
                 <li class="requirement__step">
-                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_ai_.png" alt="" /></span>
+                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_ai_.png" alt=""></span>
                   <span class="requirement__step-label">AI역량검사<span class="requirement__step-date">10.21~10.25</span></span>
                   <ul class="requirement__step-arrow-list" aria-hidden="true"><li class="requirement__step-arrow"></li></ul>
                 </li>
                 <li class="requirement__step">
-                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_interview1_.png" alt="" /></span>
+                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_interview1_.png" alt=""></span>
                   <span class="requirement__step-label">1차면접<span class="requirement__step-date">11월 중</span></span>
                   <ul class="requirement__step-arrow-list" aria-hidden="true"><li class="requirement__step-arrow"></li></ul>
                 </li>
                 <li class="requirement__step">
-                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_field_.png" alt="" /></span>
+                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_field_.png" alt=""></span>
                   <span class="requirement__step-label">현장체험<span class="requirement__step-date">12월 초</span></span>
                   <ul class="requirement__step-arrow-list" aria-hidden="true"><li class="requirement__step-arrow"></li></ul>
                 </li>
                 <li class="requirement__step">
-                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_interview2_.png" alt="" /></span>
+                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_interview2_.png" alt=""></span>
                   <span class="requirement__step-label">2차면접<span class="requirement__step-date">12월 중</span></span>
                   <ul class="requirement__step-arrow-list" aria-hidden="true"><li class="requirement__step-arrow"></li></ul>
                 </li>
                 <li class="requirement__step">
-                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_edu_.png" alt="" /></span>
+                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_edu_.png" alt=""></span>
                   <span class="requirement__step-label">교육전형<span class="requirement__step-date">27.1.4~</span></span>
                 </li>
               </ol>
             </section>
-            <section class="requirement__process-group">
+            <section class="requirement__process-group scroll-reveal">
               <h3>영업 외 전직군</h3>
               <ol class="requirement__steps">
                 <li class="requirement__step">
-                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_apply_.png" alt="" /></span>
+                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_apply_.png" alt=""></span>
                   <span class="requirement__step-label">지원접수<span class="requirement__step-date">9.28~10.18</span></span>
                   <ul class="requirement__step-arrow-list" aria-hidden="true"><li class="requirement__step-arrow"></li></ul>
                 </li>
                 <li class="requirement__step">
-                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_doc_.png" alt="" /></span>
+                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_doc_.png" alt=""></span>
                   <span class="requirement__step-label">서류전형<span class="requirement__step-date">10.19~10.20</span></span>
                   <ul class="requirement__step-arrow-list" aria-hidden="true"><li class="requirement__step-arrow"></li></ul>
                 </li>
                 <li class="requirement__step">
-                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_ai_.png" alt="" /></span>
+                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_ai_.png" alt=""></span>
                   <span class="requirement__step-label">AI역량검사<span class="requirement__step-date">10.21~10.25</span></span>
                   <ul class="requirement__step-arrow-list" aria-hidden="true"><li class="requirement__step-arrow"></li></ul>
                 </li>
                 <li class="requirement__step">
-                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_interview1_.png" alt="" /></span>
+                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_interview1_.png" alt=""></span>
                   <span class="requirement__step-label">1차면접<span class="requirement__step-date">11월 중</span></span>
                   <ul class="requirement__step-arrow-list" aria-hidden="true"><li class="requirement__step-arrow"></li></ul>
                 </li>
                 <li class="requirement__step">
-                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_interview2_.png" alt="" /></span>
+                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_interview2_.png" alt=""></span>
                   <span class="requirement__step-label">2차면접<span class="requirement__step-date">12월 중</span></span>
                   <ul class="requirement__step-arrow-list" aria-hidden="true"><li class="requirement__step-arrow"></li></ul>
                 </li>
                 <li class="requirement__step">
-                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_join_.png" alt="" /></span>
-                  <span class="requirement__step-label">입사<span class="requirement__step-date">27.1.4<br />(경력직 협의 가능)</span></span>
+                  <span class="requirement__step-icon" aria-hidden="true"><img src="./images/require_ico_step_join_.png" alt=""></span>
+                  <span class="requirement__step-label">입사<span class="requirement__step-date">27.1.4<br>(경력직 협의 가능)</span></span>
                 </li>
               </ol>
             </section>
-            <ul class="requirement__process-notes">
+            <ul class="requirement__process-notes scroll-reveal">
               <li>상기 일정은 상황에 따라 변경될 수 있으며 각 전형별 상세 일정은 대상자에 한해 개별 안내 예정입니다.</li>
               <li>입사지원서에 허위 기재가 있거나 제출서류가 허위로 판명되는 경우, 입사가 취소될 수 있습니다.</li>
               <li>지원서 제출 후에는 수정이 불가하오니, 주의하시기 바랍니다.</li>
@@ -7090,185 +6527,118 @@
           </div>
         </div>
         <div class="requirement__bulb" aria-hidden="true">
-          <img src="./images/require_obj_bulb_.png" alt="" />
+          <img src="./images/require_obj_bulb_.png" alt="" class="updown">
         </div>
       </section>
 
-      <section
-        class="exposition"
-        id="exposition"
-        aria-labelledby="exposition-title"
-      >
+      <section class="exposition" id="exposition" aria-labelledby="exposition-title">
         <div class="exposition__inner">
-          <header class="exposition__hero">
+          <header class="exposition__hero scroll-reveal">
             <h2 class="exposition__title" id="exposition-title">
               Hanmi 박람회/캠퍼스로 출발!
             </h2>
             <p class="exposition__lead">
-              한미그룹이 여러분을 만나러 박람회와 캠퍼스로 찾아갑니다.<br />
+              한미그룹이 여러분을 만나러 박람회와 캠퍼스로 찾아갑니다.<br>
               우리가 어디서 만날지 궁금하다면 아래 지역에서 찾아보세요!
             </p>
             <p class="exposition__guide">
               학교명/장소를 확인해 주세요.
             </p>
-            <div class="exposition__character" aria-hidden="true">
+            <div class="exposition__character updown" aria-hidden="true">
               <span class="exposition__speech">우리 학교에도 한미가 찾아올까?</span>
-              <img src="./images/expo_con3_char.png" alt="" />
+              <img src="./images/expo_con3_char.png" alt="">
             </div>
           </header>
 
-          <div
-            class="exposition__tabs"
-            role="tablist"
-            aria-label="채용 행사 구분"
-          >
-            <button
-              class="exposition__tab"
-              id="exposition-tab-fair"
-              type="button"
-              role="tab"
-              aria-controls="exposition-panel-fair"
-              aria-selected="true"
-              tabindex="0"
-            >
+          <div class="exposition__tabs scroll-reveal" role="tablist" aria-label="채용 행사 구분">
+            <button class="exposition__tab" id="exposition-tab-fair" type="button" role="tab" aria-controls="exposition-panel-fair" aria-selected="true" tabindex="0">
               박람회
             </button>
-            <button
-              class="exposition__tab"
-              id="exposition-tab-campus"
-              type="button"
-              role="tab"
-              aria-controls="exposition-panel-campus"
-              aria-selected="false"
-              tabindex="-1"
-            >
+            <button class="exposition__tab" id="exposition-tab-campus" type="button" role="tab" aria-controls="exposition-panel-campus" aria-selected="false" tabindex="-1">
               캠퍼스
             </button>
           </div>
 
-          <div
-            class="exposition__panel"
-            id="exposition-panel-fair"
-            role="tabpanel"
-            aria-labelledby="exposition-tab-fair"
-            tabindex="0"
-          >
-            <div class="exposition__calendar" id="exposition-fair-calendar"></div>
+          <div class="exposition__panel" id="exposition-panel-fair" role="tabpanel" aria-labelledby="exposition-tab-fair" tabindex="0">
+            <div class="exposition__calendar" id="exposition-fair-calendar"><div class="exposition__week scroll-reveal"><div class="exposition__week-dates"><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 1;">8월 31일 (월)</div><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 2;">9월 1일 (화)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 1;">9월 2일 (수)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 2;">9월 3일 (목)</div><div class="exposition__date" style="--mobile-date-row: 5; --mobile-column: 1;">9월 4일 (금)</div></div><div class="exposition__week-events"><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 1;"><span class="exposition__event exposition__event--static">KAIST</span></div><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 2;"><span class="exposition__event exposition__event--static">서울대학교</span><span class="exposition__event exposition__event--static">서강대학교</span><span class="exposition__event exposition__event--static">연세대학교</span></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 1;"><span class="exposition__event exposition__event--static">UNIST</span><span class="exposition__event exposition__event--static">한양대학교</span></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 2;"><span class="exposition__event exposition__event--static">GIST</span></div><div class="exposition__day" style="--mobile-date-row: 5; --mobile-column: 1;"><span class="exposition__event exposition__event--static">고려대학교</span><span class="exposition__event exposition__event--static">성균관대학교(자연)</span></div></div></div><div class="exposition__week scroll-reveal"><div class="exposition__week-dates"><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 1;">9월 7일 (월)</div><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 2;">9월 8일 (화)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 1;">9월 9일 (수)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 2;"></div><div class="exposition__date" style="--mobile-date-row: 5; --mobile-column: 1;">10월 7일 (수)</div></div><div class="exposition__week-events"><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 1;"><span class="exposition__event exposition__event--static">KIST</span><span class="exposition__event exposition__event--static">동국대학교</span></div><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 2;"><span class="exposition__event exposition__event--static">이화여자대학교</span><span class="exposition__event exposition__event--static">중견기업박람회(대전)</span></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 1;"><span class="exposition__event exposition__event--static">POSTECH</span></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 2;"></div><div class="exposition__day" style="--mobile-date-row: 5; --mobile-column: 1;"><span class="exposition__event exposition__event--static">서울고용센터</span></div></div></div></div>
           </div>
 
-          <div
-            class="exposition__panel"
-            id="exposition-panel-campus"
-            role="tabpanel"
-            aria-labelledby="exposition-tab-campus"
-            tabindex="0"
-            hidden
-          >
-            <div
-              class="exposition__regions"
-              role="tablist"
-              aria-label="캠퍼스 방문 지역"
-            >
-              <button
-                class="exposition__region"
-                id="exposition-region-seoul"
-                type="button"
-                role="tab"
-                aria-controls="exposition-region-panel-seoul"
-                aria-selected="true"
-                tabindex="0"
-              >서울</button>
+          <div class="exposition__panel" id="exposition-panel-campus" role="tabpanel" aria-labelledby="exposition-tab-campus" tabindex="0" hidden="">
+            <div class="exposition__regions scroll-reveal" role="tablist" aria-label="캠퍼스 방문 지역">
+              <button class="exposition__region" id="exposition-region-seoul" type="button" role="tab" aria-controls="exposition-region-panel-seoul" aria-selected="true" tabindex="0">서울</button>
               <button class="exposition__region" id="exposition-region-gyeonggi" type="button" role="tab" aria-controls="exposition-region-panel-gyeonggi" aria-selected="false" tabindex="-1">경기</button>
               <button class="exposition__region" id="exposition-region-gangwon" type="button" role="tab" aria-controls="exposition-region-panel-gangwon" aria-selected="false" tabindex="-1">강원</button>
               <button class="exposition__region" id="exposition-region-gyeongsang" type="button" role="tab" aria-controls="exposition-region-panel-gyeongsang" aria-selected="false" tabindex="-1">경상</button>
               <button class="exposition__region" id="exposition-region-chungcheong" type="button" role="tab" aria-controls="exposition-region-panel-chungcheong" aria-selected="false" tabindex="-1">충청</button>
               <button class="exposition__region" id="exposition-region-jeolla" type="button" role="tab" aria-controls="exposition-region-panel-jeolla" aria-selected="false" tabindex="-1">전라</button>
             </div>
-            <div
-              class="exposition__region-panel"
-              id="exposition-region-panel-seoul"
-              role="tabpanel"
-              aria-labelledby="exposition-region-seoul"
-              tabindex="0"
-            >
-              <div class="exposition__calendar" id="exposition-campus-calendar"></div>
+            <div class="exposition__region-panel" id="exposition-region-panel-seoul" role="tabpanel" aria-labelledby="exposition-region-seoul" tabindex="0">
+              <div class="exposition__calendar" id="exposition-campus-calendar"><div class="exposition__week scroll-reveal"><div class="exposition__week-dates"><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 1;">9월 14일 (월)</div><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 2;">9월 15일 (화)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 1;">9월 16일 (수)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 2;">9월 17일 (목)</div><div class="exposition__date" style="--mobile-date-row: 5; --mobile-column: 1;">9월 18일 (금)</div></div><div class="exposition__week-events"><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 1;"></div><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 2;"></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 1;"></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 2;"><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-1">중앙대학교</button><div class="exposition__event-detail" id="exposition-event-detail-1" hidden="" aria-label="중앙대학교 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">310관 2층 201호</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">14:00~15:30</span></div></div></div><div class="exposition__day" style="--mobile-date-row: 5; --mobile-column: 1;"></div></div></div><div class="exposition__week scroll-reveal"><div class="exposition__week-dates"><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 1;">9월 28일 (월)</div><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 2;">9월 29일 (화)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 1;">9월 30일 (수)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 2;">10월 1일 (목)</div><div class="exposition__date" style="--mobile-date-row: 5; --mobile-column: 1;">10월 2일 (금)</div></div><div class="exposition__week-events"><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 1;"></div><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 2;"></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 1;"></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 2;"><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-2">건국대학교</button><div class="exposition__event-detail" id="exposition-event-detail-2" hidden="" aria-label="건국대학교 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">경영관 302호</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">14:00~15:30</span></div></div></div><div class="exposition__day" style="--mobile-date-row: 5; --mobile-column: 1;"></div></div></div><div class="exposition__week scroll-reveal"><div class="exposition__week-dates"><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 1;">10월 12일 (월)</div><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 2;">10월 13일 (화)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 1;">10월 14일 (수)</div></div><div class="exposition__week-events"><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 1;"></div><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 2;"></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 1;"><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-3">경희대학교</button><div class="exposition__event-detail" id="exposition-event-detail-3" hidden="" aria-label="경희대학교 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">청운관 B117호</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">14:30~16:00</span></div></div></div></div></div></div>
             </div>
-            <div class="exposition__region-panel" id="exposition-region-panel-gyeonggi" role="tabpanel" aria-labelledby="exposition-region-gyeonggi" tabindex="0" hidden></div>
-            <div class="exposition__region-panel" id="exposition-region-panel-gangwon" role="tabpanel" aria-labelledby="exposition-region-gangwon" tabindex="0" hidden></div>
-            <div class="exposition__region-panel" id="exposition-region-panel-gyeongsang" role="tabpanel" aria-labelledby="exposition-region-gyeongsang" tabindex="0" hidden></div>
-            <div class="exposition__region-panel" id="exposition-region-panel-chungcheong" role="tabpanel" aria-labelledby="exposition-region-chungcheong" tabindex="0" hidden></div>
-            <div class="exposition__region-panel" id="exposition-region-panel-jeolla" role="tabpanel" aria-labelledby="exposition-region-jeolla" tabindex="0" hidden></div>
+            <div class="exposition__region-panel" id="exposition-region-panel-gyeonggi" role="tabpanel" aria-labelledby="exposition-region-gyeonggi" tabindex="0" hidden=""><div class="exposition__calendar"><div class="exposition__week scroll-reveal"><div class="exposition__week-dates"><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 1;">9월 14일 (월)</div><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 2;">9월 15일 (화)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 1;">9월 16일 (수)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 2;">9월 17일 (목)</div><div class="exposition__date" style="--mobile-date-row: 5; --mobile-column: 1;">9월 18일 (금)</div></div><div class="exposition__week-events"><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 1;"><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-4">가천대학교</button><div class="exposition__event-detail" id="exposition-event-detail-4" hidden="" aria-label="가천대학교 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">비전타워 B구역 B104호</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">14:00~15:30</span></div></div></div><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 2;"></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 1;"></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 2;"></div><div class="exposition__day" style="--mobile-date-row: 5; --mobile-column: 1;"></div></div></div><div class="exposition__week scroll-reveal"><div class="exposition__week-dates"><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 1;">9월 21일 (월)</div><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 2;">9월 22일 (화)</div></div><div class="exposition__week-events"><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 1;"><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-5">경기대학교</button><div class="exposition__event-detail" id="exposition-event-detail-5" hidden="" aria-label="경기대학교 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">복지관 2층 잡카페</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">14:00~15:30</span></div></div></div><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 2;"><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-6">인하대학교</button><div class="exposition__event-detail" id="exposition-event-detail-6" hidden="" aria-label="인하대학교 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">학생회관 346호</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">14:00~15:30</span></div></div></div></div></div></div></div>
+            <div class="exposition__region-panel" id="exposition-region-panel-gangwon" role="tabpanel" aria-labelledby="exposition-region-gangwon" tabindex="0" hidden=""><div class="exposition__calendar"><div class="exposition__week scroll-reveal"><div class="exposition__week-dates"><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 1;">9월 21일 (월)</div><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 2;">9월 22일 (화)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 1;">9월 23일 (수)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 2;">9월 24일 (목)</div><div class="exposition__date" style="--mobile-date-row: 5; --mobile-column: 1;">9월 25일 (금)</div></div><div class="exposition__week-events"><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 1;"></div><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 2;"></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 1;"><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-7">한림대학교</button><div class="exposition__event-detail" id="exposition-event-detail-7" hidden="" aria-label="한림대학교 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">캠퍼스라이프센터 2층 커리어라운지</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">13:00~14:30</span></div></div></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 2;"></div><div class="exposition__day" style="--mobile-date-row: 5; --mobile-column: 1;"></div></div></div><div class="exposition__week scroll-reveal"><div class="exposition__week-dates"><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 1;">9월 28일 (월)</div><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 2;">9월 29일 (화)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 1;">9월 30일 (수)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 2;">10월 1일 (목)</div></div><div class="exposition__week-events"><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 1;"></div><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 2;"><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-8">강원대학교(강릉)</button><div class="exposition__event-detail" id="exposition-event-detail-8" hidden="" aria-label="강원대학교(강릉) 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">후생관 1층(C4) 잡카페</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">15:00~16:30</span></div></div></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 1;"></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 2;"><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-9">강원대학교(춘천)</button><div class="exposition__event-detail" id="exposition-event-detail-9" hidden="" aria-label="강원대학교(춘천) 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">의생명과학대학 B동 501호</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">14:00~15:30</span></div></div></div></div></div></div></div>
+            <div class="exposition__region-panel" id="exposition-region-panel-gyeongsang" role="tabpanel" aria-labelledby="exposition-region-gyeongsang" tabindex="0" hidden=""><div class="exposition__calendar"><div class="exposition__week scroll-reveal"><div class="exposition__week-dates"><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 1;">9월 28일 (월)</div><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 2;">9월 29일 (화)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 1;">9월 30일 (수)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 2;">10월 1일 (목)</div><div class="exposition__date" style="--mobile-date-row: 5; --mobile-column: 1;">10월 2일 (금)</div></div><div class="exposition__week-events"><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 1;"></div><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 2;"></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 1;"><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-10">경북대학교</button><div class="exposition__event-detail" id="exposition-event-detail-10" hidden="" aria-label="경북대학교 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">복지관 4층 강의실2</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">14:00~15:30</span></div></div></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 2;"><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-11">영남대학교</button><div class="exposition__event-detail" id="exposition-event-detail-11" hidden="" aria-label="영남대학교 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">학생지원센터 322호 강의실</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">14:00~15:30</span></div></div></div><div class="exposition__day" style="--mobile-date-row: 5; --mobile-column: 1;"></div></div></div><div class="exposition__week scroll-reveal"><div class="exposition__week-dates"><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 1;">10월 5일 (월)</div><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 2;">10월 6일 (화)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 1;">10월 7일 (수)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 2;">10월 8일 (목)</div><div class="exposition__date" style="--mobile-date-row: 5; --mobile-column: 1;">10월 9일 (금)</div></div><div class="exposition__week-events"><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 1;"></div><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 2;"><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-12">동아대학교</button><div class="exposition__event-detail" id="exposition-event-detail-12" hidden="" aria-label="동아대학교 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">S08 인재개발과 3층 Inspire Hall</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">10:00~11:30</span></div></div><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-13">부산대학교</button><div class="exposition__event-detail" id="exposition-event-detail-13" hidden="" aria-label="부산대학교 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">문창회관 2층 다목적강의실1</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">15:00~16:30</span></div></div></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 1;"><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-14">창원대학교</button><div class="exposition__event-detail" id="exposition-event-detail-14" hidden="" aria-label="창원대학교 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">COSS(6호관) 2층 강의실</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">14:00~15:30</span></div></div></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 2;"><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-15">경상국립대학교</button><div class="exposition__event-detail" id="exposition-event-detail-15" hidden="" aria-label="경상국립대학교 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">GNU컨벤션센터 1층 잡서포트룸</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">13:00~14:30</span></div></div></div><div class="exposition__day" style="--mobile-date-row: 5; --mobile-column: 1;"></div></div></div><div class="exposition__week scroll-reveal"><div class="exposition__week-dates"><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 1;">10월 12일 (월)</div><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 2;">10월 13일 (화)</div></div><div class="exposition__week-events"><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 1;"></div><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 2;"><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-16">계명대학교</button><div class="exposition__event-detail" id="exposition-event-detail-16" hidden="" aria-label="계명대학교 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">취업지원센터 1층 강의실</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">14:00~15:30</span></div></div></div></div></div></div></div>
+            <div class="exposition__region-panel" id="exposition-region-panel-chungcheong" role="tabpanel" aria-labelledby="exposition-region-chungcheong" tabindex="0" hidden=""><div class="exposition__calendar"><div class="exposition__week scroll-reveal"><div class="exposition__week-dates"><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 1;">9월 14일 (월)</div><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 2;">9월 15일 (화)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 1;">9월 16일 (수)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 2;">9월 17일 (목)</div><div class="exposition__date" style="--mobile-date-row: 5; --mobile-column: 1;">9월 18일 (금)</div></div><div class="exposition__week-events"><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 1;"></div><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 2;"><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-17">청주대학교</button><div class="exposition__event-detail" id="exposition-event-detail-17" hidden="" aria-label="청주대학교 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">AI-SW 융합대학(06) 세미나실(008)</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">16:00~17:30</span></div></div></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 1;"></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 2;"></div><div class="exposition__day" style="--mobile-date-row: 5; --mobile-column: 1;"></div></div></div><div class="exposition__week scroll-reveal"><div class="exposition__week-dates"><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 1;">9월 28일 (월)</div><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 2;">9월 29일 (화)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 1;">9월 30일 (수)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 2;">10월 1일 (목)</div><div class="exposition__date" style="--mobile-date-row: 5; --mobile-column: 1;">10월 2일 (금)</div></div><div class="exposition__week-events"><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 1;"></div><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 2;"><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-18">충남대학교</button><div class="exposition__event-detail" id="exposition-event-detail-18" hidden="" aria-label="충남대학교 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">인재개발원(E5) 3층 창의실</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">14:00~15:30</span></div></div></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 1;"><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-19">건국대학교</button><div class="exposition__event-detail" id="exposition-event-detail-19" hidden="" aria-label="건국대학교 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">학생회관 이승진홀</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">14:00~15:30</span></div></div></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 2;"><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-20">충북대학교</button><div class="exposition__event-detail" id="exposition-event-detail-20" hidden="" aria-label="충북대학교 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">중앙도서관 2관 세미나실 (5층)</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">14:00~15:30</span></div></div></div><div class="exposition__day" style="--mobile-date-row: 5; --mobile-column: 1;"></div></div></div><div class="exposition__week scroll-reveal"><div class="exposition__week-dates"><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 1;">10월 5일 (월)</div><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 2;">10월 6일 (화)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 1;">10월 7일 (수)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 2;">10월 8일 (목)</div></div><div class="exposition__week-events"><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 1;"></div><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 2;"></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 1;"><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-21">순천향대학교</button><div class="exposition__event-detail" id="exposition-event-detail-21" hidden="" aria-label="순천향대학교 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">유니토피아관 3D극장</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">14:00~15:30</span></div></div></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 2;"><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-22">국립공주대학교</button><div class="exposition__event-detail" id="exposition-event-detail-22" hidden="" aria-label="국립공주대학교 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">대학본부 1층 국제회의실</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">13:00~14:30</span></div></div></div></div></div></div></div>
+            <div class="exposition__region-panel" id="exposition-region-panel-jeolla" role="tabpanel" aria-labelledby="exposition-region-jeolla" tabindex="0" hidden=""><div class="exposition__calendar"><div class="exposition__week scroll-reveal"><div class="exposition__week-dates"><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 1;">9월 14일 (월)</div><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 2;">9월 15일 (화)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 1;">9월 16일 (수)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 2;">9월 17일 (목)</div><div class="exposition__date" style="--mobile-date-row: 5; --mobile-column: 1;">9월 18일 (금)</div></div><div class="exposition__week-events"><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 1;"></div><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 2;"><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-23">전주대학교</button><div class="exposition__event-detail" id="exposition-event-detail-23" hidden="" aria-label="전주대학교 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">스타센터 238호</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">16:00~17:00</span></div></div></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 1;"><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-24">원광대학교</button><div class="exposition__event-detail" id="exposition-event-detail-24" hidden="" aria-label="원광대학교 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">학생지원관(건물번호 14) 지하 취창업 강의실2</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">14:00~15:30</span></div></div><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-25">조선대학교</button><div class="exposition__event-detail" id="exposition-event-detail-25" hidden="" aria-label="조선대학교 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">중앙도서관 7층 커넥트홀</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">14:00~15:30</span></div></div></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 2;"><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-26">전남대학교</button><div class="exposition__event-detail" id="exposition-event-detail-26" hidden="" aria-label="전남대학교 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">도서관 별관 지하 취업강의실 1</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">14:30~16:00</span></div></div></div><div class="exposition__day" style="--mobile-date-row: 5; --mobile-column: 1;"></div></div></div><div class="exposition__week scroll-reveal"><div class="exposition__week-dates"><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 1;">10월 5일 (월)</div><div class="exposition__date" style="--mobile-date-row: 1; --mobile-column: 2;">10월 6일 (화)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 1;">10월 7일 (수)</div><div class="exposition__date" style="--mobile-date-row: 3; --mobile-column: 2;">10월 8일 (목)</div></div><div class="exposition__week-events"><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 1;"></div><div class="exposition__day" style="--mobile-date-row: 1; --mobile-column: 2;"></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 1;"></div><div class="exposition__day" style="--mobile-date-row: 3; --mobile-column: 2;"><button class="exposition__event" type="button" aria-expanded="false" aria-controls="exposition-event-detail-27">전북대학교</button><div class="exposition__event-detail" id="exposition-event-detail-27" hidden="" aria-label="전북대학교 방문 상세 일정" role="group" tabindex="-1"><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--place">장소</span><span class="exposition__event-detail-value">학생타운 2층 211호</span></div><div class="exposition__event-detail-row"><span class="exposition__event-detail-label exposition__event-detail-label--time">시간</span><span class="exposition__event-detail-value">14:00~15:30</span></div></div></div></div></div></div></div>
           </div>
         </div>
       </section>
 
       <section class="con8" aria-label="한미그룹 바로가기">
         <div class="con8__inner">
-          <a class="con8__link" href="#jobs">
+          <a class="con8__link scroll-reveal" href="#jobs">
             <span class="con8__image-wrap">
               <span class="con8__photo">
-                <img
-                  class="con8__image"
-                  src="./images/con8_img1.jpg"
-                  alt="한미그룹 구성원들이 손을 모은 모습"
-                />
+                <img class="con8__image" src="./images/con8_img1.jpg" alt="한미그룹 구성원들이 손을 모은 모습">
               </span>
-              <img class="con8__mark con8__mark--left-arrow" src="./images/con8_Image.png" alt="" />
-              <img class="con8__mark con8__mark--star" src="./images/con8_Image-2.png" alt="" />
+              <img class="con8__mark con8__mark--left-arrow" src="./images/con8_Image.png" alt="">
+              <img class="con8__mark con8__mark--star" src="./images/con8_Image-2.png" alt="">
             </span>
             <span class="con8__copy">
-              <span class="con8__question">한미그룹의 <span class="con8__underlined-phrase">문화와 복지<img class="con8__underline" src="./images/con8_Image-1.png" alt="" /></span>가 궁금하다면?</span>
+              <span class="con8__question">한미그룹의 <span class="con8__underlined-phrase">문화와 복지<img class="con8__underline" src="./images/con8_Image-1.png" alt=""></span>가 궁금하다면?</span>
               <span class="con8__action">한미그룹 문화와 복지 보기<span class="con8__arrow" aria-hidden="true">›</span></span>
             </span>
           </a>
-          <a class="con8__link" href="#tasks">
+          <a class="con8__link scroll-reveal" href="#tasks">
             <span class="con8__image-wrap">
               <span class="con8__photo">
-                <img
-                  class="con8__image"
-                  src="./images/con8_img2.jpg"
-                  alt="촬영 장비를 비춘 이미지"
-                />
+                <img class="con8__image" src="./images/con8_img2.jpg" alt="촬영 장비를 비춘 이미지">
               </span>
-              <img class="con8__mark con8__mark--job-arrow" src="./images/con8_Image-4.png" alt="" />
+              <img class="con8__mark con8__mark--job-arrow" src="./images/con8_Image-4.png" alt="">
             </span>
             <span class="con8__copy">
-              <span class="con8__question">한미그룹의 <span class="con8__circled-word">직무<img class="con8__circle" src="./images/con8_Image-3.png" alt="" /></span>가 궁금하다면?</span>
+              <span class="con8__question">한미그룹의 <span class="con8__circled-word">직무<img class="con8__circle" src="./images/con8_Image-3.png" alt=""></span>가 궁금하다면?</span>
               <span class="con8__action">한미그룹 직무 소개 페이지<span class="con8__arrow" aria-hidden="true">›</span></span>
             </span>
           </a>
-          <a class="con8__link" href="#requirement">
+          <a class="con8__link scroll-reveal" href="#requirement">
             <span class="con8__image-wrap">
               <span class="con8__photo">
-                <img
-                  class="con8__image"
-                  src="./images/con8_img3.jpg"
-                  alt="한미약품 연구센터 전경"
-                />
+                <img class="con8__image" src="./images/con8_img3.jpg" alt="한미약품 연구센터 전경">
               </span>
             </span>
             <span class="con8__copy">
-              <span class="con8__question">한미그룹의 <span class="con8__underlined-phrase">채용소식<img class="con8__underline" src="./images/con8_Image-5.png" alt="" /></span>을 빠르게 받고 싶다면?</span>
+              <span class="con8__question">한미그룹의 <span class="con8__underlined-phrase">채용소식<img class="con8__underline" src="./images/con8_Image-5.png" alt=""></span>을 빠르게 받고 싶다면?</span>
               <span class="con8__action">한미그룹 채용 페이지<span class="con8__arrow" aria-hidden="true">›</span></span>
             </span>
           </a>
         </div>
-        <img class="con8__character" src="./images/con8_char.png" alt="" />
+        <img class="con8__character updown" src="./images/con8_char.png" alt="">
       </section>
 
       <section class="con9" aria-labelledby="con9-title">
-        <img class="con9__cloud con9__cloud--left" src="./images/con9_cloud_l.png" alt="" />
-        <img class="con9__cloud con9__cloud--right" src="./images/con9_cloud_r.png" alt="" />
-        <h2 class="con9__title" id="con9-title">당신에게 딱 맞는 자리를 찾으러 출발!</h2>
-        <p class="con9__countdown" aria-label="지원 마감까지 남은 시간">
+        <img class="con9__cloud con9__cloud--left" src="./images/con9_cloud_l.png" alt="">
+        <img class="con9__cloud con9__cloud--right" src="./images/con9_cloud_r.png" alt="">
+        <h2 class="con9__title scroll-reveal" id="con9-title">당신에게 딱 맞는 자리를 찾으러 출발!</h2>
+        <p class="con9__countdown scroll-reveal" aria-label="지원 마감까지 남은 시간">
           <span><span class="con9__countdown-unit" data-countdown="days">0</span>일</span>
           <span><span class="con9__countdown-unit" data-countdown="hours">0</span>시간</span>
           <span><span class="con9__countdown-unit" data-countdown="minutes">0</span>분</span>
           <span><span class="con9__countdown-unit" data-countdown="seconds">0</span>초 남았어요</span>
         </p>
-        <p class="con9__expired" data-countdown-expired hidden>모집이 마감되었습니다.</p>
-        <a class="con9__earth-link" href="#requirement" aria-label="지원 자격 및 접수 방법 보기">
-          <img class="con9__earth" src="./images/con9_earth.png" alt="" />
+        <p class="con9__expired" data-countdown-expired="">모집이 마감되었습니다.</p>
+        <a class="con9__earth-link scroll-reveal" href="#requirement" aria-label="지원 자격 및 접수 방법 보기">
+          <img class="con9__earth" src="./images/con9_earth.png" alt="">
           <span class="con9__apply">지원하기<span class="con8__arrow" aria-hidden="true">›</span></span>
         </a>
         <p class="con9__hint">아이콘을 클릭해서 지원해 주세요!</p>
@@ -7277,7 +6647,7 @@
 
     <footer class="footer">
       <a href="#" aria-label="한미그룹 홈">
-        <img class="footer__logo" src="./images/logo.svg" alt="한미그룹" />
+        <img class="footer__logo" src="./images/logo.svg" alt="한미그룹">
       </a>
     </footer>
 
@@ -8466,5 +7836,122 @@
         renderDepartments();
       })();
     </script>
-  </body>
-</html>
+  <!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+
+
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+<script src="./hanmi-eye-tracking/metadata.js"></script>
+<script src="./hanmi-eye-tracking/player.js"></script>
+</body></html>
