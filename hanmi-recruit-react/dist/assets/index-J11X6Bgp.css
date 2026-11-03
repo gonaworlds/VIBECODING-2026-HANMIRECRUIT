@@ -1,0 +1,13 @@
+.header__logo img {
+  width: 182px;
+  height: 31px;
+  display: block;
+}
+.exposition__event-wrap {
+  width: 100%;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

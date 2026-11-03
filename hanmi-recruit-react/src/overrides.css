@@ -1,0 +1,15 @@
+.header__logo img {
+  display: block;
+  width: 182px;
+  height: 31px;
+}
+
+.exposition__event-wrap {
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
